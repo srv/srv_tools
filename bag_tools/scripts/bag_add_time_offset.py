@@ -17,7 +17,7 @@ def fix_bagfile(inbag, outbag, topics, offset):
 
     outbag = rosbag.Bag(outbag, 'w')
 
-    time_offset = rospy.Duration(offset)
+    time_offset = rospy.Duration.from_sec(offset)
 
     count = {}
     for topic in topics:
@@ -43,9 +43,9 @@ if __name__ == "__main__":
         parser.error('Wrong number of arguments')
     inbag = args[0]
     outbag = args[1]
-    offset = args[2]
+    offset = float(args[2])
     topics = []
-    for i in len(args) - 3:
+    for i in range(len(args) - 3):
       topics.append(args[3+i])
     try:
         fix_bagfile(inbag, outbag, topics, offset)
