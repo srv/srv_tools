@@ -9,6 +9,9 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/bag_tools</url>
 
+  <depend package="rospy" />
+  <depend package="rosbag" />
+
 </package>
 
 
