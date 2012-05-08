@@ -1,0 +1,9 @@
+<stack>
+  <description brief="srv_tools">srv_tools</description>
+  <author>Maintained by Stephan Wirth</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/srv_tools</url>
+  <depend stack="ros" />
+
+</stack>
