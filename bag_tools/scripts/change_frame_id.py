@@ -17,18 +17,16 @@ def change_frame_id(inbag,outbag,frame_id,topics):
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
-    # This also replaces tf timestamps under the assumption 
-    # that all transforms in the message share the same timestamp
     if topic in topics:
       if msg._has_header:
-	msg.header.frame_id = frame_id
-        outbag.write(topic, msg, t)
+        msg.header.frame_id = frame_id
+    outbag.write(topic, msg, t)
   print 'Closing output bagfile and exit...'
   outbag.close();
 
 if __name__ == "__main__":
   parser = OptionParser(usage="%prog INBAG OUTBAG FRAME_ID TOPICS",
-                       description='Create a new bagfile from an existing one replacing the message time for the header time.')
+                       description='Create a new bagfile from an existing one replacing the frame id of requested topics.')
   (options, args) = parser.parse_args()
   if len(args) < 4:
     parser.error('Wrong number of arguments')
