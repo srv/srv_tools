@@ -9,15 +9,16 @@ import os
 import sys
 import argparse
 
-def check_delay(inbag):
-  print '   Processing input bagfile: ', inbag
+def check_delay(inbags):
   delays = {}
-  for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
-    if msg._has_header:
-      if topic not in delays:
-        delays[topic] = []
-      delay = abs((t - msg.header.stamp).to_sec())
-      delays[topic].append(delay)
+  for inbag in inbags:
+    print '   Processing input bagfile: ', inbag
+    for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
+      if msg._has_header:
+        if topic not in delays:
+          delays[topic] = []
+        delay = abs((t - msg.header.stamp).to_sec())
+        delays[topic].append(delay)
   max_len = max(len(topic) for topic in delays.keys())
   topics = delays.keys()
   topics.sort()
@@ -28,8 +29,11 @@ def check_delay(inbag):
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser(description='Checks the delay in a bagfile between publishing (recording) time and the time stamp in the header (if exists).')
-  parser.add_argument('inbag', help='input bagfile')
+  parser = argparse.ArgumentParser(
+      description='Checks the delay in a bagfile between publishing (recording) '
+                  'time and the time stamp in the header (if exists). Prints '
+                  'out min, max and mean delays.')
+  parser.add_argument('inbag', help='input bagfile(s)', nargs='+')
   args = parser.parse_args()
   try:
     check_delay(args.inbag)
