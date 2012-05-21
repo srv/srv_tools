@@ -14,18 +14,28 @@ def check_delay(inbags):
   for inbag in inbags:
     print '   Processing input bagfile: ', inbag
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
-      if msg._has_header:
-        if topic not in delays:
-          delays[topic] = []
+      if topic == "/tf":
+        for transform in msg.transforms:
+          delay = abs((t - transform.header.stamp).to_sec())
+          key = "/tf: " + transform.header.frame_id + " -> " + transform.child_frame_id
+          if key not in delays:
+            delays[key] = []
+          delays[key].append(delay)
+      elif msg._has_header:
+        key = topic
+        if key not in delays:
+          delays[key] = []
         delay = abs((t - msg.header.stamp).to_sec())
-        delays[topic].append(delay)
+        delays[key].append(delay)
   max_len = max(len(topic) for topic in delays.keys())
   topics = delays.keys()
   topics.sort()
   for topic in topics:
     delay_list = delays[topic]
+    delay_list.sort()
     dmin, dmax, dmean = min(delay_list), max(delay_list), sum(delay_list)/len(delay_list)
-    print topic.ljust(max_len + 2), ": mean = ", dmean, ", min = ", dmin, ", max = ", dmax
+    dmedian = delay_list[len(delay_list)/2]
+    print topic.ljust(max_len + 2), ": mean = ", dmean, ", min = ", dmin, ", max = ", dmax, ", median = ", dmedian
 
 
 if __name__ == "__main__":
