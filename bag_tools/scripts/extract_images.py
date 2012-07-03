@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import roslib; roslib.load_manifest('srv_tools')
+import roslib; roslib.load_manifest('bag_tools')
 import rosbag
 import rospy
 import cv
