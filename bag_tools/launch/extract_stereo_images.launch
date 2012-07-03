@@ -3,20 +3,16 @@
      this launch does a playback of a bagfile,
      runs image processing to get coloured rectified images
      from raw images, and saves the images to harddrive.
-     The resulting images will typically be saved to ~/.ros
 
      To run the launch, type
-       roslaunch extract_images.launch bagfile:=/your/absolute/path/to/bagfile.bag
-     Note that the path has to be absolute!
-
-     To extract the camera calibration file, run the following command while the playback
-     is running:
-      rostopic echo -n 1 /camera_flex_wide/left/camera_info
+       roslaunch extract_images.launch bagfile:=/your/absolute/path/to/bagfile.bag out_dir:=/your/absolute/path/to/output_dir
+     Note that the paths have to be absolute!
 -->
 
 <launch>
   <arg name="bagfile" />
-  <arg name="camera" default="camera_flex_wide" />
+  <arg name="out_dir" />
+  <arg name="camera" default="/stereo_down" />
   <arg name="image" default="image_rect_color" />
   <arg name="format" default="frame%06i.png" />
   <arg name="rate" default="1.0" />
@@ -31,19 +27,22 @@
   <!-- grab images to disk -->
   <node pkg="image_view" type="extract_images" name="extractor_left" output="screen" >
     <remap from="image" to="$(arg camera)/left/$(arg image)" />
-    <param name="filename_format" value="left_$(arg format)" />
-
-    <!-- only grab image if sec_per_frame passed between two images -->
-    <param name="sec_per_frame" value="0.0" />
-  </node>
-
-  <node pkg="image_view" type="extract_images" name="extractor_right" output="screen" >
-    <remap from="image" to="$(arg camera)/right/$(arg image)" />
-    <param name="filename_format" value="right_$(arg format)" />
-
+    <param name="filename_format" value="$(arg out_dir)/left_$(arg format)" />
     <!-- only grab image if sec_per_frame passed between two images -->
     <param name="sec_per_frame" value="$(arg sec_per_frame)" />
   </node>
 
+  <node pkg="image_view" type="extract_images" name="extractor_right" output="screen" >
+    <remap from="image" to="$(arg camera)/right/$(arg image)" />
+    <param name="filename_format" value="$(arg out_dir)/right_$(arg format)" />
+    <!-- only grab image if sec_per_frame passed between two images -->
+    <param name="sec_per_frame" value="$(arg sec_per_frame)" />
+  </node>
+
+  <!-- store the calibration -->
+  <node pkg="rostopic" type="rostopic" name="echo_left" 
+    args="echo -n 1 $(arg camera)/left/camera_info > $(arg out_dir)/calibration_left.yaml" />
+  <node pkg="rostopic" type="rostopic" name="echo_right" 
+    args="echo -n 1 $(arg camera)/right/camera_info > $(arg out_dir)/calibration_right.yaml" />
 
 </launch>

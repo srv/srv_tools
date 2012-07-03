@@ -12,6 +12,7 @@
   <depend package="rospy" />
   <depend package="rosbag" />
   <depend package="sensor_msgs" />
+  <depend package="cv_bridge" />
 </package>
 
 
