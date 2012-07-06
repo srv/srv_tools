@@ -23,9 +23,11 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #find_package(OpenCV REQUIRED)
 
+rosbuild_add_boost_directories()
 rosbuild_add_executable(extract_stereo_images src/extract_stereo_images.cpp)
 #rosbuild_add_executable(extract_stereo_images src/extract_stereo_images.cpp ${OpenCV_LIBRARIES})
 
+rosbuild_link_boost(extract_stereo_images signals)
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
