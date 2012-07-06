@@ -7,7 +7,7 @@ import rospy
 import rosbag
 import os
 import sys
-from optparse import OptionParser
+import argparse
 
 def rpl_msg_time_with_hdr(inbag,outbag):
   print 'Processing input bagfile : ', inbag
@@ -24,15 +24,14 @@ def rpl_msg_time_with_hdr(inbag,outbag):
   outbag.close();
 
 if __name__ == "__main__":
-  parser = OptionParser(usage="%prog INBAG OUTBAG",
-                       description='Create a new bagfile from an existing one replacing the message time for the header time.')
-  (options, args) = parser.parse_args()
-  if len(args) != 2:
-    parser.error('Wrong number of arguments')
-  inbag = args[0]
-  outbag = args[1]
+
+  parser = argparse.ArgumentParser(
+      description='Create a new bagfile from an existing one replacing the message time for the header time.')
+  parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
+  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile')
+  args = parser.parse_args()
   try:
-    rpl_msg_time_with_hdr(inbag, outbag)
+    rpl_msg_time_with_hdr(args.i, args.o)
   except Exception, e:
     import traceback
     traceback.print_exc()

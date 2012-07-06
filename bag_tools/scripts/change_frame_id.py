@@ -7,7 +7,7 @@ import rospy
 import rosbag
 import os
 import sys
-from optparse import OptionParser
+import argparse
 
 def change_frame_id(inbag,outbag,frame_id,topics):
   print '   Processing input bagfile: ', inbag
@@ -25,19 +25,17 @@ def change_frame_id(inbag,outbag,frame_id,topics):
   outbag.close();
 
 if __name__ == "__main__":
-  parser = OptionParser(usage="%prog INBAG OUTBAG FRAME_ID TOPICS",
-                       description='Create a new bagfile from an existing one replacing the frame id of requested topics.')
-  (options, args) = parser.parse_args()
-  if len(args) < 4:
-    parser.error('Wrong number of arguments')
-  inbag = args[0]
-  outbag = args[1]
-  frame_id = args[2]
-  topics = []
-  for i in range(len(args) - 3):
-    topics.append(args[3+i])
+
+  parser = argparse.ArgumentParser(
+      description='reate a new bagfile from an existing one replacing the frame id of requested topics.')
+  parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
+  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile')
+  parser.add_argument('-f', metavar='FRAME_ID', required=True, help='desired frame_id name in the topics')
+  parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
+  args = parser.parse_args()
+
   try:
-    change_frame_id(inbag,outbag,frame_id,topics)
+    change_frame_id(args.i,args.o,args.f,args.t)
   except Exception, e:
     import traceback
     traceback.print_exc()

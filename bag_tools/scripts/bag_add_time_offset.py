@@ -7,7 +7,7 @@ import rospy
 import rosbag
 import os
 import sys
-from optparse import OptionParser
+import argparse
 
 def fix_bagfile(inbag, outbag, topics, offset):
     print '   Processing input bagfile: ', inbag
@@ -36,19 +36,16 @@ def fix_bagfile(inbag, outbag, topics, offset):
       print k, ': ', v, ' messages.'
 
 if __name__ == "__main__":
-    parser = OptionParser(usage="%prog INBAG OUTBAG OFFSET TOPICS",
-                          description='Shift the publishing time of given topics in input bagfile.')
-    (options, args) = parser.parse_args()
-    if len(args) < 4:
-        parser.error('Wrong number of arguments')
-    inbag = args[0]
-    outbag = args[1]
-    offset = float(args[2])
-    topics = []
-    for i in range(len(args) - 3):
-      topics.append(args[3+i])
-    try:
-        fix_bagfile(inbag, outbag, topics, offset)
-    except Exception, e:
-        import traceback
-        traceback.print_exc()
+
+  parser = argparse.ArgumentParser(
+      description='Shift the publishing time of given topics in input bagfile.')
+  parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
+  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile(s)', nargs='+')
+  parser.add_argument('-of', metavar='OFFSET', required=True, type=float, help='time offset to add in seconds')
+  parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
+  args = parser.parse_args()
+  try:
+      fix_bagfile(args.i, args.o, arg.t, args.of)
+  except Exception, e:
+      import traceback
+      traceback.print_exc()

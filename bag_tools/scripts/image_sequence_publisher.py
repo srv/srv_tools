@@ -13,6 +13,7 @@ import cv_bridge
 import camera_info_parser
 import glob
 import cv
+import argparse
 
 def collect_image_files(image_dir):
   jpg_images = glob.glob(image_dir + '/*.jpg')
@@ -44,12 +45,14 @@ def playback_images(image_dir,camera_info_file,publish_rate):
   rospy.loginfo('No more images left. Stopping.')
 
 if __name__ == "__main__":
-  rospy.init_node('image_sequence_publisher')
-  image_dir = rospy.get_param('~image_dir')
-  camera_info_file = rospy.get_param('~camera_info_file')
-  publish_rate = rospy.get_param('~publish_rate', 10)
+  parser = argparse.ArgumentParser(
+      description='Publishes a set of images as if it was a real connected camera')
+  parser.add_argument('-dir', metavar='IMAGE_DIR', required=True, help='folder where the images are stored')
+  parser.add_argument('-info', metavar='CAMERA_INFO', required=True, help='camera info file path')
+  parser.add_argument('-hz', metavar='HZ', default=10, help='publish rate in Hz')
+  args = parser.parse_args()
   try:
-    playback_images(image_dir, camera_info_file, publish_rate)
+    playback_images(args.dir, args.info, args.hz)
   except Exception, e:
     import traceback
     traceback.print_exc()
