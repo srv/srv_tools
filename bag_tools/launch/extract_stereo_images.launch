@@ -1,0 +1,48 @@
+<!-- launch file for image extraction from a bagfile
+     
+     this launch does a playback of a bagfile,
+     runs image processing to get coloured rectified images
+     from raw images, and saves the images to harddrive.
+
+     To run the launch, type
+       roslaunch extract_images.launch bagfile:=/your/absolute/path/to/bagfile.bag out_dir:=/your/absolute/path/to/output_dir
+     Note that the paths have to be absolute!
+-->
+
+<launch>
+  <arg name="bagfile" />
+  <arg name="out_dir" />
+  <arg name="camera" default="/stereo_down" />
+  <arg name="image" default="image_rect_color" />
+  <arg name="format" default="frame%06i.png" />
+  <arg name="rate" default="1.0" />
+  <arg name="sec_per_frame" default="0.0" />
+
+  <!-- playback the data -->
+  <node pkg="rosbag" type="play" name="player" args="-d 1 -r $(arg rate) $(arg bagfile)" output="screen" required="true" />
+
+  <!-- run the image processing (de-bayering, undistortion, rectification) -->
+  <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc" ns="$(arg camera)" />
+
+  <!-- grab images to disk -->
+  <node pkg="image_view" type="extract_images" name="extractor_left" output="screen" >
+    <remap from="image" to="$(arg camera)/left/$(arg image)" />
+    <param name="filename_format" value="$(arg out_dir)/left_$(arg format)" />
+    <!-- only grab image if sec_per_frame passed between two images -->
+    <param name="sec_per_frame" value="$(arg sec_per_frame)" />
+  </node>
+
+  <node pkg="image_view" type="extract_images" name="extractor_right" output="screen" >
+    <remap from="image" to="$(arg camera)/right/$(arg image)" />
+    <param name="filename_format" value="$(arg out_dir)/right_$(arg format)" />
+    <!-- only grab image if sec_per_frame passed between two images -->
+    <param name="sec_per_frame" value="$(arg sec_per_frame)" />
+  </node>
+
+  <!-- store the calibration -->
+  <node pkg="rostopic" type="rostopic" name="echo_left" 
+    args="echo -n 1 $(arg camera)/left/camera_info > $(arg out_dir)/calibration_left.yaml" />
+  <node pkg="rostopic" type="rostopic" name="echo_right" 
+    args="echo -n 1 $(arg camera)/right/camera_info > $(arg out_dir)/calibration_right.yaml" />
+
+</launch>

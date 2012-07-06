@@ -1,0 +1,39 @@
+<!-- launch file for image extraction from a bagfile
+     
+     this launch does a playback of a bagfile,
+     runs image processing to get coloured rectified images
+     from raw images, and saves the images to harddrive.
+     The resulting images will typically be saved to ~/.ros
+
+     To run the launch, type
+       roslaunch extract_images.launch bagfile:=/your/absolute/path/to/bagfile.bag
+     Note that the path has to be absolute!
+
+     To extract the camera calibration file, run the following command while the playback
+     is running:
+      rostopic echo -n 1 /camera_flex_wide/left/camera_info
+-->
+
+<launch>
+  <arg name="bagfile" />
+  <arg name="camera" default="camera_flex_wide/left" />
+  <arg name="image" default="image_rect_color" />
+  <arg name="format" default="frame%06i.png" />
+  <arg name="rate" default="1.0" />
+
+  <!-- playback the data -->
+  <node pkg="rosbag" type="play" name="player" args="-d 1 -r $(arg rate) $(arg bagfile)" output="screen" required="true" />
+
+  <!-- run the image processing (de-bayering, undistortion, rectification) -->
+  <node pkg="image_proc" type="image_proc" name="image_proc" ns="$(arg camera)" />
+
+  <!-- grab images to disk -->
+  <node pkg="image_view" type="extract_images" name="extractor" output="screen" >
+    <remap from="image" to="$(arg camera)/$(arg image)" />
+    <param name="filename_format" value="$(arg format)" />
+
+    <!-- only grab image if sec_per_frame passed between two images -->
+    <param name="sec_per_frame" value="0.0" />
+  </node>
+
+</launch>
