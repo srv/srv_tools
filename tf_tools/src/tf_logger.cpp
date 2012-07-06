@@ -7,21 +7,6 @@
 
 using namespace std;
 
-/*const string baseLinkFrame = "/base_link";
-const string odomFrame = "/odom";
-const string kinectFrame = "/openni_rgb_optical_frame";
-const string worldFrame = "/world";
-*/
-
-// see http://www.ros.org/wiki/Clock for how to manage timing 
-/*
-	Execute the following to use this program:
-		roscore
-		rosparam set /use_sim_time true
-		rosbag play ../data/2011-01-13-13-56-40.bag --clock
-		bin/logger
-*/
-
 ostream& operator<< (ostream& os, const tf::Quaternion& quat)
 {
 	os << quat.x() << " " << quat.y() << " " << quat.z() << " " << quat.w();
@@ -60,21 +45,15 @@ int main(int argc, char** argv)
 	while (node.ok())
 	{
 		ros::Time now(ros::Time::now());
-		//ROS_INFO_STREAM(now);
 		if (t.waitForTransform(baseLinkFrame, now, odomFrame, now, odomFrame, ros::Duration(1)))
 			break;
-		//ROS_INFO("wait");
-		//ros::Duration(0.1).sleep();
 	}
 	ROS_INFO_STREAM("got first odom to baseLink");
 	while (node.ok())
 	{
 		ros::Time now(ros::Time::now());
-		//ROS_INFO_STREAM(now);
 		if (t.waitForTransform(kinectFrame, now, worldFrame, now, worldFrame, ros::Duration(1)))
 			break;
-		//ROS_INFO("wait");
-		//ros::Duration(0.1).sleep();
 	}
 	ROS_INFO_STREAM("got first world to kinect");
 	
@@ -90,8 +69,6 @@ int main(int argc, char** argv)
 		
 		// get parameters from transforms
 		ros::Time curTime(ros::Time::now());
-		//ros::Time lastTime = curTime - ros::Duration(2);
-		//ROS_INFO_STREAM("curTime: " << curTime << ", lastTime: " << lastTime);
 		if (!t.waitForTransform(baseLinkFrame, odomFrame, curTime, ros::Duration(3)))
 			break;
 		if (!t.waitForTransform(kinectFrame, worldFrame, curTime, ros::Duration(3)))
