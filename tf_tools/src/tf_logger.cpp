@@ -3,82 +3,98 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <cmath>
 
-using namespace std;
-
-ostream& operator<< (ostream& os, const tf::Quaternion& quat)
+std::ostream& operator<<(std::ostream& os, const tf::Transform& transform)
 {
-	os << quat.x() << " " << quat.y() << " " << quat.z() << " " << quat.w();
-	return os;
+  using std::setw;
+  tf::Vector3 origin = transform.getOrigin();
+  tf::Quaternion quat = transform.getRotation();
+  os << setw(10) << origin.x() << " " << setw(10) << origin.y() << " " << setw(10) << origin.z() << " ";
+  os << setw(10) << quat.x() << " " << setw(10) << quat.y() << " " << setw(10) << quat.z() << " " << setw(10) << quat.w();
+  return os;
 }
 
-ostream& operator<< (ostream& os, const tf::Vector3& trans)
+void printHeader(std::ostream& os, const std::string& frame_id)
 {
-	os << trans.x() << " " << trans.y() << " " << trans.z();
-	return os;
+  os << frame_id << ".x " << frame_id << ".y " << frame_id << ".z "
+     << frame_id << ".qx " << frame_id << ".qy " << frame_id << ".qz " << frame_id << ".qw ";
 }
+
+struct FramePair
+{
+  FramePair(const std::string& rframe, const std::string& lframe) :
+    reference_frame(rframe), log_frame(lframe)
+  {}
+  std::string reference_frame;
+  std::string log_frame;
+};
 
 int main(int argc, char** argv)
 {
-	ros::init(argc, argv, "tf_logger");
+  ros::init(argc, argv, "tf_logger");
 
-	ros::NodeHandle node("~");
-	
-	string baseLinkFrame;
-	node.param<string>("baseLinkFrame", baseLinkFrame, "/base_link");
-	string odomFrame;
-	node.param<string>("odomFrame", odomFrame, "/odom");
-	string kinectFrame;
-	node.param<string>("kinectFrame", kinectFrame, "/openni_rgb_optical_frame");
-	string worldFrame;
-	node.param<string>("worldFrame", worldFrame, "/world");
-	string outputFileName;
-	node.param<string>("outputFileName", outputFileName, "output.txt");
-	cout << baseLinkFrame << " " << odomFrame << " " << kinectFrame << " " <<
-			worldFrame << " " << outputFileName << endl;
+  if (argc < 4 || argc % 2 != 0)
+  {
+    std::cerr << "Wrong number of arguments." << std::endl;
+    std::cerr << "USAGE: " << argv[0] 
+      << " FREQUENCY REF_FRAME LOG_FRAME [REF_FRAME LOG_FRAME ...]" << std::endl;
+    std::cerr << "The transforms should be published at a rate >= 2*FREQUENCY " << std::endl;
+    return 1;
+  }
+    
+  float frequency = atof(argv[1]);
 
-	tf::TransformListener t(ros::Duration(20));
-	tf::StampedTransform tr_o, tr_i;
-	
-	ROS_INFO_STREAM("waiting for initial transforms");
-	while (node.ok())
-	{
-		ros::Time now(ros::Time::now());
-		if (t.waitForTransform(baseLinkFrame, now, odomFrame, now, odomFrame, ros::Duration(1)))
-			break;
-	}
-	ROS_INFO_STREAM("got first odom to baseLink");
-	while (node.ok())
-	{
-		ros::Time now(ros::Time::now());
-		if (t.waitForTransform(kinectFrame, now, worldFrame, now, worldFrame, ros::Duration(1)))
-			break;
-	}
-	ROS_INFO_STREAM("got first world to kinect");
-	
-	sleep(3);
-	
-	ros::Rate rate(10);
-	ofstream ofs(outputFileName.c_str());
-	while (node.ok())
-	{
-		// sleep
-		ros::spinOnce();
-		rate.sleep();
-		
-		// get parameters from transforms
-		ros::Time curTime(ros::Time::now());
-		if (!t.waitForTransform(baseLinkFrame, odomFrame, curTime, ros::Duration(3)))
-			break;
-		if (!t.waitForTransform(kinectFrame, worldFrame, curTime, ros::Duration(3)))
-			break;
-		ofs << curTime << " ";
-		t.lookupTransform(baseLinkFrame, odomFrame, curTime, tr_o);
-		ofs << tr_o.getOrigin() << " " << tr_o.getRotation() << " ";
-		t.lookupTransform(kinectFrame, worldFrame, curTime,  tr_i);
-		ofs << tr_i.getOrigin() << " " << tr_i.getRotation() << endl;
-	}
-	
-	return 0;
+  std::vector<FramePair> frame_pairs;
+
+  std::cout << "#timestamp";
+  for (int i = 2; i < argc; i+=2)
+  {
+    std::string ref_frame(argv[i]);
+    std::string log_frame(argv[i+1]);
+    printHeader(std::cout, log_frame);
+    frame_pairs.push_back(FramePair(ref_frame, log_frame));
+  }
+  std::cout << std::endl;
+  
+  ros::Duration cache_time(10);
+  tf::TransformListener tf_listener(cache_time);
+  
+  ros::Rate rate(frequency);
+  while (ros::ok())
+  {
+    rate.sleep();
+    if (!ros::Time::isValid()) continue; // wait for clock
+    ros::Time requested_time(ros::Time::now() - ros::Duration(2 / frequency));
+    std::vector<tf::StampedTransform> transforms(frame_pairs.size());
+    try
+    {
+      // first look up all transforms, this could throw exceptions
+      for (size_t i = 0; i < frame_pairs.size(); ++i)
+      {
+        ros::Duration timeout(2 / frequency);
+        ros::Duration polling_sleep_duration(0.5 / frequency);
+        tf_listener.waitForTransform(
+            frame_pairs[i].reference_frame, 
+            frame_pairs[i].log_frame, requested_time,
+            timeout, polling_sleep_duration);
+        tf::StampedTransform transform;
+        tf_listener.lookupTransform(
+            frame_pairs[i].reference_frame, 
+            frame_pairs[i].log_frame, requested_time, transforms[i]);
+      }
+      // no exception was thrown, print out set
+      std::cout << requested_time.toNSec() << " ";
+      for (size_t i = 0; i < transforms.size(); ++i)
+      {
+        std::cout << transforms[i] << " ";
+      }
+      std::cout << std::endl;
+    }
+    catch (const tf::TransformException& e)
+    {
+      std::cerr << "TransformException caught: " << e.what() << std::endl;
+    }
+  }
+  return 0;
 }
+
