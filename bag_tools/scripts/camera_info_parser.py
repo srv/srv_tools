@@ -3,7 +3,6 @@
 PKG = 'bag_tools' # this package name
 
 import roslib; roslib.load_manifest(PKG)
-import rospy
 import yaml
 import sensor_msgs.msg
 
