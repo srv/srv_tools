@@ -45,14 +45,14 @@ def playback_images(image_dir,camera_info_file,publish_rate):
   rospy.loginfo('No more images left. Stopping.')
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser(
-      description='Publishes a set of images as if it was a real connected camera')
-  parser.add_argument('-dir', metavar='IMAGE_DIR', required=True, help='folder where the images are stored')
-  parser.add_argument('-info', metavar='CAMERA_INFO', required=True, help='camera info file path')
-  parser.add_argument('-hz', metavar='HZ', default=10, help='publish rate in Hz')
-  args = parser.parse_args()
+  rospy.init_node('image_sequence_publisher')
   try:
-    playback_images(args.dir, args.info, args.hz)
+    image_dir = rospy.get_param("~image_dir")
+    camera_info_file = rospy.get_param("~camera_info_file")
+    frequency = rospy.get_param("~frequency", 10)
+    playback_images(image_dir, camera_info_file, frequency)
+  except KeyError as e:
+    print 'Required parameter missing:', e
   except Exception, e:
     import traceback
     traceback.print_exc()
