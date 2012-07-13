@@ -1,0 +1,16 @@
+<package>
+  <description brief="launch_tools">
+
+     launch_tools
+
+  </description>
+  <author>Miquel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/launch_tools</url>
+  <depend package="rospy"/>
+  <depend package="roslib"/>
+
+</package>
+
+
