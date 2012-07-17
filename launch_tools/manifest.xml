@@ -1,10 +1,10 @@
 <package>
   <description brief="launch_tools">
 
-     launch_tools
+  ROS tools and scripts related to launchfiles
 
   </description>
-  <author>Miquel</author>
+  <author>Stephan Wirth and Miquel Massot</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/launch_tools</url>

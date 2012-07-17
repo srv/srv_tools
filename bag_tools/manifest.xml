@@ -1,10 +1,10 @@
 <package>
   <description brief="bag_tools">
 
-     bag_tools
+  ROS tools and scripts related to bagfiles
 
   </description>
-  <author>Stephan Wirth</author>
+  <author>Stephan Wirth and Miquel Massot</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/bag_tools</url>
