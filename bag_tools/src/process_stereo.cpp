@@ -76,6 +76,15 @@ public:
       bag_.write(stereo_base_topic_ + "/left/image_mono", 
           l_img->header.stamp, msg);
     }
+    if (flags_ & stereo_image_proc::StereoProcessor::LEFT_COLOR)
+    {
+      sensor_msgs::Image::Ptr msg = createMsg(
+          l_img->header, 
+          image_set.left.color_encoding, 
+          image_set.left.color);
+      bag_.write(stereo_base_topic_ + "/left/image_color", 
+          l_img->header.stamp, msg);
+    }
     if (flags_ & stereo_image_proc::StereoProcessor::LEFT_RECT)
     {
       sensor_msgs::Image::Ptr msg = createMsg(
@@ -94,6 +103,49 @@ public:
       bag_.write(stereo_base_topic_ + "/left/image_rect_color", 
           l_img->header.stamp, msg);
     }
+    if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_MONO)
+    {
+      sensor_msgs::Image::Ptr msg = createMsg(
+          r_img->header, 
+          image_set.right.color_encoding, 
+          image_set.right.mono);
+      bag_.write(stereo_base_topic_ + "/right/image_mono", 
+          r_img->header.stamp, msg);
+    }
+    if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_COLOR)
+    {
+      sensor_msgs::Image::Ptr msg = createMsg(
+          r_img->header, 
+          image_set.right.color_encoding, 
+          image_set.right.color);
+      bag_.write(stereo_base_topic_ + "/right/image_color", 
+          r_img->header.stamp, msg);
+    }
+    if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_RECT)
+    {
+      sensor_msgs::Image::Ptr msg = createMsg(
+          r_img->header, 
+          image_set.right.color_encoding, 
+          image_set.right.rect);
+      bag_.write(stereo_base_topic_ + "/right/image_rect", 
+          r_img->header.stamp, msg);
+    }
+    if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_RECT_COLOR)
+    {
+      sensor_msgs::Image::Ptr msg = createMsg(
+          r_img->header, 
+          image_set.right.color_encoding, 
+          image_set.right.rect_color);
+      bag_.write(stereo_base_topic_ + "/right/image_rect_color", 
+          r_img->header.stamp, msg);
+    }
+
+    if (flags_ & stereo_image_proc::StereoProcessor::POINT_CLOUD2)
+    {
+      bag_.write(stereo_base_topic_ + "/points2",
+          l_img->header.stamp, image_set.points2);
+    }
+
   }
 
   sensor_msgs::Image::Ptr createMsg(
@@ -122,6 +174,7 @@ int main(int argc, char** argv)
 {
   if (argc < 4)
   {
+    std::cout << "Takes raw images from an input bagfile, processes them and writes the output to a new bagfile." << std::endl;
     std::cout << "Usage: " << argv[0] << " INBAG STEREO_BASE_TOPIC OUTBAG" << std::endl;
     std::cout << "  Example: " << argv[0] << " bag.bag /stereo_forward bag_processed.bag" << std::endl;
     return 0;
@@ -133,6 +186,8 @@ int main(int argc, char** argv)
   
   int flags = 0;
   flags |= stereo_image_proc::StereoProcessor::LEFT_RECT_COLOR;
+  flags |= stereo_image_proc::StereoProcessor::RIGHT_RECT_COLOR;
+  flags |= stereo_image_proc::StereoProcessor::POINT_CLOUD2;
   StereoImageProcessor image_processor(base_topic, out_bag, flags);
   bag_tools::StereoBagProcessor bag_processor(base_topic);
   bag_processor.registerCallback(boost::bind(&StereoImageProcessor::process, &image_processor, _1, _2, _3, _4));
