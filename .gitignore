@@ -1,4 +1,5 @@
 # directories created by ros
+*.pyc
 */lib/
 */bin/
 */build/
@@ -7,14 +8,11 @@
 */CMakeFiles/
 */msg_gen/
 */src/*_msgs/msg/_*.py
-*/src/*_msgs/msg/_*.pyc
 */src/*_msgs/_*.py
-*/src/*_msgs/_*.pyc
 */msg/lisp/
 */srv_gen/
 */src/*/srv/_*.py
 */src/*/_*_.py
-*/src/*/_*_.pyc
 */src/*/srv
 *~
 
