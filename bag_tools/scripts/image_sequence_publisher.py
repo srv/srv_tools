@@ -45,14 +45,14 @@ import glob
 import cv
 import argparse
 
-def collect_image_files(image_dir):
-  jpg_images = glob.glob(image_dir + '/*.jpg')
-  jpg_images.sort()
-  return jpg_images
+def collect_image_files(image_dir,file_pattern):
+  images = glob.glob(image_dir + '/' + file_pattern)
+  images.sort()
+  return images
 
-def playback_images(image_dir,camera_info_file,publish_rate):
+def playback_images(image_dir,file_pattern,camera_info_file,publish_rate):
   cam_info = camera_info_parser.parse_yaml(camera_info_file)
-  image_files = collect_image_files(image_dir)
+  image_files = collect_image_files(image_dir,file_pattern)
   rospy.loginfo('Found %i images.',len(image_files))
   bridge = cv_bridge.CvBridge()
   rate = rospy.Rate(publish_rate)
@@ -78,9 +78,10 @@ if __name__ == "__main__":
   rospy.init_node('image_sequence_publisher')
   try:
     image_dir = rospy.get_param("~image_dir")
+    file_pattern = rospy.get_param("~file_pattern")
     camera_info_file = rospy.get_param("~camera_info_file")
     frequency = rospy.get_param("~frequency", 10)
-    playback_images(image_dir, camera_info_file, frequency)
+    playback_images(image_dir, file_pattern, camera_info_file, frequency)
   except KeyError as e:
     print 'Required parameter missing:', e
   except Exception, e:
