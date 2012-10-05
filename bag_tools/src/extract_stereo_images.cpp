@@ -61,7 +61,6 @@ public:
     std::string calib_filename_yaml = 
       boost::str(boost::format("%s/calibration_%scamera.yaml") 
           % save_dir_ % prefix_ );
-    camera_calibration_parsers::writeCalibration(calib_filename_ini, prefix_ + "camera", *info);
     camera_calibration_parsers::writeCalibration(calib_filename_yaml, prefix_ + "camera", *info);
     image_proc::ImageSet output;
     if (!processor_.process(img, camera_model_, output, image_proc::Processor::RECT_COLOR))
@@ -76,10 +75,10 @@ public:
           % img->header.stamp.toNSec() 
           % filetype_);
     if (!cv::imwrite(filename, output.rect_color))
-      std::cerr << "ERROR Saving " << filename << std::endl;
+      ROS_ERROR_STREAM("ERROR Saving " << filename);
     else
     {
-      std::cout << "INFO  Saved " << filename << std::endl;
+      ROS_DEBUG_STREAM("Saved " << filename);
       num_saved_++;
     }
   }
