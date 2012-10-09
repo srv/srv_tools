@@ -142,23 +142,6 @@ public:
 
 private:
 
-  static void printProgressBar(int percent)
-  {
-    static std::stringstream bars;
-    static int x = 0;
-    std::string slash[4];
-    slash[0] = "\\";
-    slash[1] = "-";
-    slash[2] = "/";
-    slash[3] = "|";
-    bars << "|";
-    std::cout << "\r"; // carriage return back to beginning of line
-    std::cout << bars.str() << " " << slash[x] << " " << percent << " %" << std::flush; // print the bars and percentage
-    x++; // increment to make the slash appear to rotate
-    if(x == 4)
-      x = 0;  // reset slash animation
-  }
-
   // Fake subscribers to capture images
   BagSubscriber<sensor_msgs::Image> l_img_sub_, r_img_sub_;
   BagSubscriber<sensor_msgs::CameraInfo> l_info_sub_, r_info_sub_;
