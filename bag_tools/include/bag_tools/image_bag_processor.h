@@ -33,67 +33,38 @@
 #include <boost/foreach.hpp>
 #include <boost/progress.hpp>
 
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-
 #include <sensor_msgs/Image.h>
-#include <sensor_msgs/CameraInfo.h>
-
 
 namespace bag_tools
 {
 
-/**
- * Inherits from message_filters::SimpleFilter<M>
- * to use protected signalMessage function
- */
-template <class M>
-class BagSubscriber : public message_filters::SimpleFilter<M>
-{
-public:
-  void newMessage(const boost::shared_ptr<M const> &msg)
-  {
-    signalMessage(msg);
-  }
-};
-
-class StereoBagProcessor
+class ImageBagProcessor
 {
 
 public:
-  StereoBagProcessor(const std::string& stereo_base_topic) :
-    stereo_base_topic_(stereo_base_topic),
-    sync_(l_img_sub_, r_img_sub_, l_info_sub_, r_info_sub_, 25)
+
+  typedef boost::function<void (const sensor_msgs::ImageConstPtr&)> CallbackType;
+
+  ImageBagProcessor(const std::string& image_topic) :
+    image_topic_(image_topic)
   {
     ros::Time::init();
   }
 
-  template<class C>
-  void registerCallback(const C& callback)
+  void registerCallback(const CallbackType& callback)
   {
-    sync_.registerCallback(callback);
+    callback_ = callback;
   }
 
   /**
    * Processes given bagfile, calls registered callback function when
-   * a synchronized stereo pair with camera infos is found.
+   * a message is found.
    */
   void processBag(const std::string &filename)
   {
-
     // Image topics to load
-    std::string l_cam = stereo_base_topic_ + "/left";
-    std::string r_cam = stereo_base_topic_ + "/right";
-    std::string l_cam_image = l_cam + "/image_raw";
-    std::string r_cam_image = r_cam + "/image_raw";
-    std::string l_cam_info = l_cam + "/camera_info";
-    std::string r_cam_info = r_cam + "/camera_info";
-
     std::vector<std::string> topics;
-    topics.push_back(l_cam_image);
-    topics.push_back(r_cam_image);
-    topics.push_back(l_cam_info);
-    topics.push_back(r_cam_info);
+    topics.push_back(image_topic_);
 
     std::cout << "Starting processing " << filename << ", ";
     rosbag::Bag bag;
@@ -107,32 +78,11 @@ public:
     boost::progress_display show_progress(num_messages);
     BOOST_FOREACH(rosbag::MessageInstance const m, view)
     {
-      if (m.getTopic() == l_cam_image || ("/" + m.getTopic() == l_cam_image))
+      if (m.getTopic() == image_topic_)
       {
-        sensor_msgs::Image::ConstPtr l_img = m.instantiate<sensor_msgs::Image>();
-        if (l_img != NULL)
-          l_img_sub_.newMessage(l_img);
-      }
-
-      if (m.getTopic() == r_cam_image || ("/" + m.getTopic() == r_cam_image))
-      {
-        sensor_msgs::Image::ConstPtr r_img = m.instantiate<sensor_msgs::Image>();
-        if (r_img != NULL)
-          r_img_sub_.newMessage(r_img);
-      }
-
-      if (m.getTopic() == l_cam_info || ("/" + m.getTopic() == l_cam_info))
-      {
-        sensor_msgs::CameraInfo::ConstPtr l_info = m.instantiate<sensor_msgs::CameraInfo>();
-        if (l_info != NULL)
-          l_info_sub_.newMessage(l_info);
-      }
-
-      if (m.getTopic() == r_cam_info || ("/" + m.getTopic() == r_cam_info))
-      {
-        sensor_msgs::CameraInfo::ConstPtr r_info = m.instantiate<sensor_msgs::CameraInfo>();
-        if (r_info != NULL)
-          r_info_sub_.newMessage(r_info);
+        sensor_msgs::Image::ConstPtr img_msg = m.instantiate<sensor_msgs::Image>();
+        if (img_msg != NULL)
+          callback_(img_msg);
       }
       ++show_progress;
     }
@@ -142,13 +92,8 @@ public:
 
 private:
 
-  // Fake subscribers to capture images
-  BagSubscriber<sensor_msgs::Image> l_img_sub_, r_img_sub_;
-  BagSubscriber<sensor_msgs::CameraInfo> l_info_sub_, r_info_sub_;
-
-  std::string stereo_base_topic_;
-
-  message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> sync_;
+  std::string image_topic_;
+  CallbackType callback_;
 
 };
 
