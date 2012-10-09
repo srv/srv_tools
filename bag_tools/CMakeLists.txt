@@ -22,9 +22,11 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_gensrv()
 
 rosbuild_add_boost_directories()
+rosbuild_add_executable(extract_images src/extract_images.cpp)
 rosbuild_add_executable(extract_stereo_images src/extract_stereo_images.cpp)
 rosbuild_add_executable(process_stereo src/process_stereo.cpp)
 
+rosbuild_link_boost(extract_images signals)
 rosbuild_link_boost(extract_stereo_images signals)
 rosbuild_link_boost(process_stereo signals)
 #common commands for building c++ executables and libraries
