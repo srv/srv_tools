@@ -63,7 +63,12 @@ def create_video(tmp_dir, args):
 
 if __name__ == "__main__":
   import argparse
-  parser = argparse.ArgumentParser(description='Creates a video from sensor_msgs/Image messages from a bagfile.')
+  parser = argparse.ArgumentParser(
+      description=
+        'Creates a video from sensor_msgs/Image messages from a bagfile. '
+        'This script uses the extract_images binary to extract color images '
+        'from bagfiles and calls ffmpeg afterwards to combine them together '
+        'to form a video. Note that ffmpeg must be installed on your system.')
   parser.add_argument('topic', help='topic of the images to use')
   parser.add_argument('--output', help='name of the output video. Note that the file ending defines the codec to use.', default='video.mp4')
   parser.add_argument('--fps', help='frames per second in the output video, as long as codec supports this', type=int, default=20)
