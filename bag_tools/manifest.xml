@@ -9,6 +9,10 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/bag_tools</url>
 
+  <export>
+    <cpp cflags="-I${prefix}/include"/>
+  </export>
+
   <depend package="rospy" />
   <depend package="rosbag" />
   <depend package="sensor_msgs" />
