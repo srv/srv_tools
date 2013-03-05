@@ -34,57 +34,36 @@ PKG = 'bag_tools' # this package name
 
 import roslib; roslib.load_manifest(PKG)
 import rospy
-import sensor_msgs.msg
-import cv_bridge
-import camera_info_parser
+import os
+import sys
+import argparse
 import glob
-import cv
+import subprocess
 
-def collect_image_files(image_dir,file_pattern):
-  images = glob.glob(image_dir + '/' + file_pattern)
-  images.sort()
-  return images
-
-def playback_images(image_dir,file_pattern,camera_info_file,publish_rate):
-  if camera_info_file != "":
-    cam_info = camera_info_parser.parse_yaml(camera_info_file)
-    publish_cam_info = True
-  else:
-    publish_cam_info = False
-  image_files = collect_image_files(image_dir,file_pattern)
-  rospy.loginfo('Found %i images.',len(image_files))
-  bridge = cv_bridge.CvBridge()
-  rate = rospy.Rate(publish_rate)
-  image_publisher = rospy.Publisher('camera/image', sensor_msgs.msg.Image)
-  if publish_cam_info:
-      cam_info_publisher = rospy.Publisher('camera/camera_info', sensor_msgs.msg.CameraInfo)
-  rospy.loginfo('Starting playback.')
-  for image_file in image_files:
-    if rospy.is_shutdown():
-      break
-    now = rospy.Time.now()
-    image = cv.LoadImage(image_file)
-    image_msg = bridge.cv_to_imgmsg(image, encoding='rgb8')
-    image_msg.header.stamp = now
-    image_msg.header.frame_id = "/camera"
-    image_publisher.publish(image_msg)
-    if publish_cam_info:
-      cam_info.header.stamp = now
-      cam_info.header.frame_id = "/camera"
-      cam_info_publisher.publish(cam_info)
-    rate.sleep()
-  rospy.loginfo('No more images left. Stopping.')
+def process(in_dir,out_dir,command):
+    bagfiles = glob.glob(in_dir + "/*.bag")
+    for bagfile in bagfiles:
+        outbag = out_dir + "/" + os.path.basename(bagfile)
+        if os.path.exists(outbag):
+            print outbag, "exists, skipping."
+        else:
+            cmd = command.split()
+            cmd.append("-i")
+            cmd.append(bagfile)
+            cmd.append("-o")
+            cmd.append(outbag)
+            subprocess.check_call(cmd)
 
 if __name__ == "__main__":
-  rospy.init_node('image_sequence_publisher')
+  parser = argparse.ArgumentParser(
+      description='batch processes all bagfiles in INPUT_DIR, writing output to OUTPUT_DIR by calling given command with -i and -o arguments.')
+  parser.add_argument('-i', metavar='INPUT_DIR', required=True, help='input directory with input bagfiles')
+  parser.add_argument('-o', metavar='OUTPUT_DIR', required=True, help='output directory for bagfiles')
+  parser.add_argument('-c', metavar='COMMAND', required=True, help='command to execute with each bagfile as input and with same name in output OUTPUT_DIR')
+  args = parser.parse_args()
+
   try:
-    image_dir = rospy.get_param("~image_dir")
-    file_pattern = rospy.get_param("~file_pattern")
-    camera_info_file = rospy.get_param("~camera_info_file", "")
-    frequency = rospy.get_param("~frequency", 10)
-    playback_images(image_dir, file_pattern, camera_info_file, frequency)
-  except KeyError as e:
-    print 'Required parameter missing:', e
+    process(args.i,args.o,args.c)
   except Exception, e:
     import traceback
     traceback.print_exc()

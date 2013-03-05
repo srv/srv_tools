@@ -34,57 +34,39 @@ PKG = 'bag_tools' # this package name
 
 import roslib; roslib.load_manifest(PKG)
 import rospy
-import sensor_msgs.msg
-import cv_bridge
-import camera_info_parser
-import glob
-import cv
+import rosbag
+import os
+import sys
+import argparse
 
-def collect_image_files(image_dir,file_pattern):
-  images = glob.glob(image_dir + '/' + file_pattern)
-  images.sort()
-  return images
+def remove_tf(inbag,outbag,frame_ids):
+  print '   Processing input bagfile: ', inbag
+  print '  Writing to output bagfile: ', outbag
+  print '         Removing frame_ids: ', ' '.join(frame_ids)
 
-def playback_images(image_dir,file_pattern,camera_info_file,publish_rate):
-  if camera_info_file != "":
-    cam_info = camera_info_parser.parse_yaml(camera_info_file)
-    publish_cam_info = True
-  else:
-    publish_cam_info = False
-  image_files = collect_image_files(image_dir,file_pattern)
-  rospy.loginfo('Found %i images.',len(image_files))
-  bridge = cv_bridge.CvBridge()
-  rate = rospy.Rate(publish_rate)
-  image_publisher = rospy.Publisher('camera/image', sensor_msgs.msg.Image)
-  if publish_cam_info:
-      cam_info_publisher = rospy.Publisher('camera/camera_info', sensor_msgs.msg.CameraInfo)
-  rospy.loginfo('Starting playback.')
-  for image_file in image_files:
-    if rospy.is_shutdown():
-      break
-    now = rospy.Time.now()
-    image = cv.LoadImage(image_file)
-    image_msg = bridge.cv_to_imgmsg(image, encoding='rgb8')
-    image_msg.header.stamp = now
-    image_msg.header.frame_id = "/camera"
-    image_publisher.publish(image_msg)
-    if publish_cam_info:
-      cam_info.header.stamp = now
-      cam_info.header.frame_id = "/camera"
-      cam_info_publisher.publish(cam_info)
-    rate.sleep()
-  rospy.loginfo('No more images left. Stopping.')
+  outbag = rosbag.Bag(outbag,'w')
+  for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
+      if topic == "/tf":
+          new_transforms = []
+          for transform in msg.transforms:
+              if transform.header.frame_id not in frame_ids:
+                  new_transforms.append(transform)
+          msg.transforms = new_transforms
+      outbag.write(topic, msg, t)
+  print 'Closing output bagfile and exit...'
+  outbag.close();
 
 if __name__ == "__main__":
-  rospy.init_node('image_sequence_publisher')
+
+  parser = argparse.ArgumentParser(
+      description='removes all transforms from the /tf topic that contain on of the given frame_ids in the header.')
+  parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
+  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile')
+  parser.add_argument('-f', metavar='FRAME_ID', required=True, help='frame_id(s) of the transforms to remove from the /tf topic', nargs='+')
+  args = parser.parse_args()
+
   try:
-    image_dir = rospy.get_param("~image_dir")
-    file_pattern = rospy.get_param("~file_pattern")
-    camera_info_file = rospy.get_param("~camera_info_file", "")
-    frequency = rospy.get_param("~frequency", 10)
-    playback_images(image_dir, file_pattern, camera_info_file, frequency)
-  except KeyError as e:
-    print 'Required parameter missing:', e
+    remove_tf(args.i,args.o,args.f)
   except Exception, e:
     import traceback
     traceback.print_exc()

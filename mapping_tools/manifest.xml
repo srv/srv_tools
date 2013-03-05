@@ -1,0 +1,16 @@
+<package>
+  <description brief="mapping_tools">
+
+     mapping_tools
+
+  </description>
+  <author>Stephan Wirth</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/mapping_tools</url>
+  <depend package="rospy"/>
+  <depend package="laser_assembler"/>
+
+</package>
+
+
