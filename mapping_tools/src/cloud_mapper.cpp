@@ -3,6 +3,7 @@
 #include <pcl_ros/transforms.h>
 #include <tf/transform_listener.h>
 #include <pcl/point_types.h>
+#include <mapping_tools/GetCloud.h>
 
 /**
  * Stores incoming point clouds in a map transforming
@@ -12,16 +13,20 @@ class CloudMapper
 {
 public:
 
-  typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloud;
+  typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
   CloudMapper() :
     nh_(), nh_priv_("~")
   {
     nh_priv_.param("fixed_frame", fixed_frame_, std::string("/map"));
-    cloud_sub_ = nh_.subscribe<PointCloud>("cloud", 10, &CloudMapper::callback, this);
+    nh_priv_.param("frequency", freq_, 10.0);
+
     bool latched = true;
+    cloud_sub_ = nh_.subscribe<PointCloud>("cloud", 10, &CloudMapper::callback, this);
     cloud_pub_ = nh_priv_.advertise<PointCloud>("accumulated_cloud", 1, latched);
-    pub_timer_ = nh_.createTimer(ros::Duration(10.0), &CloudMapper::publishCallback, this);
+	service_ = nh_priv_.advertiseService("get_cloud", &CloudMapper::get_cloud, this);
+    
+	pub_timer_ = nh_.createTimer(ros::Duration(freq_), &CloudMapper::publishCallback, this);
   }
 
   void callback(const PointCloud::ConstPtr& cloud)
@@ -48,6 +53,12 @@ public:
     }
   }
 
+  bool get_cloud(mapping_tools::GetCloud::Request& req, mapping_tools::GetCloud::Response& res)
+  {
+	  pcl::toROSMsg(accumulated_cloud_, res.cloud);
+	  return true;
+  }
+
 private:
   ros::NodeHandle nh_;
   ros::NodeHandle nh_priv_;
@@ -55,9 +66,12 @@ private:
   ros::Subscriber cloud_sub_;
   ros::Publisher cloud_pub_;
 
+  ros::ServiceServer service_;
+
   ros::Timer pub_timer_;
 
   std::string fixed_frame_;
+  double freq_;
   tf::TransformListener tf_listener_;
   PointCloud accumulated_cloud_;
 };
