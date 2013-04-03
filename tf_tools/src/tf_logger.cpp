@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 
   std::vector<FramePair> frame_pairs;
 
-  std::cout << "#timestamp";
+  std::cout << "#timestamp ";
   for (int i = 2; i < argc; i+=2)
   {
     std::string ref_frame(argv[i]);
