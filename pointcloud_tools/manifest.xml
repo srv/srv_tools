@@ -1,0 +1,20 @@
+<package>
+  <description brief="pointcloud_tools">
+
+     pointcloud_tools
+
+  </description>
+  <author>Pep Lluis Negre</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pointcloud_tools</url>
+
+  <depend package="roscpp"/>
+  <depend package="pcl_ros"/>
+  <depend package="std_msgs"/>
+  <depend package="sensor_msgs"/>
+  <depend package="laser_assembler"/>  
+
+</package>
+
+

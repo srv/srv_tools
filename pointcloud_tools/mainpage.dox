@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b mapping_tools 
+\b pointcloud_tools 
 
 <!-- 
 Provide an overview of your package.
