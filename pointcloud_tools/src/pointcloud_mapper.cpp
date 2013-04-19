@@ -8,20 +8,20 @@
  * Stores incoming point clouds in a map transforming
  * each cloud to a global fixed frame using tf.
  */
-class CloudMapper
+class PointCloudMapper
 {
 public:
 
   typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloud;
 
-  CloudMapper() :
+  PointCloudMapper() :
     nh_(), nh_priv_("~")
   {
     nh_priv_.param("fixed_frame", fixed_frame_, std::string("/map"));
-    cloud_sub_ = nh_.subscribe<PointCloud>("cloud", 10, &CloudMapper::callback, this);
+    cloud_sub_ = nh_.subscribe<PointCloud>("cloud", 10, &PointCloudMapper::callback, this);
     bool latched = true;
     cloud_pub_ = nh_priv_.advertise<PointCloud>("accumulated_cloud", 1, latched);
-    pub_timer_ = nh_.createTimer(ros::Duration(10.0), &CloudMapper::publishCallback, this);
+    pub_timer_ = nh_.createTimer(ros::Duration(10.0), &PointCloudMapper::publishCallback, this);
   }
 
   void callback(const PointCloud::ConstPtr& cloud)
@@ -65,7 +65,7 @@ private:
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "cloud_mapper");
-  CloudMapper mapper;
+  PointCloudMapper mapper;
   ros::spin();
   return 0;
 }
