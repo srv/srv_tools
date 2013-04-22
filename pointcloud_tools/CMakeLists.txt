@@ -37,4 +37,3 @@ rosbuild_add_executable(pcd_publisher src/pcd_publisher.cpp)
 rosbuild_add_executable(pointcloud_viewer src/pointcloud_viewer.cpp)
 
 target_link_libraries(pointcloud_viewer ${PCL_LIBRARIES} libvtkCommon.so libvtkFiltering.so libvtkRendering.so)
-

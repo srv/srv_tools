@@ -12,6 +12,8 @@
 
 typedef pcl::PointXYZ             Point;
 typedef pcl::PointCloud<Point>    PointCloud;
+typedef pcl::PointXYZRGB          PointRGB;
+typedef pcl::PointCloud<PointRGB> PointCloudRGB;
 
 class PcdPublisher {
 
@@ -22,18 +24,57 @@ class PcdPublisher {
   // Publisher to send out the point cloud
   ros::Publisher point_cloud_pub_;
 
+  // Timer for point cloud publication
+  ros::WallTimer timer_;
+
+  // PCD data
+  std::string pcd_files_dir_;
+  std::vector<std::string> pcd_files_;
+  unsigned int pcd_counter_;
+
 public:
 
   /**
    * Class constructor
    */
-  PcdPublisher(std::string pcd_files_dir) : nh_private_("~")
+  PcdPublisher(std::string pcd_files_dir)
   {
-    // Declare the point cloud topic
-    point_cloud_pub_ = nh_private_.advertise<PointCloud>("points2", 1);
+    int len;
+    double timer_period;
 
-    readAndPublish(pcd_files_dir);
+    // Node handlers
+    ros::NodeHandle nh;
+    ros::NodeHandle nh_private_("~");
+
+    // Read parameters
+    nh_private_.param("timer_period", timer_period, 0.1);
+
+    // Init variables
+    pcd_files_dir_ = pcd_files_dir;
+    pcd_files_ = std::vector<std::string>();
+    pcd_counter_ = 0;
+
+    // Check if directory name finishes with "/"
+    len = pcd_files_dir_.length();
+    if (strcmp("/", &(pcd_files_dir_[len - 1])) != 0)
+    {
+      pcd_files_dir_ = pcd_files_dir_ + "/";
+    }
+
+    // List all pcd files into the directory
+    listPcdFiles(pcd_files_dir_, pcd_files_);
+
+    // Declare the point cloud topic
+    point_cloud_pub_ = nh_private_.advertise<PointCloudRGB>("points2", 1);
+
+    // Init the timer
+    timer_ = nh.createWallTimer(ros::WallDuration(timer_period), 
+                            boost::bind(&PcdPublisher::readAndPublish,
+                            this));
+    ROS_INFO_STREAM("[PcdPublisher:] Timer started!");
   }
+
+protected:
 
   /**
    * List PCD files into directory
@@ -73,37 +114,36 @@ public:
   /**
    * Read and publish every point cloud
    */
-  void readAndPublish(std::string pcd_files_dir)
+  void readAndPublish()
   {
-    int len;
-    std::vector<std::string> files = std::vector<std::string>();
+    // Check if all pcd files have been published
+    if (pcd_counter_ < pcd_files_.size())
+    {   
+      PointCloud::Ptr cloud(new PointCloud);
 
-    // Check if directory name finishes with "/"
-    len = pcd_files_dir.length();
-    if (strcmp("/", &(pcd_files_dir[len - 1])) != 0)
-    {
-      pcd_files_dir = pcd_files_dir + "/";
-    }
-
-    // List 
-    listPcdFiles(pcd_files_dir,files);
-
-    // Read and publish every PCD
-    for (unsigned int i = 0;i < files.size();i++)
-    {
-      PointCloud::Ptr cloud (new PointCloud);
-
-      if (pcl::io::loadPCDFile<Point>(pcd_files_dir + files[i], *cloud) == -1)
+      if (pcl::io::loadPCDFile<Point>(pcd_files_dir_ + pcd_files_[pcd_counter_], *cloud) == -1)
       {
-        ROS_ERROR_STREAM("Couldn't read file " << pcd_files_dir + files[i]);
+        ROS_ERROR_STREAM("Couldn't read file " << pcd_files_dir_ + pcd_files_[pcd_counter_]);
         return;
       }
 
+      // Convert the point cloud to RGB
+      PointCloudRGB::Ptr cloud_rgb(new PointCloudRGB);
+      pcl::copyPointCloud(*cloud, *cloud_rgb);
+
       // Publish the point cloud
-      point_cloud_pub_.publish(cloud);
+      point_cloud_pub_.publish(cloud_rgb);
       
-      ROS_INFO_STREAM("Loaded and published " << cloud->width * cloud->height 
-        << " data points from " << pcd_files_dir + files[i]);
+      ROS_INFO_STREAM("[PcdPublisher:] Published " << cloud->width * cloud->height 
+        << " data points from " << pcd_files_dir_ + pcd_files_[pcd_counter_]);
+
+      pcd_counter_++;
+    }
+    else
+    {
+      // All files processed
+      timer_.stop();
+      ROS_INFO_STREAM("[PcdPublisher:] All PCD files processed. Timer stoped!");
     }
   }
 };
