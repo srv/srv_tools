@@ -56,6 +56,7 @@ typedef pcl::PointCloud<PointRGB> PointCloudRGB;
 sensor_msgs::PointCloud2ConstPtr cloud_, cloud_old_;
 boost::mutex m;
 bool viewer_initialized_;
+int counter_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
@@ -163,6 +164,8 @@ void updateVisualization()
         cloud_xyz.makeShared(), 255, 0, 255);
       viewer.addPointCloud(cloud_xyz.makeShared(), color_handler, "cloud");
     }
+
+    counter_++;
   }
 }
 
@@ -177,6 +180,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "openni_viewer", ros::init_options::NoSigintHandler);
   ros::NodeHandle nh("~");
   viewer_initialized_ = false;
+  counter_ = 0;
 
   // Create a ROS subscriber
   ros::Subscriber sub = nh.subscribe("input", 30, cloud_cb);
