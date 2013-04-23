@@ -177,8 +177,8 @@ void sigIntHandler(int sig)
 /* ---[ */
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "openni_viewer", ros::init_options::NoSigintHandler);
-  ros::NodeHandle nh("~");
+  ros::init(argc, argv, "pointcloud_viewer", ros::init_options::NoSigintHandler);
+  ros::NodeHandle nh;
   viewer_initialized_ = false;
   counter_ = 0;
 
