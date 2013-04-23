@@ -47,6 +47,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/feature.h>
 
+using pcl::visualization::PointCloudColorHandlerGenericField;
+
 typedef pcl::PointXYZ             Point;
 typedef pcl::PointCloud<Point>    PointCloud;
 typedef pcl::PointXYZRGB          PointRGB;
@@ -90,7 +92,7 @@ void updateVisualization()
     d.sleep();
 
     // If no cloud received yet, continue
-    if(!cloud_)
+    if(!cloud_ || cloud_->width<=0)
       continue;
 
     viewer.spinOnce(1);
@@ -160,8 +162,14 @@ void updateVisualization()
       }
       
       // Show the xyz point cloud
-      pcl::visualization::PointCloudColorHandlerCustom<Point> color_handler(
+      PointCloudColorHandlerGenericField<Point> color_handler (cloud_xyz.makeShared(), "z");
+      if (!color_handler.isCapable ())
+      {
+        ROS_WARN_STREAM("[PointCloudViewer:] Cannot create curvature color handler!");
+        pcl::visualization::PointCloudColorHandlerCustom<Point> color_handler(
         cloud_xyz.makeShared(), 255, 0, 255);
+      }
+
       viewer.addPointCloud(cloud_xyz.makeShared(), color_handler, "cloud");
     }
 
