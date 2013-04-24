@@ -97,42 +97,66 @@ public:
     PointCloud::Ptr cloud_filtered_ptr(new PointCloud);
     pcl::PassThrough<Point> pass_;
 
-    // X-filtering
-    pass_.setFilterFieldName("x");
-    pass_.setFilterLimits(x_filter_min_, x_filter_max_);
-    pass_.setInputCloud(cloud);
-    pass_.filter(*cloud_filtered_ptr);
+    if (apply_xyz_limits_)
+    {
+      // X-filtering
+      pass_.setFilterFieldName("x");
+      pass_.setFilterLimits(x_filter_min_, x_filter_max_);
+      pass_.setInputCloud(cloud);
+      pass_.filter(*cloud_filtered_ptr);
 
-    // Y-filtering
-    pass_.setFilterFieldName("y");
-    pass_.setFilterLimits(y_filter_min_, y_filter_max_);
-    pass_.setInputCloud(cloud_filtered_ptr);
-    pass_.filter(*cloud_filtered_ptr);
+      // Y-filtering
+      pass_.setFilterFieldName("y");
+      pass_.setFilterLimits(y_filter_min_, y_filter_max_);
+      pass_.setInputCloud(cloud_filtered_ptr);
+      pass_.filter(*cloud_filtered_ptr);
 
-    // Z-filtering
-    pass_.setFilterFieldName("z");
-    pass_.setFilterLimits(z_filter_min_, z_filter_max_);
-    pass_.setInputCloud(cloud);
-    pass_.filter(*cloud_filtered_ptr);
+      // Z-filtering
+      pass_.setFilterFieldName("z");
+      pass_.setFilterLimits(z_filter_min_, z_filter_max_);
+      pass_.setInputCloud(cloud_filtered_ptr);
+      pass_.filter(*cloud_filtered_ptr);
+    }
+    else
+    {
+      cloud_filtered_ptr = cloud;
+    }
 
     // Downsampling using voxel grid
-    pcl::VoxelGrid<Point> grid_;
+    
     PointCloud::Ptr cloud_downsampled_ptr(new PointCloud);
-    double plane_detection_voxel_size_ = voxel_size_;
-    grid_.setLeafSize(plane_detection_voxel_size_,
-                      plane_detection_voxel_size_,
-                      plane_detection_voxel_size_);
-    grid_.setDownsampleAllData(true);
-    grid_.setInputCloud(cloud_filtered_ptr);
-    grid_.filter(*cloud_downsampled_ptr);
 
+    if (apply_boxel_grid_)
+    {
+      pcl::VoxelGrid<Point> grid_;
+      double plane_detection_voxel_size_ = voxel_size_;
+      grid_.setLeafSize(plane_detection_voxel_size_,
+                        plane_detection_voxel_size_,
+                        plane_detection_voxel_size_);
+      grid_.setDownsampleAllData(true);
+      grid_.setInputCloud(cloud_filtered_ptr);
+      grid_.filter(*cloud_downsampled_ptr);
+    }
+    else
+    {
+      cloud_downsampled_ptr = cloud_filtered_ptr;
+    }
+    
     // Statistical outlier removal
     PointCloud::Ptr cloud_outlier_ptr(new PointCloud);
-    pcl::StatisticalOutlierRemoval<Point> sor;
-    sor.setInputCloud(cloud_downsampled_ptr);
-    sor.setMeanK(mean_k_);
-    sor.setStddevMulThresh(std_dev_thresh_);
-    sor.filter(*cloud_outlier_ptr);
+
+    if (apply_outlier_removal_)
+    {
+      pcl::StatisticalOutlierRemoval<Point> sor;
+      sor.setInputCloud(cloud_downsampled_ptr);
+      sor.setMeanK(mean_k_);
+      sor.setStddevMulThresh(std_dev_thresh_);
+      sor.filter(*cloud_outlier_ptr);
+    }
+    else
+    {
+      cloud_outlier_ptr = cloud_downsampled_ptr;
+    }    
 
     return cloud_outlier_ptr;
   }
