@@ -65,7 +65,7 @@ public:
     listPcdFiles(pcd_files_dir_, pcd_files_);
 
     // Declare the point cloud topic
-    point_cloud_pub_ = nh_private_.advertise<PointCloudRGB>("points2", 1);
+    point_cloud_pub_ = nh_private_.advertise<PointCloudRGB>("output", 1);
 
     // Init the timer
     timer_ = nh.createWallTimer(ros::WallDuration(timer_period), 
