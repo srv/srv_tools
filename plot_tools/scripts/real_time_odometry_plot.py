@@ -15,6 +15,7 @@ from mpl_toolkits.mplot3d import Axes3D
 len_gt = 0
 len_odom_1 = 0
 len_odom_2 = 0
+first_iter = True
 
 class Error(Exception):
   """ Base class for exceptions in this module. """
@@ -30,13 +31,14 @@ def load_data(gt_file, odom_file_1, odom_file_2):
           usecols=(5,6,7))
   odom_2  = pylab.loadtxt(odom_file_2, delimiter=',', skiprows=1, 
           usecols=(5,6,7))
+  odom_2 = odom_2[15:-1,:]
   return gt, odom_1, odom_2
 
 def real_time_plot(gt_file, odom_file_1, odom_file_2):
   """
   Function to plot the data saved into the files in real time
   """
-  global len_gt, len_odom_1, len_odom_2
+  global len_gt, len_odom_1, len_odom_2, first_iter
 
   # Load data
   gt, odom_1, odom_2 = load_data(gt_file, odom_file_1, odom_file_2)
@@ -45,9 +47,14 @@ def real_time_plot(gt_file, odom_file_1, odom_file_2):
   if (len_gt != len(gt[:,0]) or len_odom_1 != len(odom_1[:,0]) or len_odom_2 != len(odom_2[:,0])):
 
     # Plot
-    ax.plot(gt[:,0], gt[:,1], gt[:,2], 'r')
-    ax.plot(odom_1[:,0], odom_1[:,1], odom_1[:,2], 'b')
-    ax.plot(odom_2[:,0], odom_2[:,1], odom_2[:,2], 'g')
+    ax.plot(gt[:,0], gt[:,1], gt[:,2], 'g', label='Ground Truth')
+    ax.plot(odom_1[:,0], odom_1[:,1], odom_1[:,2], 'r', label='Viso2')
+    ax.plot(odom_2[:,0], odom_2[:,1], odom_2[:,2], 'b', label='Meskf')
+
+    if (first_iter == True):
+      ax.legend()
+      first_iter = False
+
     pyplot.draw()
 
     # Update globals

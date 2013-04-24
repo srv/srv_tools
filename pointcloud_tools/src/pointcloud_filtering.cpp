@@ -48,14 +48,14 @@ public:
 
     // Subscription to the point cloud result from stereo_image_proc
     point_cloud_sub_ = nh_.subscribe<PointCloud>(
-      "points2",
+      "input",
       1,
       &PointCloudFiltering::
       pointCloudCb,
       this);
 
     // Declare the point cloud filtered topic
-    point_cloud_filtered_ = nh_private_.advertise<PointCloud>("points2_filtered", 1);
+    point_cloud_filtered_ = nh_private_.advertise<PointCloud>("output", 1);
   }
 
   /**

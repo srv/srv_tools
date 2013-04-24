@@ -18,9 +18,9 @@ public:
     nh_(), nh_priv_("~")
   {
     nh_priv_.param("fixed_frame", fixed_frame_, std::string("/map"));
-    cloud_sub_ = nh_.subscribe<PointCloud>("cloud", 10, &PointCloudMapper::callback, this);
+    cloud_sub_ = nh_.subscribe<PointCloud>("input", 10, &PointCloudMapper::callback, this);
     bool latched = true;
-    cloud_pub_ = nh_priv_.advertise<PointCloud>("accumulated_cloud", 1, latched);
+    cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
     pub_timer_ = nh_.createTimer(ros::Duration(10.0), &PointCloudMapper::publishCallback, this);
   }
 
