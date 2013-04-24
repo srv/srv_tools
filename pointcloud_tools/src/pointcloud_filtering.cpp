@@ -34,7 +34,7 @@ class PointCloudFiltering {
   double std_dev_thresh_;
 
   bool apply_xyz_limits_;
-  bool apply_boxel_grid_;
+  bool apply_voxel_grid_;
   bool apply_outlier_removal_;
 
 public:
@@ -46,7 +46,7 @@ public:
   {
     // Read the parameters from the parameter server (set defaults)
     nh_private_.param("apply_xyz_limits", apply_xyz_limits_, true);
-    nh_private_.param("apply_boxel_grid", apply_boxel_grid_, true);
+    nh_private_.param("apply_voxel_grid", apply_voxel_grid_, true);
     nh_private_.param("apply_outlier_removal", apply_outlier_removal_, false);
     nh_private_.param("x_filter_min", x_filter_min_, -3.0);
     nh_private_.param("x_filter_max", x_filter_max_, 3.0);
@@ -126,7 +126,7 @@ public:
     
     PointCloud::Ptr cloud_downsampled_ptr(new PointCloud);
 
-    if (apply_boxel_grid_)
+    if (apply_voxel_grid_)
     {
       pcl::VoxelGrid<Point> grid_;
       double plane_detection_voxel_size_ = voxel_size_;
