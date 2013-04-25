@@ -90,32 +90,29 @@ public:
    */
   PointCloud::Ptr filter(PointCloud::Ptr cloud)
   {
-    // Copy the point cloud
-    PointCloud::Ptr cloud_ptr(new PointCloud);
-
     // NAN and limit filtering
     PointCloud::Ptr cloud_filtered_ptr(new PointCloud);
-    pcl::PassThrough<Point> pass_;
+    pcl::PassThrough<Point> pass;
 
     if (apply_xyz_limits_)
     {
       // X-filtering
-      pass_.setFilterFieldName("x");
-      pass_.setFilterLimits(x_filter_min_, x_filter_max_);
-      pass_.setInputCloud(cloud);
-      pass_.filter(*cloud_filtered_ptr);
+      pass.setFilterFieldName("x");
+      pass.setFilterLimits(x_filter_min_, x_filter_max_);
+      pass.setInputCloud(cloud);
+      pass.filter(*cloud_filtered_ptr);
 
       // Y-filtering
-      pass_.setFilterFieldName("y");
-      pass_.setFilterLimits(y_filter_min_, y_filter_max_);
-      pass_.setInputCloud(cloud_filtered_ptr);
-      pass_.filter(*cloud_filtered_ptr);
+      pass.setFilterFieldName("y");
+      pass.setFilterLimits(y_filter_min_, y_filter_max_);
+      pass.setInputCloud(cloud_filtered_ptr);
+      pass.filter(*cloud_filtered_ptr);
 
       // Z-filtering
-      pass_.setFilterFieldName("z");
-      pass_.setFilterLimits(z_filter_min_, z_filter_max_);
-      pass_.setInputCloud(cloud_filtered_ptr);
-      pass_.filter(*cloud_filtered_ptr);
+      pass.setFilterFieldName("z");
+      pass.setFilterLimits(z_filter_min_, z_filter_max_);
+      pass.setInputCloud(cloud_filtered_ptr);
+      pass.filter(*cloud_filtered_ptr);
     }
     else
     {
@@ -128,14 +125,11 @@ public:
 
     if (apply_voxel_grid_)
     {
-      pcl::VoxelGrid<Point> grid_;
-      double plane_detection_voxel_size_ = voxel_size_;
-      grid_.setLeafSize(plane_detection_voxel_size_,
-                        plane_detection_voxel_size_,
-                        plane_detection_voxel_size_);
-      grid_.setDownsampleAllData(true);
-      grid_.setInputCloud(cloud_filtered_ptr);
-      grid_.filter(*cloud_downsampled_ptr);
+      pcl::VoxelGrid<Point> grid;
+      grid.setLeafSize(voxel_size_, voxel_size_, voxel_size_);
+      grid.setDownsampleAllData(true);
+      grid.setInputCloud(cloud_filtered_ptr);
+      grid.filter(*cloud_downsampled_ptr);
     }
     else
     {
