@@ -12,69 +12,48 @@ from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 
 # Global variables
-len_gt = 0
-len_odom_1 = 0
-len_odom_2 = 0
+len_data = 0
 first_iter = True
+colors = ['g','r','b']
 
 class Error(Exception):
   """ Base class for exceptions in this module. """
   pass
 
-def load_data(gt_file, odom_file_1, odom_file_2):
-  """
-  Function to load the data from files
-  """
-  gt      = pylab.loadtxt(gt_file, delimiter=',', skiprows=1, 
-          usecols=(5,6,7))
-  odom_1  = pylab.loadtxt(odom_file_1, delimiter=',', skiprows=1, 
-          usecols=(5,6,7))
-  odom_2  = pylab.loadtxt(odom_file_2, delimiter=',', skiprows=1, 
-          usecols=(5,6,7))
-  odom_2 = odom_2[15:-1,:]
-  return gt, odom_1, odom_2
-
-def real_time_plot(gt_file, odom_file_1, odom_file_2):
+def real_time_plot(files):
   """
   Function to plot the data saved into the files in real time
   """
-  global len_gt, len_odom_1, len_odom_2, first_iter
+  global len_data, first_iter, colors
 
-  # Load data
-  gt, odom_1, odom_2 = load_data(gt_file, odom_file_1, odom_file_2)
+  for i,F in enumerate(files):
 
-  # Check if new data
-  if (len_gt != len(gt[:,0]) or len_odom_1 != len(odom_1[:,0]) or len_odom_2 != len(odom_2[:,0])):
+    # Load data
+    data = pylab.loadtxt(F, delimiter=',', skiprows=1, usecols=(5,6,7))
 
-    # Plot
-    ax.plot(gt[:,0], gt[:,1], gt[:,2], 'g', label='Ground Truth')
-    ax.plot(odom_1[:,0], odom_1[:,1], odom_1[:,2], 'r', label='Viso2')
-    ax.plot(odom_2[:,0], odom_2[:,1], odom_2[:,2], 'b', label='Meskf')
+    # Check if new data
+    if (len_data!= len(data[:,0])):
 
-    if (first_iter == True):
-      ax.legend()
-      first_iter = False
+      # Plot
+      ax.plot(data[:,0], data[:,1], data[:,2], colors[i], label=F)
 
-    pyplot.draw()
+      if (first_iter == True):
+        ax.legend()
+        first_iter = False
 
-    # Update globals
-    len_gt = len(gt[:,0])
-    len_odom_1 = len(odom_1[:,0])
-    len_odom_2 = len(odom_2[:,0])
+      pyplot.draw()
+
+      # Update globals
+      len_data = len(data[:,0])
 
 if __name__ == "__main__":
   import argparse
   parser = argparse.ArgumentParser(
           description='Plot 3D graphics of odometry data files in real time.',
           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-  parser.add_argument('ground_truth_file',
-          help='file with ground truth odometry')
-  parser.add_argument('odometry_file_1',
-          help='file with odometry data 1',
-          default='')
-  parser.add_argument('odometry_file_2',
-          help='file with odometry data 2',
-          default='')
+  parser.add_argument('ground_truth_files', 
+          help='file with ground truth odometry', 
+          nargs='+')
   parser.add_argument('-ts','--time-step',
           help='update frequency (in milliseconds)',
           default='200')
@@ -90,7 +69,7 @@ if __name__ == "__main__":
   ax.set_zlabel("Z")
 
   timer = fig.canvas.new_timer(interval=args.time_step)
-  timer.add_callback(real_time_plot, args.ground_truth_file, args.odometry_file_1, args.odometry_file_2)
+  timer.add_callback(real_time_plot, args.ground_truth_files)
   timer.start()
   
   pylab.show() 
