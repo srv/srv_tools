@@ -8,6 +8,7 @@ import numpy as np
 import string
 import random
 import time
+import ntpath
 from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -35,16 +36,18 @@ def real_time_plot(files):
     if (len_data!= len(data[:,0])):
 
       # Plot
-      ax.plot(data[:,0], data[:,1], data[:,2], colors[i], label=F)
-
-      if (first_iter == True):
-        ax.legend()
-        first_iter = False
+      label = ntpath.basename(F)
+      label = label[0:-4]
+      ax.plot(data[:,0], data[:,1], data[:,2], colors[i], label=label)
 
       pyplot.draw()
 
       # Update globals
       len_data = len(data[:,0])
+
+  if (first_iter == True):
+    ax.legend()
+    first_iter = False
 
 if __name__ == "__main__":
   import argparse
