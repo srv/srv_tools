@@ -10,6 +10,8 @@ catkin_package(
   CATKIN_DEPENDS rosbag
 )
 
+catkin_python_setup()
+
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 add_executable(extract_images src/extract_images.cpp)

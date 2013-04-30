@@ -17,6 +17,7 @@
   <run_depend>tf_tools</run_depend>
   <run_depend>pointcloud_tools</run_depend>
   <run_depend>bag_tools</run_depend>
+  <run_depend>plot_tools</run_depend>
 
   <export>
     <metapackage/>
