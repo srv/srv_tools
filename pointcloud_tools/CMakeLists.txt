@@ -17,4 +17,3 @@ target_link_libraries(pointcloud_viewer ${PCL_LIBRARIES} ${catkin_LIBRARIES} lib
 target_link_libraries(pcd_publisher ${PCL_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(pointcloud_mapper ${PCL_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(pointcloud_filtering ${PCL_LIBRARIES} ${catkin_LIBRARIES})
-
