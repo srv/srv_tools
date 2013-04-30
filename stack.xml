@@ -1,9 +1,0 @@
-<stack>
-  <description brief="srv_tools">Stack with interesting ROS tools</description>
-  <author>Maintained by Stephan Wirth and Miquel Massot</author>
-  <license>BSD</license>  
-  <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/srv_tools</url>
-  <depend stack="ros" />
-
-</stack>

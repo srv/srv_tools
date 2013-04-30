@@ -1,0 +1,24 @@
+<package>
+  <name>srv_tools</name>
+  <version>0.0.1</version>
+  <description>Stack with interesting ROS tools</description>
+   <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/srv_tools</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author email="stwirth@uib.es">Stephan Wirth</author>
+  <author email="miquel.massot@uib.es">Miquel Massot</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>launch_tools</run_depend>
+  <run_depend>tf_tools</run_depend>
+  <run_depend>pointcloud_tools</run_depend>
+  <run_depend>bag_tools</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

@@ -1,0 +1,22 @@
+<package>
+  <name>tf_tools</name>
+  <version>0.0.1</version>
+  <description>ROS tools and scripts relates to tf</description>
+  <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/tf_tools</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author email="stwirth@uib.es">Stephan Wirth</author>
+  <author email="miquel.massot@uib.es">Miquel Massot</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>tf</build_depend>
+  <run_depend>tf</run_depend>
+
+  <export>
+
+  </export>
+</package>

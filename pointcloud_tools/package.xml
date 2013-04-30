@@ -1,0 +1,27 @@
+<package>
+  <name>pointcloud_tools</name>
+  <version>0.0.1</version>
+  <description>pointcloud_tools</description>
+  <maintainer email="plnegre@uib.es">Pep Lluis Negre</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/pointcloud_tools</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author email="plnegre@uib.es">Pep Lluis Negre</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>pcl_ros</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+
+  <export>
+
+  </export>
+</package>
