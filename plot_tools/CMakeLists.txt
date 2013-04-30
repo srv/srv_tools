@@ -28,12 +28,3 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
-
-include_directories(/usr/include/vtk-5.8)
-
-rosbuild_add_executable(pointcloud_mapper src/pointcloud_mapper.cpp)
-rosbuild_add_executable(pointcloud_filtering src/pointcloud_filtering.cpp)
-rosbuild_add_executable(pcd_publisher src/pcd_publisher.cpp)
-rosbuild_add_executable(pointcloud_viewer src/pointcloud_viewer.cpp)
-
-target_link_libraries(pointcloud_viewer ${PCL_LIBRARIES} libvtkCommon.so libvtkFiltering.so libvtkRendering.so)
