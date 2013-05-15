@@ -117,52 +117,56 @@ def draw_folder(g,folder):
             if root != working_directory:
                 working_directory = root
             f = open(filepath,'rt')
-            tree = ElementTree.parse(f)
-            node_name = os.path.splitext(filename)[0] #remove extension
-            it = tree.iter()
-            #Iterate
-            node_args = []
-            node_includes = []
-            node_nodes = []
-            for node in it:
-                if node.tag == "arg":
-                    #save arguments and default values
-                    arg_name = node.attrib.get('name')
-                    default_value = node.attrib.get('default')
-                    value = node.attrib.get('value')
-                    if_clause = node.attrib.get('if')
-                    if default_value:
-                        #add to the node_args list with default
-                        node_args.append((arg_name,default_value))
-                    elif not value:
-                        #add to the node_args list with REQUIRED
-                        node_args.append((arg_name,"REQUIRED"))
-                    elif if_clause:
-                        nodelet_args = value.split()[1]
-                if node.tag == "include":
-                    #remove extension and path to file
-                    incl_ext = os.path.basename(node.attrib.get('file'))
-                    incl = os.path.splitext(incl_ext)[0]
-                    node_includes.append(incl)
-                if node.tag == "node": 
-                    node_type = node.attrib.get('type')
-                    if node_type == "nodelet":
-                        node_type = node.attrib.get('args')
-                        if len(node_type.split())>1:
-                            node_type = node_type.split()[1]
-                        if node_type[len(node_type)-1] == ")":
-                            node_type = nodelet_args
-                        node_nodes.append(node_type)
-                    else:
-                        node_nodes.append(node_type)
+            try:
+                tree = ElementTree.parse(f)
+                node_name = os.path.splitext(filename)[0] #remove extension
+                it = tree.iter()
+                #Iterate
+                node_args = []
+                node_includes = []
+                node_nodes = []
+                for node in it:
+                    if node.tag == "arg":
+                        #save arguments and default values
+                        arg_name = node.attrib.get('name')
+                        default_value = node.attrib.get('default')
+                        value = node.attrib.get('value')
+                        if_clause = node.attrib.get('if')
+                        if default_value:
+                            #add to the node_args list with default
+                            node_args.append((arg_name,default_value))
+                        elif not value:
+                            #add to the node_args list with REQUIRED
+                            node_args.append((arg_name,"REQUIRED"))
+                        elif if_clause:
+                            nodelet_args = value.split()[1]
+                    if node.tag == "include":
+                        #remove extension and path to file
+                        incl_ext = os.path.basename(node.attrib.get('file'))
+                        incl = os.path.splitext(incl_ext)[0]
+                        node_includes.append(incl)
+                    if node.tag == "node": 
+                        node_type = node.attrib.get('type')
+                        if node_type == "nodelet":
+                            node_type = node.attrib.get('args')
+                            if len(node_type.split())>1:
+                                node_type = node_type.split()[1]
+                            if node_type[len(node_type)-1] == ")":
+                                node_type = nodelet_args
+                            node_nodes.append(node_type)
+                        else:
+                            node_nodes.append(node_type)
 
-            
-            write_information(g,node_name,node_args)
-            write_information(g,node_nodes)
-            for dest in node_nodes:
-                write_connection(g,node_name,dest,True)
-            for dest in node_includes:
-                write_connection(g,node_name,dest)
+                
+                write_information(g,node_name,node_args)
+                write_information(g,node_nodes)
+                for dest in node_nodes:
+                    write_connection(g,node_name,dest,True)
+                for dest in node_includes:
+                    write_connection(g,node_name,dest)
+            except ElementTree.ParseError:
+                print "Error parsing {}".format(filepath)
+
         return g
     else:
         print "[W]\tNo launchfile was found in {0}".format(os.path.basename(folder))
