@@ -1,21 +1,18 @@
 #!/usr/bin/env python
 
-import roslib; roslib.load_manifest('plot_tools')
 import sys
 import pylab
 import math
-import numpy as np
-import string
-import random
-import time
+import weakref
+import os
 import ntpath
 from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 
 # Global variables
-len_data = 0
 first_iter = True
 colors = ['g','r','b']
+ax_plot = []
 
 class Error(Exception):
   """ Base class for exceptions in this module. """
@@ -25,25 +22,33 @@ def real_time_plot(files):
   """
   Function to plot the data saved into the files in real time
   """
-  global len_data, first_iter, colors
+  global ax_plot, first_iter, colors
 
+  # Remove all previous data
+  for i in range(len(ax_plot)):
+    l = ax_plot[i].pop(0)
+    wl = weakref.ref(l)
+    l.remove()
+    del l  
+  ax_plot = []
+
+  # Re-plot
   for i,F in enumerate(files):
 
-    # Load data
-    data = pylab.loadtxt(F, delimiter=',', skiprows=1, usecols=(5,6,7))
+    # File sanity check
+    if (F != "" and os.path.exists(F)):
+      try:
+        # Load data
+        data = pylab.loadtxt(F, delimiter=',', skiprows=1, usecols=(5,6,7))
+        label = ntpath.basename(F)
+        label = label[0:-4]
+        ax_temp = ax.plot(data[:,0], data[:,1], data[:,2], colors[i], label=label)
+        ax_plot.append(ax_temp)
+      except:
+        print "Could not open or no data in ", F
 
-    # Check if new data
-    if (len_data!= len(data[:,0])):
-
-      # Plot
-      label = ntpath.basename(F)
-      label = label[0:-4]
-      ax.plot(data[:,0], data[:,1], data[:,2], colors[i], label=label)
-
-      pyplot.draw()
-
-      # Update globals
-      len_data = len(data[:,0])
+  # Update graphics
+  pyplot.draw()
 
   if (first_iter == True):
     ax.legend()
@@ -59,7 +64,7 @@ if __name__ == "__main__":
           nargs='+')
   parser.add_argument('-ts','--time-step',
           help='update frequency (in milliseconds)',
-          default='200')
+          default='3000')
   args = parser.parse_args()
 
   # Init figure
