@@ -51,7 +51,8 @@ public:
       ROS_ERROR("Could not transform point cloud to %s", fixed_frame_.c_str());
     }
 
-    if(filter_map_){
+    if(filter_map_)
+    {
       PointCloud::Ptr cloud_downsampled = filter(accumulated_cloud_.makeShared());
       accumulated_cloud_ = *cloud_downsampled;
     }
