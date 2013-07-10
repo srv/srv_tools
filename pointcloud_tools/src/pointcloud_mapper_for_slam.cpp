@@ -24,14 +24,14 @@ public:
     nh_(), nh_priv_("~")
   {
     // Read the parameters from the parameter server (set defaults)
-    nh_priv_.param("graph_vertices_file", graph_vertices_file_, std::string("/home/plnegre/Workspace/ROS_fuerte/uib-ros/stereo_slam/data/graph_vertices.txt"));
-    nh_priv_.param("graph_blocking_file", graph_blocking_file_, std::string("/home/plnegre/Workspace/ROS_fuerte/uib-ros/stereo_slam/data/.block.txt"));
-    nh_priv_.param("x_filter_min", x_filter_min_, -30.0);
-    nh_priv_.param("x_filter_max", x_filter_max_, 30.0);
-    nh_priv_.param("y_filter_min", y_filter_min_, -30.0);
-    nh_priv_.param("y_filter_max", y_filter_max_, 30.0);
-    nh_priv_.param("z_filter_min", z_filter_min_, 2.0);
-    nh_priv_.param("z_filter_max", z_filter_max_, 30.0);
+    nh_priv_.param("graph_vertices_file", graph_vertices_file_, std::string("graph_vertices.txt"));
+    nh_priv_.param("graph_blocking_file", graph_blocking_file_, std::string(".block.txt"));
+    nh_priv_.param("x_filter_min", x_filter_min_, -2.0);
+    nh_priv_.param("x_filter_max", x_filter_max_, 2.0);
+    nh_priv_.param("y_filter_min", y_filter_min_, -2.0);
+    nh_priv_.param("y_filter_max", y_filter_max_, 2.0);
+    nh_priv_.param("z_filter_min", z_filter_min_, 0.2);
+    nh_priv_.param("z_filter_max", z_filter_max_, 2.0);
     nh_priv_.param("voxel_size", voxel_size_, 0.1);
     nh_priv_.param("filter_map", filter_map_, false);
 
