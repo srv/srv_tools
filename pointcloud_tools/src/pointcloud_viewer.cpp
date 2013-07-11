@@ -158,26 +158,26 @@ void updateVisualization()
         else 
           ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
         save_cloud_ = false;
-      }
 
-      // Save file for webgl viewer
-      if (save_cloud_webgl_)
-      {
-        int lastindex = pcd_filename_.find_last_of("."); 
-        std::string filename = pcd_filename_.substr(0, lastindex); 
-        filename = filename + ".txt";
-        ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
-        std::fstream f_webgl(filename.c_str(), std::ios::out);
-        for (unsigned i=0; i<cloud_xyz_rgb.size(); i++)
+        // Save file for webgl viewer
+        if (save_cloud_webgl_)
         {
-          f_webgl << cloud_xyz_rgb[i].x << "," << 
-                     cloud_xyz_rgb[i].y << "," << 
-                     cloud_xyz_rgb[i].z << "," << 
-                     (int)cloud_xyz_rgb[i].r << "," << 
-                     (int)cloud_xyz_rgb[i].g << "," << 
-                     (int)cloud_xyz_rgb[i].b << std::endl;
+          int lastindex = pcd_filename_.find_last_of("."); 
+          std::string filename = pcd_filename_.substr(0, lastindex); 
+          filename = filename + ".txt";
+          ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
+          std::fstream f_webgl(filename.c_str(), std::ios::out);
+          for (unsigned i=0; i<cloud_xyz_rgb.size(); i++)
+          {
+            f_webgl << cloud_xyz_rgb[i].x << "," << 
+                       cloud_xyz_rgb[i].y << "," << 
+                       cloud_xyz_rgb[i].z << "," << 
+                       (int)cloud_xyz_rgb[i].r << "," << 
+                       (int)cloud_xyz_rgb[i].g << "," << 
+                       (int)cloud_xyz_rgb[i].b << std::endl;
+          }
+          f_webgl.close();
         }
-        f_webgl.close();
       }
 
     }
@@ -221,25 +221,24 @@ void updateVisualization()
         else 
           ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
         save_cloud_ = false;
-      }
 
-      // Save file for webgl viewer
-      if (save_cloud_webgl_)
-      {
-        int lastindex = pcd_filename_.find_last_of("."); 
-        std::string filename = pcd_filename_.substr(0, lastindex); 
-        filename = filename + ".txt";
-        ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
-        std::fstream f_webgl(filename.c_str(), std::ios::out);
-        for (unsigned i=0; i<cloud_xyz.size(); i++)
+        // Save file for webgl viewer
+        if (save_cloud_webgl_)
         {
-          f_webgl << cloud_xyz[i].x << "," << 
-                     cloud_xyz[i].y << "," << 
-                     cloud_xyz[i].z << std::endl;
+          int lastindex = pcd_filename_.find_last_of("."); 
+          std::string filename = pcd_filename_.substr(0, lastindex); 
+          filename = filename + ".txt";
+          ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
+          std::fstream f_webgl(filename.c_str(), std::ios::out);
+          for (unsigned i=0; i<cloud_xyz.size(); i++)
+          {
+            f_webgl << cloud_xyz[i].x << "," << 
+                       cloud_xyz[i].y << "," << 
+                       cloud_xyz[i].z << std::endl;
+          }
+          f_webgl.close();
         }
-        f_webgl.close();
       }
-
     }
 
     counter_++;
