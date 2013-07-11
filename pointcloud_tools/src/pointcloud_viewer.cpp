@@ -46,6 +46,7 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/feature.h>
+#include <pcl/io/pcd_io.h>
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
 
@@ -58,6 +59,10 @@ typedef pcl::PointCloud<PointRGB> PointCloudRGB;
 sensor_msgs::PointCloud2ConstPtr cloud_, cloud_old_;
 boost::mutex m;
 bool viewer_initialized_;
+bool save_cloud_;
+bool save_cloud_webgl_;
+int files_saved_;
+std::string pcd_filename_;
 int counter_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
@@ -68,6 +73,12 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
       cloud->header.stamp.toSec(), cloud->header.frame_id.c_str());
   cloud_ = cloud;
   m.unlock();
+}
+
+void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing)
+{
+  if (event.getKeySym() == "space" && event.keyDown())
+    save_cloud_ = true;
 }
 
 void updateVisualization()
@@ -86,6 +97,7 @@ void updateVisualization()
 
   // Add a coordinate system to screen
   viewer.addCoordinateSystem(0.1);
+  viewer.registerKeyboardCallback(&keyboardEventOccurred);
 
   while(true)
   {
@@ -133,11 +145,41 @@ void updateVisualization()
           xyz_centroid(0) << ", " << xyz_centroid(1) << ", " << xyz_centroid(2)+3.0 << "]");
         viewer_initialized_ = true;
       }
-
       // Show the point cloud
       pcl::visualization::PointCloudColorHandlerRGBField<PointRGB> color_handler(
         cloud_xyz_rgb.makeShared());
       viewer.addPointCloud(cloud_xyz_rgb.makeShared(), color_handler, "cloud");
+
+      // Save pcd
+      if (save_cloud_ && cloud_xyz_rgb.size() > 0)
+      {
+        if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_rgb) == 0)
+          ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
+        else 
+          ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
+        save_cloud_ = false;
+      }
+
+      // Save file for webgl viewer
+      if (save_cloud_webgl_)
+      {
+        int lastindex = pcd_filename_.find_last_of("."); 
+        std::string filename = pcd_filename_.substr(0, lastindex); 
+        filename = filename + ".txt";
+        ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
+        std::fstream f_webgl(filename.c_str(), std::ios::out);
+        for (unsigned i=0; i<cloud_xyz_rgb.size(); i++)
+        {
+          f_webgl << cloud_xyz_rgb[i].x << "," << 
+                     cloud_xyz_rgb[i].y << "," << 
+                     cloud_xyz_rgb[i].z << "," << 
+                     (int)cloud_xyz_rgb[i].r << "," << 
+                     (int)cloud_xyz_rgb[i].g << "," << 
+                     (int)cloud_xyz_rgb[i].b << std::endl;
+        }
+        f_webgl.close();
+      }
+
     }
     else
     {
@@ -169,8 +211,35 @@ void updateVisualization()
         pcl::visualization::PointCloudColorHandlerCustom<Point> color_handler(
         cloud_xyz.makeShared(), 255, 0, 255);
       }
-
       viewer.addPointCloud(cloud_xyz.makeShared(), color_handler, "cloud");
+
+      // Save pcd
+      if (save_cloud_ && cloud_xyz.size() > 0)
+      {
+        if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz) == 0)
+          ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
+        else 
+          ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
+        save_cloud_ = false;
+      }
+
+      // Save file for webgl viewer
+      if (save_cloud_webgl_)
+      {
+        int lastindex = pcd_filename_.find_last_of("."); 
+        std::string filename = pcd_filename_.substr(0, lastindex); 
+        filename = filename + ".txt";
+        ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
+        std::fstream f_webgl(filename.c_str(), std::ios::out);
+        for (unsigned i=0; i<cloud_xyz.size(); i++)
+        {
+          f_webgl << cloud_xyz[i].x << "," << 
+                     cloud_xyz[i].y << "," << 
+                     cloud_xyz[i].z << std::endl;
+        }
+        f_webgl.close();
+      }
+
     }
 
     counter_++;
@@ -187,8 +256,15 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "pointcloud_viewer", ros::init_options::NoSigintHandler);
   ros::NodeHandle nh;
+  ros::NodeHandle nh_priv("~");
   viewer_initialized_ = false;
+  save_cloud_ = false;
+  files_saved_ = 0;
   counter_ = 0;
+
+  // Read parameters
+  nh_priv.param("pcd_filename", pcd_filename_, std::string("pointcloud_file.pcd"));
+  nh_priv.param("save_cloud_webgl", save_cloud_webgl_, false);
 
   // Create a ROS subscriber
   ros::Subscriber sub = nh.subscribe("input", 30, cloud_cb);
