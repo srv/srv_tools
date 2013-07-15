@@ -38,7 +38,7 @@ public:
     cloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("input", 10, &PointCloudMapper::callback, this);
     bool latched = true;
     cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
-    pub_timer_ = nh_.createWallTimer(ros::WallDuration(2.0), 
+    pub_timer_ = nh_.createWallTimer(ros::WallDuration(3.0), 
                               &PointCloudMapper::timerCallback, this);
   }
 
@@ -153,7 +153,8 @@ public:
         if (min_time_diff < eps)
         {
 
-          ROS_INFO_STREAM("[PointCloudMapper:] Time sync found between pointcloud " << i << " and graph vertex " << idx_graph << ".");
+          ROS_DEBUG_STREAM("[PointCloudMapper:] Time sync found between pointcloud " << 
+                            i << " and graph vertex " << idx_graph << ".");
 
           // Build the tf
           tf::Vector3 t(graph_vertices[idx_graph].x, 
@@ -185,9 +186,6 @@ public:
 
   PointCloud::Ptr filter(PointCloud::Ptr cloud)
   {
-    // Copy the point cloud
-    PointCloud::Ptr cloud_ptr(new PointCloud);
-
     // NAN and limit filtering
     PointCloud::Ptr cloud_filtered_ptr(new PointCloud);
     pcl::PassThrough<Point> pass_;

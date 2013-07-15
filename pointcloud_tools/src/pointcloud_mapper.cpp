@@ -71,9 +71,6 @@ public:
 
   PointCloud::Ptr filter(PointCloud::Ptr cloud)
   {
-    // Copy the point cloud
-    PointCloud::Ptr cloud_ptr(new PointCloud);
-
     // NAN and limit filtering
     PointCloud::Ptr cloud_filtered_ptr(new PointCloud);
     pcl::PassThrough<Point> pass_;

@@ -47,6 +47,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/feature.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/passthrough.h>
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
 
@@ -64,6 +66,7 @@ bool save_cloud_webgl_;
 int files_saved_;
 std::string pcd_filename_;
 int counter_;
+int max_ascii_file_size_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
@@ -73,6 +76,24 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
       cloud->header.stamp.toSec(), cloud->header.frame_id.c_str());
   cloud_ = cloud;
   m.unlock();
+}
+
+PointCloudRGB::Ptr filter(PointCloudRGB::Ptr cloud, double voxel_size)
+{
+  PointCloudRGB::Ptr cloud_filtered_ptr(new PointCloudRGB);
+
+  // Downsampling using voxel grid
+  pcl::VoxelGrid<PointRGB> grid_;
+  PointCloudRGB::Ptr cloud_downsampled_ptr(new PointCloudRGB);
+
+  grid_.setLeafSize(voxel_size,
+                    voxel_size,
+                    voxel_size);
+  grid_.setDownsampleAllData(true);
+  grid_.setInputCloud(cloud);
+  grid_.filter(*cloud_downsampled_ptr);
+
+  return cloud_downsampled_ptr;
 }
 
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing)
@@ -162,6 +183,19 @@ void updateVisualization()
         // Save file for webgl viewer
         if (save_cloud_webgl_)
         {
+          // Filter pointcloud for webgl visualization
+          // Compute the desired voxel size
+          int file_point_size = 35;
+          int desired_points = max_ascii_file_size_ / file_point_size;
+          double voxel_size = 0.001;
+          double offset = 0.0002;
+          while (cloud_xyz_rgb.size() > desired_points)
+          {
+            PointCloudRGB::Ptr cloud_downsampled = filter(cloud_xyz_rgb.makeShared(), voxel_size);
+            cloud_xyz_rgb = *cloud_downsampled;
+            voxel_size = voxel_size + offset;
+          }
+
           int lastindex = pcd_filename_.find_last_of("."); 
           std::string filename = pcd_filename_.substr(0, lastindex); 
           filename = filename + ".txt";
@@ -264,6 +298,7 @@ int main(int argc, char** argv)
   // Read parameters
   nh_priv.param("pcd_filename", pcd_filename_, std::string("pointcloud_file.pcd"));
   nh_priv.param("save_cloud_webgl", save_cloud_webgl_, false);
+  nh_priv.param("max_ascii_file_size", max_ascii_file_size_, 4718592);  // In Bytes
 
   // Create a ROS subscriber
   ros::Subscriber sub = nh.subscribe("input", 30, cloud_cb);
