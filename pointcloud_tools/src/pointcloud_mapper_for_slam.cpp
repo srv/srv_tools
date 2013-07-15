@@ -36,7 +36,7 @@ public:
     nh_priv_.param("voxel_size", voxel_size_, 0.1);
     nh_priv_.param("mean_k", mean_k_, 50);
     nh_priv_.param("std_dev_thresh", std_dev_thresh_, 1.0);
-    nh_priv_.param("filter_map", filter_map_, false);
+    nh_priv_.param("filter_map", filter_map_, true);
 
     cloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("input", 10, &PointCloudMapper::callback, this);
     bool latched = true;

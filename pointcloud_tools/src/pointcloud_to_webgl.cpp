@@ -14,7 +14,7 @@ ros::NodeHandle nh_;
 ros::NodeHandle nh_private_;
 
 std::string pcd_filename_;
-int max_ascii_file_size_;
+double max_ascii_file_size_;
 int pcd_type_;
 
 public:
@@ -26,7 +26,7 @@ public:
   {
     // Read the parameters from the parameter server (set defaults)
     nh_private_.param("pcd_filename", pcd_filename_, std::string("pointcloud_file.pcd"));
-    nh_private_.param("max_ascii_file_size", max_ascii_file_size_, 4194304);  // In Bytes
+    nh_private_.param("max_ascii_file_size", max_ascii_file_size_, 4.0);  // In MBytes
     nh_private_.param("pcd_type", pcd_type_, 0);  // 0 -> XYZ | 1 -> XYZRGB
 
     ROS_INFO_STREAM("[PointCloudToWebgl:] Opening file " << pcd_filename_);
@@ -46,7 +46,8 @@ public:
         // Convert the cloud
         pcl::PointCloud<pcl::PointXYZ> cloud = *cloud_ptr;
         int file_point_size = 27;
-        int desired_points = max_ascii_file_size_ / file_point_size;
+        int max_bytes = (int)round(max_ascii_file_size_ * 1024 * 1024);
+        int desired_points = max_bytes / file_point_size;
         double voxel_size = 0.001;
         double offset = 0.0002;
         while (cloud.size() > desired_points)
@@ -85,7 +86,8 @@ public:
         // Convert the cloud
         pcl::PointCloud<pcl::PointXYZRGB> cloud = *cloud_ptr;
         int file_point_size = 37;
-        int desired_points = max_ascii_file_size_ / file_point_size;
+        int max_bytes = (int)round(max_ascii_file_size_ * 1024 * 1024);
+        int desired_points = max_bytes / file_point_size;
         double voxel_size = 0.001;
         double offset = 0.0002;
         while (cloud.size() > desired_points)
