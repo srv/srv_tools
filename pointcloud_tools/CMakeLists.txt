@@ -36,6 +36,7 @@ rosbuild_add_executable(pointcloud_mapper_for_slam src/pointcloud_mapper_for_sla
 rosbuild_add_executable(pointcloud_filtering src/pointcloud_filtering.cpp)
 rosbuild_add_executable(pcd_publisher src/pcd_publisher.cpp)
 rosbuild_add_executable(pointcloud_viewer src/pointcloud_viewer.cpp)
+rosbuild_add_executable(pointcloud_to_webgl src/pointcloud_to_webgl.cpp)
 
 target_link_libraries(pointcloud_viewer ${PCL_LIBRARIES} libvtkCommon.so libvtkFiltering.so libvtkRendering.so)
 rosbuild_link_boost(pointcloud_mapper_for_slam signals)

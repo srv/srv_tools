@@ -62,11 +62,8 @@ sensor_msgs::PointCloud2ConstPtr cloud_, cloud_old_;
 boost::mutex m;
 bool viewer_initialized_;
 bool save_cloud_;
-bool save_cloud_webgl_;
-int files_saved_;
 std::string pcd_filename_;
 int counter_;
-int max_ascii_file_size_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
@@ -179,39 +176,6 @@ void updateVisualization()
         else 
           ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
         save_cloud_ = false;
-
-        // Save file for webgl viewer
-        if (save_cloud_webgl_)
-        {
-          // Filter pointcloud for webgl visualization
-          // Compute the desired voxel size
-          int file_point_size = 35;
-          int desired_points = max_ascii_file_size_ / file_point_size;
-          double voxel_size = 0.001;
-          double offset = 0.0002;
-          while (cloud_xyz_rgb.size() > desired_points)
-          {
-            PointCloudRGB::Ptr cloud_downsampled = filter(cloud_xyz_rgb.makeShared(), voxel_size);
-            cloud_xyz_rgb = *cloud_downsampled;
-            voxel_size = voxel_size + offset;
-          }
-
-          int lastindex = pcd_filename_.find_last_of("."); 
-          std::string filename = pcd_filename_.substr(0, lastindex); 
-          filename = filename + ".txt";
-          ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
-          std::fstream f_webgl(filename.c_str(), std::ios::out);
-          for (unsigned i=0; i<cloud_xyz_rgb.size(); i++)
-          {
-            f_webgl << cloud_xyz_rgb[i].x << "," << 
-                       cloud_xyz_rgb[i].y << "," << 
-                       cloud_xyz_rgb[i].z << "," << 
-                       (int)cloud_xyz_rgb[i].r << "," << 
-                       (int)cloud_xyz_rgb[i].g << "," << 
-                       (int)cloud_xyz_rgb[i].b << std::endl;
-          }
-          f_webgl.close();
-        }
       }
 
     }
@@ -255,23 +219,6 @@ void updateVisualization()
         else 
           ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
         save_cloud_ = false;
-
-        // Save file for webgl viewer
-        if (save_cloud_webgl_)
-        {
-          int lastindex = pcd_filename_.find_last_of("."); 
-          std::string filename = pcd_filename_.substr(0, lastindex); 
-          filename = filename + ".txt";
-          ROS_INFO_STREAM("[PointCloudViewer:] Saving webgl file to " << filename);
-          std::fstream f_webgl(filename.c_str(), std::ios::out);
-          for (unsigned i=0; i<cloud_xyz.size(); i++)
-          {
-            f_webgl << cloud_xyz[i].x << "," << 
-                       cloud_xyz[i].y << "," << 
-                       cloud_xyz[i].z << std::endl;
-          }
-          f_webgl.close();
-        }
       }
     }
 
@@ -292,13 +239,10 @@ int main(int argc, char** argv)
   ros::NodeHandle nh_priv("~");
   viewer_initialized_ = false;
   save_cloud_ = false;
-  files_saved_ = 0;
   counter_ = 0;
 
   // Read parameters
   nh_priv.param("pcd_filename", pcd_filename_, std::string("pointcloud_file.pcd"));
-  nh_priv.param("save_cloud_webgl", save_cloud_webgl_, false);
-  nh_priv.param("max_ascii_file_size", max_ascii_file_size_, 4718592);  // In Bytes
 
   // Create a ROS subscriber
   ros::Subscriber sub = nh.subscribe("input", 30, cloud_cb);

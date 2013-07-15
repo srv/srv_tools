@@ -7,6 +7,7 @@
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/passthrough.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <sys/stat.h>
 
 /**
@@ -33,6 +34,8 @@ public:
     nh_priv_.param("z_filter_min", z_filter_min_, 0.2);
     nh_priv_.param("z_filter_max", z_filter_max_, 2.0);
     nh_priv_.param("voxel_size", voxel_size_, 0.1);
+    nh_priv_.param("mean_k", mean_k_, 50);
+    nh_priv_.param("std_dev_thresh", std_dev_thresh_, 1.0);
     nh_priv_.param("filter_map", filter_map_, false);
 
     cloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("input", 10, &PointCloudMapper::callback, this);
@@ -220,6 +223,13 @@ public:
     grid_.setInputCloud(cloud_filtered_ptr);
     grid_.filter(*cloud_downsampled_ptr);
 
+    // Statistical outlier removal
+    pcl::StatisticalOutlierRemoval<Point> sor;
+    sor.setInputCloud(cloud_downsampled_ptr);
+    sor.setMeanK(mean_k_);
+    sor.setStddevMulThresh(std_dev_thresh_);
+    sor.filter(*cloud_downsampled_ptr);
+
     return cloud_downsampled_ptr;
   }
 
@@ -264,6 +274,8 @@ private:
   double z_filter_min_;
   double z_filter_max_;
   double voxel_size_;
+  double std_dev_thresh_;
+  int mean_k_;
   bool filter_map_;
 
   ros::NodeHandle nh_;
