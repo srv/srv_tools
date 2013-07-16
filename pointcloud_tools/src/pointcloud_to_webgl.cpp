@@ -6,6 +6,7 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/common/centroid.h>
 
 class PointCloudToWebgl {
 
@@ -35,7 +36,6 @@ public:
     if (pcd_type_ == 0)
     {
       // NO RGB
-
       pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ptr (new pcl::PointCloud<pcl::PointXYZ>);
       if (pcl::io::loadPCDFile<pcl::PointXYZ> (pcd_filename_, *cloud_ptr) == -1) //* load the file
       {
@@ -50,13 +50,18 @@ public:
         int desired_points = max_bytes / file_point_size;
         double voxel_size = 0.001;
         double offset = 0.0002;
-        while (cloud.size() > desired_points)
+        while ((int)cloud.size() > desired_points)
         {
           pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_downsampled = filter(cloud.makeShared(), voxel_size);
           cloud = *cloud_downsampled;
           voxel_size = voxel_size + offset;
         }
 
+        // Compute the cloud centroid
+        Eigen::Vector4f centroid; 
+        pcl::compute3DCentroid(cloud, centroid);
+
+        // Save int file
         int lastindex = pcd_filename_.find_last_of("."); 
         std::string filename = pcd_filename_.substr(0, lastindex); 
         filename = filename + ".txt";
@@ -64,9 +69,12 @@ public:
         std::fstream f_webgl(filename.c_str(), std::ios::out);
         for (unsigned int i=0; i<cloud.size(); i++)
         {
-          f_webgl << cloud[i].x << "," << 
-                     cloud[i].y << "," << 
-                     cloud[i].z << "," << std::endl;
+          f_webgl << cloud[i].x - centroid[0] << "," << 
+                     cloud[i].y - centroid[1] << "," << 
+                     cloud[i].z - centroid[2] << "," << 
+                     (int)(224) << "," << 
+                     (int)(224) << "," << 
+                     (int)(224) << std::endl;
         }
         f_webgl.close();
         ROS_INFO("[PointCloudToWebgl:] Saved!");
@@ -75,7 +83,6 @@ public:
     else
     {
       // RGB
-
       pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_ptr (new pcl::PointCloud<pcl::PointXYZRGB>);
       if (pcl::io::loadPCDFile<pcl::PointXYZRGB> (pcd_filename_, *cloud_ptr) == -1) //* load the file
       {
@@ -90,13 +97,18 @@ public:
         int desired_points = max_bytes / file_point_size;
         double voxel_size = 0.001;
         double offset = 0.0002;
-        while (cloud.size() > desired_points)
+        while ((int)cloud.size() > desired_points)
         {
           pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_downsampled = filter(cloud.makeShared(), voxel_size);
           cloud = *cloud_downsampled;
           voxel_size = voxel_size + offset;
         }
 
+        // Compute the cloud centroid
+        Eigen::Vector4f centroid; 
+        pcl::compute3DCentroid(cloud, centroid);
+
+        // Save int file
         int lastindex = pcd_filename_.find_last_of("."); 
         std::string filename = pcd_filename_.substr(0, lastindex); 
         filename = filename + ".txt";
@@ -104,9 +116,9 @@ public:
         std::fstream f_webgl(filename.c_str(), std::ios::out);
         for (unsigned int i=0; i<cloud.size(); i++)
         {
-          f_webgl << cloud[i].x << "," << 
-                     cloud[i].y << "," << 
-                     cloud[i].z << "," << 
+          f_webgl << cloud[i].x - centroid[0] << "," << 
+                     cloud[i].y - centroid[1] << "," << 
+                     cloud[i].z - centroid[2] << "," << 
                      (int)cloud[i].r << "," << 
                      (int)cloud[i].g << "," << 
                      (int)cloud[i].b << std::endl;
