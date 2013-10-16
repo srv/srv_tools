@@ -50,12 +50,12 @@ class TimedService(threading.Thread):
 		threading.Thread.__init__(self)
 		self._service_name = name
 		self._service_period = period
-		rospy.loginfo('Initialized timer for service: \n\t* Name: %s\n\t* Period: %f ', self._service_name, self._service_period)
 
+	## Run function required by threading library
 	def run(self):
 		rospy.wait_for_service(self._service_name)
 		rospy.Timer(rospy.Duration(self._service_period), self.callback)
-		rospy.loginfo('Service Running: \n\t* Name: %s\n\t* Period: %f ', self._service_name, self._service_period)
+		rospy.loginfo('Initialized timer for service: \n\t* Name: %s\n\t* Period: %f ', self._service_name, self._service_period)
 
 	## Timer callback
 	# @param event The event that has generated this callback
