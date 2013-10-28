@@ -141,8 +141,8 @@ int main(int argc, char** argv)
           requested_time, 
           transform);
 
-      ROS_INFO_STREAM("KK: " << transform);
-      ROS_INFO_STREAM("frame_id " << transform.frame_id_ << " child " << transform.child_frame_id_);
+      ROS_DEBUG_STREAM("Received transform: " << transform);
+      ROS_DEBUG_STREAM("With frame_id: " << transform.frame_id_ << " and child_id " << transform.child_frame_id_);
 
       // get position and orientation
       double roll, pitch, yaw;
