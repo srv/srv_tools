@@ -152,10 +152,9 @@ public:
         }
 
         // Found sync?
-        double eps = 1e-5;
+        double eps = 1e-1;
         if (min_time_diff < eps)
         {
-
           ROS_DEBUG_STREAM("[PointCloudMapper:] Time sync found between pointcloud " << 
                             i << " and graph vertex " << idx_graph << ".");
 
