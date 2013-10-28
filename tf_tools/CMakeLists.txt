@@ -30,3 +30,4 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 rosbuild_add_executable(tf_logger src/tf_logger.cpp)
+rosbuild_add_executable(tf_filter src/tf_filter.cpp)
