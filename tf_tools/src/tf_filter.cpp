@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 
     // Wait for clock
     if (!ros::Time::isValid()) continue; 
-    ros::Time requested_time(ros::Time::now() - ros::Duration(2 / frequency));
+    ros::Time requested_time = ros::Time(0); //(ros::Time::now() - ros::Duration(2 / frequency));
     tf::StampedTransform transform;
     try
     {
