@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 2.8.3)
 project(pointcloud_tools)
 
 find_package(catkin REQUIRED COMPONENTS roscpp pcl_ros std_msgs sensor_msgs )
-find_package(pcl REQUIRED )
+find_package(PCL REQUIRED )
 
 catkin_package()
 
-include_directories(/usr/include/vtk-5.8 ${catkin_INCLUDE_DIRS} ${pcl_INCLUDE_DIRS})
+include_directories(/usr/include/vtk-5.8 ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS})
 
 add_executable(pointcloud_mapper src/pointcloud_mapper.cpp)
 add_executable(pointcloud_filtering src/pointcloud_filtering.cpp)

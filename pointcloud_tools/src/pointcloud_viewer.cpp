@@ -46,6 +46,7 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/feature.h>
+#include <pcl/common/centroid.h>
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
 
@@ -79,7 +80,7 @@ void updateVisualization()
 
   ros::WallDuration d(0.01);
   bool rgb = false;
-  std::vector<sensor_msgs::PointField> fields;
+  std::vector<pcl::PCLPointField> fields;
   
   // Create the visualizer
   pcl::visualization::PCLVisualizer viewer("Point Cloud Viewer");
