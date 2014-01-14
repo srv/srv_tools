@@ -5,7 +5,7 @@ find_package(catkin REQUIRED COMPONENTS tf)
 
 catkin_package()
 
-catkin_python_setup()
+#catkin_python_setup()
 
 include_directories(${catkin_INCLUDE_DIRS})
 
