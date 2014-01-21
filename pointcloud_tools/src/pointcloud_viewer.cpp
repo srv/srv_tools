@@ -80,7 +80,7 @@ void updateVisualization()
 
   ros::WallDuration d(0.01);
   bool rgb = false;
-  std::vector<pcl::PCLPointField> fields;
+  std::vector<sensor_msgs::PointField> fields;
   
   // Create the visualizer
   pcl::visualization::PCLVisualizer viewer("Point Cloud Viewer");
