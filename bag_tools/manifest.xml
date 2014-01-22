@@ -19,6 +19,7 @@
   <depend package="cv_bridge" />
   <depend package="message_filters" />
   <depend package="stereo_image_proc" />
+  <depend package="opencv2"/>
 </package>
 
 
