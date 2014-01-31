@@ -10,6 +10,8 @@ catkin_package()
 include_directories(${catkin_INCLUDE_DIRS})
 
 add_executable(tf_logger src/tf_logger.cpp)
+add_executable(tf_filter src/tf_filter.cpp)
 
 target_link_libraries(tf_logger ${catkin_LIBRARIES})
+target_link_libraries(tf_filter ${catkin_LIBRARIES})
 
