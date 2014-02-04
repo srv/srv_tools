@@ -25,10 +25,12 @@ rosbuild_add_boost_directories()
 rosbuild_add_executable(extract_images src/extract_images.cpp)
 rosbuild_add_executable(extract_stereo_images src/extract_stereo_images.cpp)
 rosbuild_add_executable(process_stereo src/process_stereo.cpp)
+rosbuild_add_executable(enhance_images src/enhance_images.cpp)
 
 rosbuild_link_boost(extract_images signals)
 rosbuild_link_boost(extract_stereo_images signals)
 rosbuild_link_boost(process_stereo signals)
+rosbuild_link_boost(enhance_images signals)
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)

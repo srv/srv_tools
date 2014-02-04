@@ -51,7 +51,8 @@ public:
       ROS_ERROR("Could not transform point cloud to %s", fixed_frame_.c_str());
     }
 
-    if(filter_map_){
+    if(filter_map_)
+    {
       PointCloud::Ptr cloud_downsampled = filter(accumulated_cloud_.makeShared());
       accumulated_cloud_ = *cloud_downsampled;
     }
@@ -70,9 +71,6 @@ public:
 
   PointCloud::Ptr filter(PointCloud::Ptr cloud)
   {
-    // Copy the point cloud
-    PointCloud::Ptr cloud_ptr(new PointCloud);
-
     // NAN and limit filtering
     PointCloud::Ptr cloud_filtered_ptr(new PointCloud);
     pcl::PassThrough<Point> pass_;
