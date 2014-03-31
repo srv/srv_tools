@@ -87,14 +87,14 @@ if __name__ == "__main__":
 	if len(sys.argv) >= 3:
 		names = sys.argv[1:len(sys.argv):2]
 		periods = sys.argv[2:len(sys.argv):2]
-		print 'names: ', names
-		print 'periods: ', periods
+		rospy.loginfo('names   : %s', names)
+		rospy.loginfo('periods : %s', periods)
 		ts_list = []
 		for name,period in zip(names,periods):
 			ts_list.append(TimedService(str(name), float(period)))
 		for ts in ts_list:
 			ts.start()
 	else:
-		print usage()
+		rospy.loginfo(usage())
 		sys.exit(1)
 	rospy.spin()

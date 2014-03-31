@@ -45,7 +45,7 @@ def process(in_dir,out_dir,command):
     for bagfile in bagfiles:
         outbag = out_dir + "/" + os.path.basename(bagfile)
         if os.path.exists(outbag):
-            print outbag, "exists, skipping."
+            rospy.loginfo('%s exists, skipping.', outbag)
         else:
             cmd = command.split()
             cmd.append("-i")

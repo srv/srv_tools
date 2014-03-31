@@ -42,10 +42,10 @@ import argparse
 def add_offset(inbags, topics, offset):
   for inbag in inbags:
     outbag = "timefixed-" + inbag
-    print '      Processing input bagfile: ', inbag
-    print '     Writing to output bagfile: ', outbag
-    print 'Changing header time of topics: ', topics
-    print '                 Adding offset: ', offset
+    rospy.loginfo('      Processing input bagfile: %s', inbag)
+    rospy.loginfo('     Writing to output bagfile: %s', outbag)
+    rospy.loginfo('Changing header time of topics: %s', topics)
+    rospy.loginfo('                 Adding offset: %s', offset)
     outbag = rosbag.Bag(outbag,'w')
     time_offset = rospy.Duration.from_sec(offset)
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():

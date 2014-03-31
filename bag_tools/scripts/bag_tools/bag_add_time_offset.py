@@ -40,10 +40,10 @@ import sys
 import argparse
 
 def fix_bagfile(inbag, outbag, topics, offset):
-    print '   Processing input bagfile: ', inbag
-    print '  Writing to output bagfile: ', outbag
-    print '            Changing topics: ', topics
-    print 'Changing publishing time by: ', offset
+    rospy.loginfo('      Processing input bagfile: %s', inbag)
+    rospy.loginfo('     Writing to output bagfile: %s', outbag)
+    rospy.loginfo('               Changing topics: %s', topics)
+    rospy.loginfo('   Changing publishing time by: %s', offset)
 
     outbag = rosbag.Bag(outbag, 'w')
 
@@ -59,11 +59,11 @@ def fix_bagfile(inbag, outbag, topics, offset):
             count[topic] = count[topic] + 1
         else:
             outbag.write(topic, msg, t)
-    print 'Closing output bagfile.'
+    rospy.loginfo('Closing output bagfile.')
     outbag.close()
-    print 'Changed the following:'
+    rospy.loginfo('Changed the following:')
     for k, v in count.iteritems():
-      print k, ': ', v, ' messages.'
+      rospy.loginfo( '%s:%s messages.',k,v)
 
 if __name__ == "__main__":
 

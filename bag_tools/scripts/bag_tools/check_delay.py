@@ -42,7 +42,7 @@ import argparse
 def check_delay(inbags):
   delays = {}
   for inbag in inbags:
-    print '   Processing input bagfile: ', inbag
+    rospy.loginfo('   Processing input bagfile: %s', inbag)
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
       if topic == "/tf":
         for transform in msg.transforms:
@@ -65,8 +65,7 @@ def check_delay(inbags):
     delay_list.sort()
     dmin, dmax, dmean = min(delay_list), max(delay_list), sum(delay_list)/len(delay_list)
     dmedian = delay_list[len(delay_list)/2]
-    print topic.ljust(max_len + 2), ": mean = ", dmean, ", min = ", dmin, ", max = ", dmax, ", median = ", dmedian
-
+    rospy.loginfo('%s : mean = %s, min = %s, max = %s, median = %s', topic.ljust(max_len + 2), dmean, dmin, dmax, dmedian)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(

@@ -40,16 +40,16 @@ import sys
 import argparse
 
 def change_topics(inbag,outbag,replacements):
-  print '   Processing input bagfile: ', inbag
-  print '  Writing to output bagfile: ', outbag
-  print '               Replacements: ', replacements
+  rospy.loginfo('   Processing input bagfile: %s', inbag)
+  rospy.loginfo('  Writing to output bagfile: %s', outbag)
+  rospy.loginfo('               Replacements: %s', replacements)
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
     if topic in replacements:
         topic = replacements[topic]
     outbag.write(topic, msg, t)
-  print 'Closing output bagfile and exit...'
+  rospy.loginfo('Closing output bagfile and exit...')
   outbag.close();
 
 def replacement(replace_string):
@@ -72,7 +72,7 @@ if __name__ == "__main__":
   replacements = {}
   for topic, new_topic in args.replacement:
     replacements[topic] = new_topic
- 
+
   try:
     change_topics(args.inbag,args.outbag,replacements)
   except Exception, e:

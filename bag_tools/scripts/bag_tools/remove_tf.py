@@ -40,9 +40,9 @@ import sys
 import argparse
 
 def remove_tf(inbag,outbag,frame_ids):
-  print '   Processing input bagfile: ', inbag
-  print '  Writing to output bagfile: ', outbag
-  print '         Removing frame_ids: ', ' '.join(frame_ids)
+  rospy.loginfo('   Processing input bagfile: %s', inbag)
+  rospy.loginfo('  Writing to output bagfile: %s', outbag)
+  rospy.loginfo('         Removing frame_ids: %s', ' '.join(frame_ids))
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
@@ -53,7 +53,7 @@ def remove_tf(inbag,outbag,frame_ids):
                   new_transforms.append(transform)
           msg.transforms = new_transforms
       outbag.write(topic, msg, t)
-  print 'Closing output bagfile and exit...'
+  rospy.loginfo('Closing output bagfile and exit...')
   outbag.close();
 
 if __name__ == "__main__":

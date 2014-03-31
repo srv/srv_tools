@@ -40,15 +40,15 @@ import sys
 import argparse
 
 def extract_topics(inbag,outbag,topics):
-  print '   Processing input bagfile: ', inbag
-  print '  Writing to output bagfile: ', outbag
-  print '          Extracting topics: ', topics
+  rospy.loginfo('   Processing input bagfile: %s', inbag)
+  rospy.loginfo('  Writing to output bagfile: %s', outbag)
+  rospy.loginfo('          Extracting topics: %s', topics)
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
     if topic in topics:
       outbag.write(topic, msg, t)
-  print 'Closing output bagfile and exit...'
+  rospy.loginfo('Closing output bagfile and exit...')
   outbag.close();
 
 if __name__ == "__main__":

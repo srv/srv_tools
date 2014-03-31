@@ -40,14 +40,14 @@ import glob
 import shutil
 
 def create_video(tmp_dir, args):
-  print "Using {} as working directory.".format(tmp_dir)
-  print "Extracting images..."
+  rospy.loginfo('Using {} as working directory.'.format(tmp_dir))
+  rospy.loginfo('Extracting images...')
 
   cmd = ["rosrun", "bag_tools", "extract_images" , tmp_dir, "jpg", args.topic] + args.inbag
-  print "    {}".format(' '.join(cmd))
+  rospy.loginfo('    {}'.format(' '.join(cmd)))
   subprocess.call(cmd)
-  
-  print "Renaming..."
+
+  rospy.loginfo("Renaming...")
   images = glob.glob(tmp_dir + '/*.jpg')
   images.sort()
   i = 1
@@ -55,9 +55,9 @@ def create_video(tmp_dir, args):
     shutil.move(image, tmp_dir + '/img-' + str(i) + '.jpg')
     i = i + 1
 
-  print "Creating video..."
+  rospy.loginfo('Creating video...')
   cmd = ["ffmpeg", "-f", "image2", "-r", str(args.fps), "-i", tmp_dir + "/img-%d.jpg", "-sameq", args.output]
-  print "    {}".format(' '.join(cmd))
+  rospy.loginfo('    {}'.format(' '.join(cmd)))
   subprocess.call(cmd)
 
 
@@ -80,5 +80,5 @@ if __name__ == "__main__":
   except Exception, e:
     import traceback
     traceback.print_exc()
-  print "Cleaning up temp files..."
+  rospy.loginfo('Cleaning up temp files...')
   shutil.rmtree(tmp_dir)

@@ -40,8 +40,8 @@ import sys
 import argparse
 
 def rpl_msg_time_with_hdr(inbag,outbag):
-  print 'Processing input bagfile : ', inbag
-  print 'Writing to output bagfile : ', outbag
+  rospy.loginfo('Processing input bagfile  : %s', inbag)
+  rospy.loginfo('Writing to output bagfile : %s', outbag)
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
     # This also replaces tf timestamps under the assumption 
@@ -50,7 +50,7 @@ def rpl_msg_time_with_hdr(inbag,outbag):
       outbag.write(topic, msg, msg.transforms[0].header.stamp)
     else:
       outbag.write(topic, msg, msg.header.stamp if msg._has_header else t)
-  print 'Closing output bagfile and exit...'
+  rospy.loginfo('Closing output bagfile and exit...')
   outbag.close();
 
 if __name__ == "__main__":

@@ -42,12 +42,12 @@ import yaml
 import sensor_msgs.msg
 
 def change_camera_info(inbag,outbag,replacements):
-  print '   Processing input bagfile: ', inbag
-  print '  Writing to output bagfile: ', outbag
+  rospy.loginfo('      Processing input bagfile: %s', inbag)
+  rospy.loginfo('     Writing to output bagfile: %s', outbag)
   # parse the replacements
   maps = {}
   for k, v in replacements.items():
-    print 'Changing topic', k, 'to contain following info (header will not be changed):\n', v
+    rospy.loginfo('Changing topic %s to contain following info (header will not be changed):\n%s',k,v)
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
@@ -56,7 +56,7 @@ def change_camera_info(inbag,outbag,replacements):
       new_msg.header = msg.header
       msg = new_msg
     outbag.write(topic, msg, t)
-  print 'Closing output bagfile and exit...'
+  rospy.loginfo('Closing output bagfile and exit...')
   outbag.close();
 
 def replacement(replace_string):

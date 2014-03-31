@@ -84,7 +84,7 @@ if __name__ == "__main__":
     frequency = rospy.get_param("~frequency", 10)
     playback_images(image_dir, file_pattern, camera_info_file, frequency)
   except KeyError as e:
-    print 'Required parameter missing:', e
+    rospy.logerr('Required parameter missing: %s', e)
   except Exception, e:
     import traceback
     traceback.print_exc()

@@ -41,24 +41,24 @@ import argparse
 def cut(inbags, outbagfile, start, duration):
   start_time = rospy.Time.from_sec(999999999999)
   for inbag in inbags:
-    print '   Looking for smallest time in:', inbag
+    rospy.loginfo('   Looking for smallest time in: %s', inbag)
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
       if t < start_time:
         start_time = t
       break
-  print '   Bagfiles start at', start_time
+  rospy.loginfo('   Bagfiles start at %s', start_time)
   start_time = start_time + rospy.Duration.from_sec(start)
   end_time = start_time + rospy.Duration.from_sec(duration)
-  print '   Cutting out from', start_time, 'to', end_time
+  rospy.loginfo('   Cutting out from %s to %s',start_time, end_time)
   outbag = rosbag.Bag(outbagfile, 'w')
   num_messages = 0
   for inbag in inbags:
-    print '   Extracting messages from:', inbag
+    rospy.loginfo('   Extracting messages from:', inbag
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages(start_time=start_time, end_time=end_time):
       outbag.write(topic, msg, t)
       num_messages = num_messages + 1
   outbag.close()
-  print'    New output bagfile has', num_messages, 'messages'
+  rospy.loginfo('     New output bagfile has %s messages', num_messages)
 
 
 if __name__ == "__main__":

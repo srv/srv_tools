@@ -42,8 +42,8 @@ try:
     from xml.etree import ElementTree
     import roslib.packages
 except ImportError:
-    # Checks the installation of the necessary python modules 
-    print((os.linesep * 2).join(["An error found importing one module:",
+    # Checks the installation of the necessary python modules
+    rospy.loginfo((os.linesep * 2).join(["An error found importing one module:",
     str(sys.exc_info()[1]), "You need to install it", "Stopping..."]))
     sys.exit(-2)
 
@@ -53,7 +53,7 @@ def find_launchfiles(directory, pattern='*.launch'):
             if fnmatch.fnmatch(basename, pattern):
                 filename = os.path.join(root, basename)
                 yield root, basename, filename
-      
+
 def check_launchfiles(directory, pattern='*.launch'):
     for root, dirs, files in os.walk(directory):
         for basename in files:
@@ -86,7 +86,7 @@ def start_subgraph(g,boxname):
 
 def write_information(g,node_name,node_args=0):
     if node_args==0:
-        for name in node_name: 
+        for name in node_name:
             g.write('"{0}_node" [shape=Mrecord,label="{0}",style="filled",fillcolor="khaki"]\n'.format(name))
     else:
         g.write('"{0}" [shape=none, margin=0, label=<\n'.format(node_name))
@@ -97,14 +97,13 @@ def write_information(g,node_name,node_args=0):
             for (arg, arg_def) in node_args:
                 g.write('<tr><td ALIGN="LEFT" BGCOLOR="lemonchiffon">{0} = {1}</td></tr>\n'.format(arg,arg_def))
         g.write('</table>>];\n')
-    
 
 def write_connection(g,origin,destination, isNode=False):
     if not isNode:
         g.write('    "{0}" -> "{1}"\n'.format(origin,destination))
     elif isNode:
         g.write('    "{0}" -> "{1}_node"\n'.format(origin,destination))
-  
+
 def get_args_from_parser():
     parser = argparse.ArgumentParser(description='Draws graph from launchfiles')
     parser.add_argument('--pkg', metavar='package', help='ROS packages you want to inspect',nargs='+')
@@ -157,7 +156,6 @@ def draw_folder(g,folder):
                         else:
                             node_nodes.append(node_type)
 
-                
                 write_information(g,node_name,node_args)
                 write_information(g,node_nodes)
                 for dest in node_nodes:
@@ -165,11 +163,10 @@ def draw_folder(g,folder):
                 for dest in node_includes:
                     write_connection(g,node_name,dest)
             except ElementTree.ParseError:
-                print "Error parsing {}".format(filepath)
-
+                rospy.loginfo("Error parsing {}".format(filepath))
         return g
     else:
-        print "[W]\tNo launchfile was found in {0}".format(os.path.basename(folder))
+        rospy.loginfo("[W]\tNo launchfile was found in {0}".format(os.path.basename(folder)))
 
 def xml_process(packages = 0):
     g = prepare_file()
@@ -181,7 +178,7 @@ def xml_process(packages = 0):
           directory = roslib.packages.get_pkg_dir(pkg)
           draw_folder(g,directory)
     return g
-    
+
 def main():
     args = get_args_from_parser()
     g = xml_process(args.pkg)

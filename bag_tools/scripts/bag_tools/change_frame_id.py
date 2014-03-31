@@ -40,10 +40,10 @@ import sys
 import argparse
 
 def change_frame_id(inbag,outbag,frame_id,topics):
-  print '   Processing input bagfile: ', inbag
-  print '  Writing to output bagfile: ', outbag
-  print '            Changing topics: ', topics
-  print '           Writing frame_id: ', frame_id
+  rospy.loginfo('   Processing input bagfile: %s', inbag)
+  rospy.loginfo('  Writing to output bagfile: %s', outbag)
+  rospy.loginfo('            Changing topics: %s', topics)
+  rospy.loginfo('           Writing frame_id: %s', frame_id)
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
@@ -51,7 +51,7 @@ def change_frame_id(inbag,outbag,frame_id,topics):
       if msg._has_header:
         msg.header.frame_id = frame_id
     outbag.write(topic, msg, t)
-  print 'Closing output bagfile and exit...'
+  rospy.loginfo('Closing output bagfile and exit...')
   outbag.close();
 
 if __name__ == "__main__":
