@@ -81,4 +81,4 @@ if __name__ == "__main__":
     import traceback
     traceback.print_exc()
   rospy.loginfo('Cleaning up temp files...')
-  #shutil.rmtree(tmp_dir)
+  shutil.rmtree(tmp_dir)
