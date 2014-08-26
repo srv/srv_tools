@@ -31,6 +31,7 @@
 #include <boost/format.hpp>
 
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/CompressedImage.h>
 #include <sensor_msgs/CameraInfo.h>
 
 #include <image_proc/processor.h>
@@ -39,7 +40,7 @@
 #include <opencv2/highgui/highgui.hpp> // for cv::imwrite
 
 #include "bag_tools/image_bag_processor.h"
-
+#include <iostream>
 /**
  * Saves color images from raw input
  */
@@ -60,22 +61,33 @@ public:
       std::cerr << "ERROR Processing image" << std::endl;
       return;
     }
-    std::string filename = 
-      boost::str(boost::format("%s/%s%lu.%s") 
-          % save_dir_ 
-          % prefix_ 
-          % img->header.stamp.toNSec() 
-          % filetype_);
-    if (!cv::imwrite(filename, output.color))
-      ROS_ERROR_STREAM("ERROR Saving " << filename);
-    else
-    {
-      ROS_DEBUG_STREAM("Saved " << filename);
-      num_saved_++;
-    }
+    save_image(img->header.stamp.toNSec(), output.color);
+  }
+  void save_compressed(const sensor_msgs::CompressedImageConstPtr& _compressed)
+  {
+    cv::Mat image_uncomrpessed = cv::imdecode(cv::Mat(_compressed->data),1);
+    save_image(_compressed->header.stamp.toNSec(), image_uncomrpessed);
   }
 
 private:
+  void save_image(uint64_t _time_stamp, const cv::Mat& _image)
+  {
+      std::string filename =
+        boost::str(boost::format("%s/%s%lu.%s")
+            % save_dir_
+            % prefix_
+            % _time_stamp
+            % filetype_);
+      if (!cv::imwrite(filename, _image))
+      {
+        ROS_ERROR_STREAM("ERROR Saving " << filename);
+      }
+      else
+      {
+        ROS_DEBUG_STREAM("Saved " << filename);
+        num_saved_++;
+      }
+  }
 
   image_proc::Processor processor_;
   std::string save_dir_;
@@ -104,6 +116,7 @@ int main(int argc, char** argv)
   ImageSaver saver(out_dir, filetype, prefix);
   bag_tools::ImageBagProcessor processor(image_topic);
   processor.registerCallback(boost::bind(&ImageSaver::save, saver, _1));
+  processor.registerCompressedCallback(boost::bind(&ImageSaver::save_compressed, saver, _1));
 
   for (int i = 4; i < argc; ++i)
     processor.processBag(argv[i]);

@@ -34,6 +34,7 @@
 #include <boost/progress.hpp>
 
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/CompressedImage.h>
 
 namespace bag_tools
 {
@@ -44,6 +45,7 @@ class ImageBagProcessor
 public:
 
   typedef boost::function<void (const sensor_msgs::ImageConstPtr&)> CallbackType;
+  typedef boost::function<void (const sensor_msgs::CompressedImageConstPtr&)> CallbackCompressedType;
 
   ImageBagProcessor(const std::string& image_topic) :
     image_topic_(image_topic)
@@ -54,6 +56,11 @@ public:
   void registerCallback(const CallbackType& callback)
   {
     callback_ = callback;
+  }
+
+  void registerCompressedCallback(const CallbackCompressedType& callback)
+  {
+    callback_compressed_ = callback;
   }
 
   /**
@@ -81,8 +88,17 @@ public:
       if (m.getTopic() == image_topic_)
       {
         sensor_msgs::Image::ConstPtr img_msg = m.instantiate<sensor_msgs::Image>();
-        if (img_msg != NULL)
+        if (img_msg != NULL && callback_.empty() == false)
+        {
           callback_(img_msg);
+        }else
+        {
+          sensor_msgs::CompressedImageConstPtr compressed = m.instantiate<sensor_msgs::CompressedImage>();
+          if(compressed != NULL && callback_compressed_.empty() == false)
+          {
+              callback_compressed_(compressed);
+          }
+        }
       }
       ++show_progress;
     }
@@ -94,6 +110,7 @@ private:
 
   std::string image_topic_;
   CallbackType callback_;
+  CallbackCompressedType callback_compressed_;
 
 };
 
