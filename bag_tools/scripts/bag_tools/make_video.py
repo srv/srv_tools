@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 PKG = 'bag_tools' # this package name
 
 import roslib; roslib.load_manifest(PKG)
-
+import rospy
 import tempfile
 import subprocess
 import glob
@@ -56,7 +56,7 @@ def create_video(tmp_dir, args):
     i = i + 1
 
   rospy.loginfo('Creating video...')
-  cmd = ["ffmpeg", "-f", "image2", "-r", str(args.fps), "-i", tmp_dir + "/img-%d.jpg", "-sameq", args.output]
+  cmd = ["ffmpeg", "-f", "image2", "-r", str(args.fps), "-i", tmp_dir + "/img-%d.jpg", args.output]
   rospy.loginfo('    {}'.format(' '.join(cmd)))
   subprocess.call(cmd)
 
