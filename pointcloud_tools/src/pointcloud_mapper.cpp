@@ -31,7 +31,7 @@ public:
     nh_priv_.param("voxel_size", voxel_size_, 0.1);
     nh_priv_.param("filter_map", filter_map_, false);
 
-    cloud_sub_ = nh_.subscribe<PointCloud>("input", 10, &PointCloudMapper::callback, this);
+    cloud_sub_ = nh_.subscribe<PointCloud>("input", 15, &PointCloudMapper::callback, this);
     bool latched = true;
     cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
     pub_timer_ = nh_.createTimer(ros::Duration(10.0), &PointCloudMapper::publishCallback, this);
@@ -41,6 +41,9 @@ public:
   {
     ROS_INFO_STREAM("received cloud with " << cloud->points.size() << " points.");
     PointCloud transformed_cloud;
+    ros::Time points_time;
+    points_time.fromNSec((*cloud).header.stamp);
+    tf_listener_.waitForTransform(fixed_frame_, (*cloud).header.frame_id, points_time, ros::Duration(5.0));
     bool success = pcl_ros::transformPointCloud(fixed_frame_, *cloud, transformed_cloud, tf_listener_);
     if (success)
     {
