@@ -63,7 +63,7 @@ bool viewer_initialized_;
 bool save_cloud_;
 std::string pcd_filename_;
 int counter_;
-ros::Timer save_timer_;
+ros::WallTimer save_timer_;
 
 PointCloud cloud_xyz_;
 PointCloudRGB cloud_xyz_rgb_;
@@ -112,9 +112,9 @@ void updateVisualization()
 
     if(cloud_old_ == cloud_)
       continue;
-    m_.lock ();
 
     // Convert to PointCloud<T>
+    m_.lock ();
     if(pcl::getFieldIndex(*cloud_, "rgb") != -1)
     {
       rgb = true;
@@ -188,7 +188,7 @@ void updateVisualization()
   }
 }
 
-void saveCallback(const ros::TimerEvent&)
+void saveCallback(const ros::WallTimerEvent&)
 {
   if (!save_cloud_) return;
 
@@ -235,10 +235,8 @@ int main(int argc, char** argv)
   ROS_INFO("Subscribing to %s for PointCloud2 messages...", nh.resolveName ("input").c_str ());
 
   signal(SIGINT, sigIntHandler);
-
   boost::thread visualization_thread(&updateVisualization);
-
-  save_timer_ = nh.createTimer(ros::Duration(1), &saveCallback);
+  save_timer_ = nh.createWallTimer(ros::WallDuration(1), &saveCallback);
 
   // Spin
   ros::spin();

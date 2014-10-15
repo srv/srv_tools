@@ -5,7 +5,6 @@
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/passthrough.h>
-#include <boost/thread/mutex.hpp>
 
 /**
  * Stores incoming point clouds in a map transforming
@@ -35,12 +34,11 @@ public:
     cloud_sub_ = nh_.subscribe<PointCloud>("input", 1, &PointCloudMapper::callback, this);
     bool latched = true;
     cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
-    pub_timer_ = nh_.createTimer(ros::Duration(3.0), &PointCloudMapper::publishCallback, this);
+    pub_timer_ = nh_.createWallTimer(ros::WallDuration(3.0), &PointCloudMapper::publishCallback, this);
   }
 
   void callback(const PointCloud::ConstPtr& cloud)
   {
-    m_.lock ();
     ROS_INFO_STREAM("Received cloud with " << cloud->points.size() << " points.");
     PointCloud transformed_cloud;
     ros::Time points_time;
@@ -68,10 +66,9 @@ public:
     }
 
     ROS_INFO_STREAM("Map has " << accumulated_cloud_.points.size() << " points.");
-    m_.unlock();
   }
 
-  void publishCallback(const ros::TimerEvent&)
+  void publishCallback(const ros::WallTimerEvent&)
   {
     // Publish the accumulated cloud if last publication was more than 5 seconds before.
     ros::WallDuration elapsed_time = ros::WallTime::now() - last_pub_time_;
@@ -135,7 +132,7 @@ private:
   ros::NodeHandle nh_;
   ros::NodeHandle nh_priv_;
 
-  ros::Timer pub_timer_;
+  ros::WallTimer pub_timer_;
 
   ros::Subscriber cloud_sub_;
   ros::Publisher cloud_pub_;
@@ -143,7 +140,6 @@ private:
   std::string fixed_frame_;
   tf::TransformListener tf_listener_;
   PointCloud accumulated_cloud_;
-  boost::mutex m_;
   ros::WallTime last_pub_time_;
 };
 
