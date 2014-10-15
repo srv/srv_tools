@@ -35,7 +35,7 @@ public:
     cloud_sub_ = nh_.subscribe<PointCloud>("input", 1, &PointCloudMapper::callback, this);
     bool latched = true;
     cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
-    pub_timer_ = nh_.createTimer(ros::Duration(10.0), &PointCloudMapper::publishCallback, this);
+    pub_timer_ = nh_.createTimer(ros::Duration(3.0), &PointCloudMapper::publishCallback, this);
   }
 
   void callback(const PointCloud::ConstPtr& cloud)
@@ -73,9 +73,9 @@ public:
 
   void publishCallback(const ros::TimerEvent&)
   {
-    // Publish the accumulated cloud if last publication was more than 10 seconds before.
+    // Publish the accumulated cloud if last publication was more than 5 seconds before.
     ros::WallDuration elapsed_time = ros::WallTime::now() - last_pub_time_;
-    if (cloud_pub_.getNumSubscribers() > 0 && elapsed_time.toSec() > 10.0)
+    if (cloud_pub_.getNumSubscribers() > 0 && elapsed_time.toSec() > 5.0)
       cloud_pub_.publish(accumulated_cloud_);
   }
 

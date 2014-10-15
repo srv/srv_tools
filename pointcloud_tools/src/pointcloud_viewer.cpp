@@ -63,6 +63,10 @@ bool viewer_initialized_;
 bool save_cloud_;
 std::string pcd_filename_;
 int counter_;
+ros::Timer save_timer_;
+
+PointCloud cloud_xyz_;
+PointCloudRGB cloud_xyz_rgb_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
@@ -75,15 +79,13 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing)
 {
   if (event.getKeySym() == "space" && event.keyDown()) {
-    ROS_INFO("SAVING POINTCLOUD, PLEASE WAIT...");
+    ROS_INFO("Saving pointcloud, please wait...");
     save_cloud_ = true;
   }
 }
 
 void updateVisualization()
 {
-  PointCloud                    cloud_xyz;
-  PointCloudRGB                 cloud_xyz_rgb;
   EIGEN_ALIGN16 Eigen::Matrix3f covariance_matrix;
   Eigen::Vector4f               xyz_centroid;
 
@@ -116,13 +118,13 @@ void updateVisualization()
     if(pcl::getFieldIndex(*cloud_, "rgb") != -1)
     {
       rgb = true;
-      pcl::fromROSMsg(*cloud_, cloud_xyz_rgb);
+      pcl::fromROSMsg(*cloud_, cloud_xyz_rgb_);
     }
     else
     {
       rgb = false;
-      pcl::fromROSMsg(*cloud_, cloud_xyz);
-      pcl::getFields(cloud_xyz, fields);
+      pcl::fromROSMsg(*cloud_, cloud_xyz_);
+      pcl::getFields(cloud_xyz_, fields);
     }
     cloud_old_ = cloud_;
     m_.unlock();
@@ -131,13 +133,13 @@ void updateVisualization()
     viewer.removePointCloud("cloud");
 
     // If no RGB data present, use a simpler white handler
-    if(rgb && pcl::getFieldIndex(cloud_xyz_rgb, "rgb", fields) != -1 &&
-      cloud_xyz_rgb.points[0].rgb != 0)
+    if(rgb && pcl::getFieldIndex(cloud_xyz_rgb_, "rgb", fields) != -1 &&
+      cloud_xyz_rgb_.points[0].rgb != 0)
     {
       // Initialize the camera view
       if(!viewer_initialized_)
       {
-        pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb, covariance_matrix, xyz_centroid);
+        pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb_, covariance_matrix, xyz_centroid);
         viewer.initCameraParameters();
         viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
         ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" <<
@@ -146,26 +148,15 @@ void updateVisualization()
       }
       // Show the point cloud
       pcl::visualization::PointCloudColorHandlerRGBField<PointRGB> color_handler(
-        cloud_xyz_rgb.makeShared());
-      viewer.addPointCloud(cloud_xyz_rgb.makeShared(), color_handler, "cloud");
-
-      // Save pcd
-      if (save_cloud_ && cloud_xyz_rgb.size() > 0)
-      {
-        if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_rgb) == 0)
-          ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
-        else
-          ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
-        save_cloud_ = false;
-      }
-
+        cloud_xyz_rgb_.makeShared());
+      viewer.addPointCloud(cloud_xyz_rgb_.makeShared(), color_handler, "cloud");
     }
     else
     {
       // Initialize the camera view
       if(!viewer_initialized_)
       {
-        pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb, covariance_matrix, xyz_centroid);
+        pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb_, covariance_matrix, xyz_centroid);
         viewer.initCameraParameters();
         viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
         ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" <<
@@ -174,36 +165,49 @@ void updateVisualization()
       }
 
       // Some xyz_rgb point clouds have incorrect rgb field. Detect and convert to xyz.
-      if(pcl::getFieldIndex(cloud_xyz_rgb, "rgb", fields) != -1)
+      if(pcl::getFieldIndex(cloud_xyz_rgb_, "rgb", fields) != -1)
       {
-        if(cloud_xyz_rgb.points[0].rgb == 0)
+        if(cloud_xyz_rgb_.points[0].rgb == 0)
         {
-          pcl::copyPointCloud(cloud_xyz_rgb, cloud_xyz);
+          pcl::copyPointCloud(cloud_xyz_rgb_, cloud_xyz_);
         }
       }
 
       // Show the xyz point cloud
-      PointCloudColorHandlerGenericField<Point> color_handler (cloud_xyz.makeShared(), "z");
+      PointCloudColorHandlerGenericField<Point> color_handler (cloud_xyz_.makeShared(), "z");
       if (!color_handler.isCapable ())
       {
         ROS_WARN_STREAM("[PointCloudViewer:] Cannot create curvature color handler!");
         pcl::visualization::PointCloudColorHandlerCustom<Point> color_handler(
-        cloud_xyz.makeShared(), 255, 0, 255);
+        cloud_xyz_.makeShared(), 255, 0, 255);
       }
-      viewer.addPointCloud(cloud_xyz.makeShared(), color_handler, "cloud");
-
-      // Save pcd
-      if (save_cloud_ && cloud_xyz.size() > 0)
-      {
-        if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz) == 0)
-          ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
-        else
-          ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
-        save_cloud_ = false;
-      }
+      viewer.addPointCloud(cloud_xyz_.makeShared(), color_handler, "cloud");
     }
 
     counter_++;
+  }
+}
+
+void saveCallback(const ros::TimerEvent&)
+{
+  if (!save_cloud_) return;
+
+  if (cloud_xyz_rgb_.size() > 0)
+  {
+    if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_rgb_) == 0)
+      ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
+    else
+      ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
+    save_cloud_ = false;
+  }
+
+  if (cloud_xyz_.size() > 0)
+  {
+    if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_) == 0)
+      ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
+    else
+      ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
+    save_cloud_ = false;
   }
 }
 
@@ -233,6 +237,8 @@ int main(int argc, char** argv)
   signal(SIGINT, sigIntHandler);
 
   boost::thread visualization_thread(&updateVisualization);
+
+  save_timer_ = nh.createTimer(ros::Duration(1), &saveCallback);
 
   // Spin
   ros::spin();
