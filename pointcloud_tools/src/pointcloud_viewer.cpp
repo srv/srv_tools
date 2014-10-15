@@ -70,7 +70,7 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
   m.lock ();
   printf("\rPointCloud with %d data points (%s), stamp %f, and frame %s.",
-      cloud->width * cloud->height, pcl::getFieldsList(*cloud).c_str(), 
+      cloud->width * cloud->height, pcl::getFieldsList(*cloud).c_str(),
       cloud->header.stamp.toSec(), cloud->header.frame_id.c_str());
   cloud_ = cloud;
   m.unlock();
@@ -96,8 +96,10 @@ PointCloudRGB::Ptr filter(PointCloudRGB::Ptr cloud, double voxel_size)
 
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing)
 {
-  if (event.getKeySym() == "space" && event.keyDown())
+  if (event.getKeySym() == "space" && event.keyDown()) {
+    ROS_INFO("SAVING POINTCLOUD, PLEASE WAIT...");
     save_cloud_ = true;
+  }
 }
 
 void updateVisualization()
@@ -111,7 +113,7 @@ void updateVisualization()
   bool rgb = false;
   //std::vector<sensor_msgs::PointField> fields;
   std::vector<pcl::PCLPointField> fields;
-  
+
   // Create the visualizer
   pcl::visualization::PCLVisualizer viewer("Point Cloud Viewer");
 
@@ -132,7 +134,7 @@ void updateVisualization()
     if(cloud_old_ == cloud_)
       continue;
     m.lock ();
-    
+
     // Convert to PointCloud<T>
     if(pcl::getFieldIndex(*cloud_, "rgb") != -1)
     {
@@ -150,9 +152,9 @@ void updateVisualization()
 
     // Delete the previous point cloud
     viewer.removePointCloud("cloud");
-    
+
     // If no RGB data present, use a simpler white handler
-    if(rgb && pcl::getFieldIndex(cloud_xyz_rgb, "rgb", fields) != -1 && 
+    if(rgb && pcl::getFieldIndex(cloud_xyz_rgb, "rgb", fields) != -1 &&
       cloud_xyz_rgb.points[0].rgb != 0)
     {
       // Initialize the camera view
@@ -161,7 +163,7 @@ void updateVisualization()
         pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb, covariance_matrix, xyz_centroid);
         viewer.initCameraParameters();
         viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
-        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" << 
+        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" <<
           xyz_centroid(0) << ", " << xyz_centroid(1) << ", " << xyz_centroid(2)+3.0 << "]");
         viewer_initialized_ = true;
       }
@@ -175,7 +177,7 @@ void updateVisualization()
       {
         if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_rgb) == 0)
           ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
-        else 
+        else
           ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
         save_cloud_ = false;
       }
@@ -189,7 +191,7 @@ void updateVisualization()
         pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb, covariance_matrix, xyz_centroid);
         viewer.initCameraParameters();
         viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
-        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" << 
+        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" <<
           xyz_centroid(0) << ", " << xyz_centroid(1) << ", " << xyz_centroid(2)+3.0 << "]");
         viewer_initialized_ = true;
       }
@@ -202,7 +204,7 @@ void updateVisualization()
           pcl::copyPointCloud(cloud_xyz_rgb, cloud_xyz);
         }
       }
-      
+
       // Show the xyz point cloud
       PointCloudColorHandlerGenericField<Point> color_handler (cloud_xyz.makeShared(), "z");
       if (!color_handler.isCapable ())
@@ -218,7 +220,7 @@ void updateVisualization()
       {
         if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz) == 0)
           ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
-        else 
+        else
           ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
         save_cloud_ = false;
       }
