@@ -5,6 +5,7 @@
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/passthrough.h>
+#include <boost/thread/mutex.hpp>
 
 /**
  * Stores incoming point clouds in a map transforming
@@ -31,7 +32,7 @@ public:
     nh_priv_.param("voxel_size", voxel_size_, 0.1);
     nh_priv_.param("filter_map", filter_map_, false);
 
-    cloud_sub_ = nh_.subscribe<PointCloud>("input", 15, &PointCloudMapper::callback, this);
+    cloud_sub_ = nh_.subscribe<PointCloud>("input", 1, &PointCloudMapper::callback, this);
     bool latched = true;
     cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
     pub_timer_ = nh_.createTimer(ros::Duration(10.0), &PointCloudMapper::publishCallback, this);
@@ -39,7 +40,8 @@ public:
 
   void callback(const PointCloud::ConstPtr& cloud)
   {
-    ROS_INFO_STREAM("received cloud with " << cloud->points.size() << " points.");
+    m_.lock ();
+    ROS_INFO_STREAM("Received cloud with " << cloud->points.size() << " points.");
     PointCloud transformed_cloud;
     ros::Time points_time;
     points_time.fromNSec((*cloud).header.stamp);
@@ -48,27 +50,33 @@ public:
     if (success)
     {
       accumulated_cloud_ += transformed_cloud;
+
+      if(filter_map_)
+      {
+        PointCloud::Ptr cloud_downsampled = filter(accumulated_cloud_.makeShared());
+        accumulated_cloud_ = *cloud_downsampled;
+      }
+
+      // Publish the cloud
+      if (cloud_pub_.getNumSubscribers() > 0)
+        cloud_pub_.publish(accumulated_cloud_);
+      last_pub_time_ = ros::WallTime::now();
     }
     else
     {
       ROS_ERROR("Could not transform point cloud to %s", fixed_frame_.c_str());
     }
 
-    if(filter_map_){
-      PointCloud::Ptr cloud_downsampled = filter(accumulated_cloud_.makeShared());
-      accumulated_cloud_ = *cloud_downsampled;
-    }
-
-
     ROS_INFO_STREAM("Map has " << accumulated_cloud_.points.size() << " points.");
+    m_.unlock();
   }
 
   void publishCallback(const ros::TimerEvent&)
   {
-    if (cloud_pub_.getNumSubscribers() > 0)
-    {
+    // Publish the accumulated cloud if last publication was more than 10 seconds before.
+    ros::WallDuration elapsed_time = ros::WallTime::now() - last_pub_time_;
+    if (cloud_pub_.getNumSubscribers() > 0 && elapsed_time.toSec() > 10.0)
       cloud_pub_.publish(accumulated_cloud_);
-    }
   }
 
   PointCloud::Ptr filter(PointCloud::Ptr cloud)
@@ -127,14 +135,16 @@ private:
   ros::NodeHandle nh_;
   ros::NodeHandle nh_priv_;
 
+  ros::Timer pub_timer_;
+
   ros::Subscriber cloud_sub_;
   ros::Publisher cloud_pub_;
-
-  ros::Timer pub_timer_;
 
   std::string fixed_frame_;
   tf::TransformListener tf_listener_;
   PointCloud accumulated_cloud_;
+  boost::mutex m_;
+  ros::WallTime last_pub_time_;
 };
 
 int main(int argc, char **argv)

@@ -48,8 +48,6 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/feature.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/filters/passthrough.h>
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
 
@@ -60,7 +58,7 @@ typedef pcl::PointCloud<PointRGB> PointCloudRGB;
 
 // Global data
 sensor_msgs::PointCloud2ConstPtr cloud_, cloud_old_;
-boost::mutex m;
+boost::mutex m_;
 bool viewer_initialized_;
 bool save_cloud_;
 std::string pcd_filename_;
@@ -68,30 +66,10 @@ int counter_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
-  m.lock ();
-  printf("\rPointCloud with %d data points (%s), stamp %f, and frame %s.",
-      cloud->width * cloud->height, pcl::getFieldsList(*cloud).c_str(),
-      cloud->header.stamp.toSec(), cloud->header.frame_id.c_str());
+  m_.lock ();
+  ROS_INFO_STREAM("Pointcloud viewer has received a pointcloud.");
   cloud_ = cloud;
-  m.unlock();
-}
-
-PointCloudRGB::Ptr filter(PointCloudRGB::Ptr cloud, double voxel_size)
-{
-  PointCloudRGB::Ptr cloud_filtered_ptr(new PointCloudRGB);
-
-  // Downsampling using voxel grid
-  pcl::VoxelGrid<PointRGB> grid_;
-  PointCloudRGB::Ptr cloud_downsampled_ptr(new PointCloudRGB);
-
-  grid_.setLeafSize(voxel_size,
-                    voxel_size,
-                    voxel_size);
-  grid_.setDownsampleAllData(true);
-  grid_.setInputCloud(cloud);
-  grid_.filter(*cloud_downsampled_ptr);
-
-  return cloud_downsampled_ptr;
+  m_.unlock();
 }
 
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing)
@@ -111,7 +89,6 @@ void updateVisualization()
 
   ros::WallDuration d(0.01);
   bool rgb = false;
-  //std::vector<sensor_msgs::PointField> fields;
   std::vector<pcl::PCLPointField> fields;
 
   // Create the visualizer
@@ -133,7 +110,7 @@ void updateVisualization()
 
     if(cloud_old_ == cloud_)
       continue;
-    m.lock ();
+    m_.lock ();
 
     // Convert to PointCloud<T>
     if(pcl::getFieldIndex(*cloud_, "rgb") != -1)
@@ -148,7 +125,7 @@ void updateVisualization()
       pcl::getFields(cloud_xyz, fields);
     }
     cloud_old_ = cloud_;
-    m.unlock();
+    m_.unlock();
 
     // Delete the previous point cloud
     viewer.removePointCloud("cloud");
