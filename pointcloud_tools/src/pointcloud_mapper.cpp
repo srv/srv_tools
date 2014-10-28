@@ -32,8 +32,7 @@ public:
     nh_priv_.param("filter_map", filter_map_, false);
 
     cloud_sub_ = nh_.subscribe<PointCloud>("input", 1, &PointCloudMapper::callback, this);
-    bool latched = true;
-    cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, latched);
+    cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, true);
     pub_timer_ = nh_.createWallTimer(ros::WallDuration(3.0), &PointCloudMapper::publishCallback, this);
   }
 
@@ -42,8 +41,8 @@ public:
     ROS_INFO_STREAM("Received cloud with " << cloud->points.size() << " points.");
     PointCloud transformed_cloud;
     ros::Time points_time;
-    points_time.fromNSec((*cloud).header.stamp);
-    tf_listener_.waitForTransform(fixed_frame_, (*cloud).header.frame_id, points_time, ros::Duration(5.0));
+    points_time.fromNSec(cloud->header.stamp);
+    tf_listener_.waitForTransform(fixed_frame_, cloud->header.frame_id, points_time, ros::Duration(5.0));
     bool success = pcl_ros::transformPointCloud(fixed_frame_, *cloud, transformed_cloud, tf_listener_);
     if (success)
     {
@@ -55,6 +54,8 @@ public:
         accumulated_cloud_ = *cloud_downsampled;
       }
 
+      ROS_INFO_STREAM("Map has " << accumulated_cloud_.points.size() << " points.");
+
       // Publish the cloud
       if (cloud_pub_.getNumSubscribers() > 0)
         cloud_pub_.publish(accumulated_cloud_);
@@ -64,8 +65,6 @@ public:
     {
       ROS_ERROR("Could not transform point cloud to %s", fixed_frame_.c_str());
     }
-
-    ROS_INFO_STREAM("Map has " << accumulated_cloud_.points.size() << " points.");
   }
 
   void publishCallback(const ros::WallTimerEvent&)
