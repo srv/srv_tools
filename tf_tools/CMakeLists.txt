@@ -15,3 +15,6 @@ add_executable(tf_filter src/tf_filter.cpp)
 target_link_libraries(tf_logger ${catkin_LIBRARIES})
 target_link_libraries(tf_filter ${catkin_LIBRARIES})
 
+install(TARGETS tf_logger tf_filter
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
