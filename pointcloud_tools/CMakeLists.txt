@@ -24,3 +24,7 @@ target_link_libraries(pointcloud_mapper ${PCL_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(pointcloud_mapper_for_slam ${PCL_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(pointcloud_filtering ${PCL_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(pointcloud_to_webgl ${PCL_LIBRARIES} ${catkin_LIBRARIES})
+
+install(TARGETS pointcloud_mapper pcd_publisher pointcloud_viewer pointcloud_mapper_for_slam pointcloud_to_webgl pointcloud_filtering
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

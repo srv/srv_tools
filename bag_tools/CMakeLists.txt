@@ -22,3 +22,6 @@ target_link_libraries(extract_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${ca
 target_link_libraries(extract_stereo_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(process_stereo ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 
+install(TARGETS extract_images extract_stereo_images process_stereo
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
