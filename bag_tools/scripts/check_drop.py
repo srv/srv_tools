@@ -143,7 +143,7 @@ def check_drop(inbags):
     plt.plot(x, numpy.array([seq_diff_max, seq_diff_max]), 'r--')
     plt.plot(x, numpy.array([seq_diff_mean, seq_diff_mean]), 'g')
 
-    plt.savefig(basename + topic.replace('/', '_').replace(' ', '_').replace(':', '_') + '.svg')
+    plt.savefig(basename + topic.replace('/', '_').replace(' ', '_').replace(':', '_') + '.png')
 
 if __name__ == "__main__":
   rospy.init_node('check_drop', anonymous=True)
