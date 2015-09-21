@@ -145,6 +145,7 @@ def check_drop(inbags, plot_format='png'):
       plt.plot(x, numpy.array([seq_diff_mean, seq_diff_mean]), 'g')
 
       plt.savefig(basename + topic.replace('/', '_').replace(' ', '_').replace(':', '_') + '.' + plot_format)
+      plt.close(fig)
     except OverflowError as e:
       rospy.logerr('%s: Failed to save plots as %s image files (try other format, e.g. svg): %s', topic.ljust(max_len + 2), plot_format, e.message)
 
