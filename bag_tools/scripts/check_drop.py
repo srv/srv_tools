@@ -96,6 +96,10 @@ def check_drop(inbags, plot_format='png'):
     bag_time_diff_topic = bag_time_diff[topic]
     seq_diff_topic = seq_diff[topic]
 
+    if len(msg_time_diff_topic) == 0:
+      rospy.logwarn('%s has no messages', topic.ljust(max_len + 2))
+      continue
+
     msg_time_diff_min = numpy.min(msg_time_diff_topic)
     msg_time_diff_max = numpy.max(msg_time_diff_topic)
     msg_time_diff_mean = numpy.mean(msg_time_diff_topic)
