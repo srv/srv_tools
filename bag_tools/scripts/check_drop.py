@@ -37,7 +37,7 @@ import argparse
 
 import matplotlib.pyplot as plt
 
-def check_drop(inbags):
+def check_drop(inbags, plot_format='png'):
   # Retrieve msg time, bag time and sequence number for all topics and messages:
   msg_time = {}
   bag_time = {}
@@ -119,31 +119,34 @@ def check_drop(inbags):
     N = len(msg_time_diff_topic)
     x = numpy.array([0, N - 1])
 
-    fig = plt.figure()
-    fig.set_size_inches(20, 15)
+    try:
+      fig = plt.figure()
+      fig.set_size_inches(20, 15)
 
-    plt.subplot(311)
-    plt.title(topic + ' - Message time difference [s]')
-    plt.plot(msg_time_diff_topic, 'b')
-    plt.plot(x, numpy.array([msg_time_diff_min, msg_time_diff_min]), 'r--')
-    plt.plot(x, numpy.array([msg_time_diff_max, msg_time_diff_max]), 'r--')
-    plt.plot(x, numpy.array([msg_time_diff_mean, msg_time_diff_mean]), 'g')
+      plt.subplot(311)
+      plt.title(topic + ' - Message time difference [s]')
+      plt.plot(msg_time_diff_topic, 'b')
+      plt.plot(x, numpy.array([msg_time_diff_min, msg_time_diff_min]), 'r--')
+      plt.plot(x, numpy.array([msg_time_diff_max, msg_time_diff_max]), 'r--')
+      plt.plot(x, numpy.array([msg_time_diff_mean, msg_time_diff_mean]), 'g')
 
-    plt.subplot(312)
-    plt.title(topic + ' - Bag time difference [s]')
-    plt.plot(bag_time_diff_topic, 'b')
-    plt.plot(x, numpy.array([bag_time_diff_min, bag_time_diff_min]), 'r--')
-    plt.plot(x, numpy.array([bag_time_diff_max, bag_time_diff_max]), 'r--')
-    plt.plot(x, numpy.array([bag_time_diff_mean, bag_time_diff_mean]), 'g')
+      plt.subplot(312)
+      plt.title(topic + ' - Bag time difference [s]')
+      plt.plot(bag_time_diff_topic, 'b')
+      plt.plot(x, numpy.array([bag_time_diff_min, bag_time_diff_min]), 'r--')
+      plt.plot(x, numpy.array([bag_time_diff_max, bag_time_diff_max]), 'r--')
+      plt.plot(x, numpy.array([bag_time_diff_mean, bag_time_diff_mean]), 'g')
 
-    plt.subplot(313)
-    plt.title(topic + ' - Sequence number difference')
-    plt.plot(seq_diff_topic, 'b')
-    plt.plot(x, numpy.array([seq_diff_min, seq_diff_min]), 'r--')
-    plt.plot(x, numpy.array([seq_diff_max, seq_diff_max]), 'r--')
-    plt.plot(x, numpy.array([seq_diff_mean, seq_diff_mean]), 'g')
+      plt.subplot(313)
+      plt.title(topic + ' - Sequence number difference')
+      plt.plot(seq_diff_topic, 'b')
+      plt.plot(x, numpy.array([seq_diff_min, seq_diff_min]), 'r--')
+      plt.plot(x, numpy.array([seq_diff_max, seq_diff_max]), 'r--')
+      plt.plot(x, numpy.array([seq_diff_mean, seq_diff_mean]), 'g')
 
-    plt.savefig(basename + topic.replace('/', '_').replace(' ', '_').replace(':', '_') + '.png')
+      plt.savefig(basename + topic.replace('/', '_').replace(' ', '_').replace(':', '_') + '.' + plot_format)
+    except OverflowError as e:
+      rospy.logerr('%s: Failed to save plots as %s image files (try other format, e.g. svg): %s', topic.ljust(max_len + 2), plot_format, e.message)
 
 if __name__ == "__main__":
   rospy.init_node('check_drop', anonymous=True)
@@ -153,9 +156,10 @@ if __name__ == "__main__":
                   'message dropping in a bagfile. Prints out min, max and mean '
                   'differences and all values are shown on a plot.')
   parser.add_argument('inbag', help='input bagfile(s)', nargs='+')
+  parser.add_argument('--plot_format', help='output plot format', default='png')
   args = parser.parse_args()
   try:
-    check_drop(args.inbag)
+    check_drop(args.inbag, args.plot_format)
   except Exception, e:
     import traceback
     traceback.print_exc()
