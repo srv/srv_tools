@@ -79,10 +79,14 @@ def check_drop(inbags, plot_format='png'):
   bag_time_diff = {}
   seq_diff = {}
 
+  min_time = []
   for key in msg_time.iterkeys():
     msg_time_diff[key] = numpy.diff(msg_time[key])
+    min_time.append(msg_time[key][0])
     bag_time_diff[key] = numpy.diff(bag_time[key])
     seq_diff[key] = numpy.diff(seq[key])
+
+  min_time = numpy.min(min_time)
 
   # Compute min, max and mean differences:
   basename = inbags[0].replace('.bag', '')
@@ -90,6 +94,7 @@ def check_drop(inbags, plot_format='png'):
   max_len = max(len(topic) for topic in msg_time_diff.keys())
   topics = msg_time_diff.keys()
   topics.sort()
+
 
   for topic in topics:
     msg_time_diff_topic = msg_time_diff[topic]
@@ -120,8 +125,7 @@ def check_drop(inbags, plot_format='png'):
     rospy.loginfo('%s          seq: mean = %s, min = %s, max = %s, median = %s', topic.ljust(max_len + 2), seq_diff_mean, seq_diff_min, seq_diff_max, seq_diff_median)
 
     # Create and save plots:
-    N = len(msg_time_diff_topic)
-    x = numpy.array([0, N - 1])
+    mt = msg_time[topic][1:] - min_time  
 
     try:
       fig = plt.figure()
@@ -129,24 +133,25 @@ def check_drop(inbags, plot_format='png'):
 
       plt.subplot(311)
       plt.title(topic + ' - Message time difference [s]')
-      plt.plot(msg_time_diff_topic, 'b')
-      plt.plot(x, numpy.array([msg_time_diff_min, msg_time_diff_min]), 'r--')
-      plt.plot(x, numpy.array([msg_time_diff_max, msg_time_diff_max]), 'r--')
-      plt.plot(x, numpy.array([msg_time_diff_mean, msg_time_diff_mean]), 'g')
+      plt.plot(mt, msg_time_diff_topic,'b')
+      plt.plot([mt[0], mt[-1]], [msg_time_diff_min, msg_time_diff_min], 'r--')
+      plt.plot([mt[0], mt[-1]], [msg_time_diff_max, msg_time_diff_max], 'r--')
+      plt.plot([mt[0], mt[-1]], [msg_time_diff_mean, msg_time_diff_mean], 'g')
 
       plt.subplot(312)
       plt.title(topic + ' - Bag time difference [s]')
-      plt.plot(bag_time_diff_topic, 'b')
-      plt.plot(x, numpy.array([bag_time_diff_min, bag_time_diff_min]), 'r--')
-      plt.plot(x, numpy.array([bag_time_diff_max, bag_time_diff_max]), 'r--')
-      plt.plot(x, numpy.array([bag_time_diff_mean, bag_time_diff_mean]), 'g')
+      plt.plot(mt, bag_time_diff_topic,'b')
+      plt.plot([mt[0], mt[-1]], [bag_time_diff_min, bag_time_diff_min], 'r--')
+      plt.plot([mt[0], mt[-1]], [bag_time_diff_max, bag_time_diff_max], 'r--')
+      plt.plot([mt[0], mt[-1]], [bag_time_diff_mean, bag_time_diff_mean], 'g')
 
       plt.subplot(313)
       plt.title(topic + ' - Sequence number difference')
-      plt.plot(seq_diff_topic, 'b')
-      plt.plot(x, numpy.array([seq_diff_min, seq_diff_min]), 'r--')
-      plt.plot(x, numpy.array([seq_diff_max, seq_diff_max]), 'r--')
-      plt.plot(x, numpy.array([seq_diff_mean, seq_diff_mean]), 'g')
+      plt.plot(mt, seq_diff_topic, 'b')
+      plt.plot([mt[0], mt[-1]], [seq_diff_min, seq_diff_min], 'r--')
+      plt.plot([mt[0], mt[-1]], [seq_diff_max, seq_diff_max], 'r--')
+      plt.plot([mt[0], mt[-1]], [seq_diff_mean, seq_diff_mean], 'g')
+
 
       plt.savefig(basename + topic.replace('/', '_').replace(' ', '_').replace(':', '_') + '.' + plot_format)
       plt.close(fig)
