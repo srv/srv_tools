@@ -40,6 +40,7 @@ install(PROGRAMS
     scripts/extract_topics.py
     scripts/cut.py
     scripts/check_delay.py
+    scripts/check_drop.py
     scripts/change_topics.py
     scripts/change_frame_id.py
     scripts/change_camera_info.py
