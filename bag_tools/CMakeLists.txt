@@ -34,6 +34,7 @@ install(PROGRAMS
     scripts/stereo_sequence_publisher.py
     scripts/replace_msg_time_with_hdr.py
     scripts/remove_tf.py
+    scripts/transform_tf.py
     scripts/make_video.py
     scripts/image_sequence_publisher.py
     scripts/gps_to_std_gt.py
