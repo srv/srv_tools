@@ -49,6 +49,7 @@ install(PROGRAMS
     scripts/batch_process.py
     scripts/bag_add_time_offset.py
     scripts/add_header_time_offset.py
+    scripts/plot.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
