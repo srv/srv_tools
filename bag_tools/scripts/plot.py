@@ -46,6 +46,10 @@ import string
 
 from operator import itemgetter
 
+# Workaround to avoid issues with X11 rendering when running on background:
+import matplotlib as mpl
+mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 
 
@@ -422,6 +426,8 @@ class BagTopicPlotter:
         if len(self._bags) > 1:
             rospy.logwarn("Does NOT support multiple bags yet! Only first bag will be used.")
         bag = self._bags[0]
+
+        rospy.loginfo("Processing %s ..." % bag)
 
         # Retrieve/Expand plottable topic fields:
         plottable_topics = []
