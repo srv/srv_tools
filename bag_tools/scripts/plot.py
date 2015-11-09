@@ -46,6 +46,10 @@ import string
 
 from operator import itemgetter
 
+# Workaround to avoid issues with X11 rendering when running on background:
+import matplotlib as mpl
+mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 
 
