@@ -427,6 +427,8 @@ class BagTopicPlotter:
             rospy.logwarn("Does NOT support multiple bags yet! Only first bag will be used.")
         bag = self._bags[0]
 
+        rospy.loginfo("Processing %s ..." % bag)
+
         # Retrieve/Expand plottable topic fields:
         plottable_topics = []
         for topic in topics:
