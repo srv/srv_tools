@@ -411,11 +411,12 @@ class ROSData:
 
 
 class BagTopicPlotter:
-    def __init__(self, bags, topics, plot_arrays=True, plot_headers=True, plot_format='png', bag_time=False):
+    def __init__(self, bags, topics, plot_arrays=True, plot_headers=True, plot_format='png', plot_style='.-', bag_time=False):
         self._bags = bags
         self._plot_arrays = plot_arrays
         self._plot_headers = plot_headers
         self._plot_format = plot_format
+        self._plot_style = plot_style
         self._bag_time = bag_time
 
         self._bag_topic_helpers = {}
@@ -507,7 +508,7 @@ class BagTopicPlotter:
             ax.set_color_cycle([plt.cm.rainbow(i) for i in numpy.linspace(0, 1, len(values))])
 
             for topic in plottable_topics:
-                plt.plot(times[topic], values[topic])
+                plt.plot(times[topic], values[topic], self._plot_style)
 
             plt.legend(plottable_topics, loc=0)
 
@@ -515,7 +516,7 @@ class BagTopicPlotter:
 
             plt.close(fig)
         except OverflowError as e:
-            rospy.logerr('%s: Failed to save plot as %s image file (try other format, e.g. svg): %s', filename, self._plot_format, e.message)
+            rospy.logerr('Failed to save plot as %s image file (try other format, e.g. svg): %s', self._plot_format, e.message)
 
     def get_plot_fields(self, topic_name):
         """
@@ -614,12 +615,13 @@ if __name__ == "__main__":
     parser.add_argument('--noarr', help='do not plot array fields', action='store_true')
     parser.add_argument('--nohdr', help='do not plot header fields', action='store_true')
     parser.add_argument('--plot_format', help='output plot format', default='png')
+    parser.add_argument('--plot_style', help='output plot style', default='.-')
     parser.add_argument('--bag_time', help='use bag time instead of msg header time', action='store_true')
 
     args = parser.parse_args()
 
     try:
-        BagTopicPlotter(args.bags, args.topics, not args.noarr, not args.nohdr, args.plot_format, args.bag_time)
+        BagTopicPlotter(args.bags, args.topics, not args.noarr, not args.nohdr, args.plot_format, args.plot_style, args.bag_time)
     except Exception, e:
         import traceback
         traceback.print_exc()
