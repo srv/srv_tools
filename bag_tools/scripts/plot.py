@@ -516,7 +516,7 @@ class BagTopicPlotter:
 
             plt.close(fig)
         except OverflowError as e:
-            rospy.logerr('%s: Failed to save plot as %s image file (try other format, e.g. svg): %s', filename, self._plot_format, e.message)
+            rospy.logerr('Failed to save plot as %s image file (try other format, e.g. svg): %s', self._plot_format, e.message)
 
     def get_plot_fields(self, topic_name):
         """
