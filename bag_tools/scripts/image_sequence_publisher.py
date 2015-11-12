@@ -39,6 +39,7 @@ import cv_bridge
 import camera_info_parser
 import glob
 import cv
+import numpy as np
 
 def collect_image_files(image_dir,file_pattern):
   images = glob.glob(image_dir + '/' + file_pattern)
@@ -55,16 +56,16 @@ def playback_images(image_dir,file_pattern,camera_info_file,publish_rate):
   rospy.loginfo('Found %i images.',len(image_files))
   bridge = cv_bridge.CvBridge()
   rate = rospy.Rate(publish_rate)
-  image_publisher = rospy.Publisher('camera/image', sensor_msgs.msg.Image)
+  image_publisher = rospy.Publisher('camera/image_color', sensor_msgs.msg.Image, queue_size = 1)
   if publish_cam_info:
-      cam_info_publisher = rospy.Publisher('camera/camera_info', sensor_msgs.msg.CameraInfo)
+      cam_info_publisher = rospy.Publisher('camera/camera_info', sensor_msgs.msg.CameraInfo, queue_size = 1)
   rospy.loginfo('Starting playback.')
   for image_file in image_files:
     if rospy.is_shutdown():
       break
     now = rospy.Time.now()
     image = cv.LoadImage(image_file)
-    image_msg = bridge.cv_to_imgmsg(image, encoding='rgb8')
+    image_msg = bridge.cv2_to_imgmsg(np.asarray(image[:,:]), encoding='bgr8')
     image_msg.header.stamp = now
     image_msg.header.frame_id = "/camera"
     image_publisher.publish(image_msg)

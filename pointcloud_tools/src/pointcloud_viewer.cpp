@@ -71,7 +71,7 @@ PointCloudRGB cloud_xyz_rgb_;
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
   m_.lock ();
-  ROS_INFO_STREAM("Pointcloud viewer has received a pointcloud.");
+  ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud received.");
   cloud_ = cloud;
   m_.unlock();
 }
@@ -79,7 +79,7 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing)
 {
   if (event.getKeySym() == "space" && event.keyDown()) {
-    ROS_INFO("Saving pointcloud, please wait...");
+    ROS_INFO("[PointCloudViewer:] Saving pointcloud, please wait...");
     save_cloud_ = true;
   }
 }
@@ -156,21 +156,12 @@ void updateVisualization()
       // Initialize the camera view
       if(!viewer_initialized_)
       {
-        pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb_, covariance_matrix, xyz_centroid);
+        pcl::computeMeanAndCovarianceMatrix(cloud_xyz_, covariance_matrix, xyz_centroid);
         viewer.initCameraParameters();
         viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
         ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" <<
           xyz_centroid(0) << ", " << xyz_centroid(1) << ", " << xyz_centroid(2)+3.0 << "]");
         viewer_initialized_ = true;
-      }
-
-      // Some xyz_rgb point clouds have incorrect rgb field. Detect and convert to xyz.
-      if(pcl::getFieldIndex(cloud_xyz_rgb_, "rgb", fields) != -1)
-      {
-        if(cloud_xyz_rgb_.points[0].rgb == 0)
-        {
-          pcl::copyPointCloud(cloud_xyz_rgb_, cloud_xyz_);
-        }
       }
 
       // Show the xyz point cloud
@@ -211,15 +202,15 @@ void saveCallback(const ros::WallTimerEvent&)
   }
 }
 
-void sigIntHandler(int sig)
-{
-  exit(0);
-}
+// void sigIntHandler(int sig)
+// {
+//   exit(0);
+// }
 
 /* ---[ */
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "pointcloud_viewer", ros::init_options::NoSigintHandler);
+  ros::init(argc, argv, "pointcloud_viewer");//, ros::init_options::NoSigintHandler);
   ros::NodeHandle nh;
   ros::NodeHandle nh_priv("~");
   viewer_initialized_ = false;
@@ -232,9 +223,9 @@ int main(int argc, char** argv)
   // Create a ROS subscriber
   ros::Subscriber sub = nh.subscribe("input", 30, cloud_cb);
 
-  ROS_INFO("Subscribing to %s for PointCloud2 messages...", nh.resolveName ("input").c_str ());
+  ROS_INFO("[PointCloudViewer:] Subscribing to %s for PointCloud2 messages...", nh.resolveName ("input").c_str ());
 
-  signal(SIGINT, sigIntHandler);
+  // signal(SIGINT, sigIntHandler);
   boost::thread visualization_thread(&updateVisualization);
   save_timer_ = nh.createWallTimer(ros::WallDuration(1), &saveCallback);
 
