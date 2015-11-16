@@ -34,7 +34,7 @@ import rosbag
 
 import argparse
 
-def merge(inbags, outbag='output.bag', topics=None, raw=True):
+def merge(inbags, outbag='output.bag', topics=None, exclude_topics=[], raw=True):
   # Open output bag file:
   try:
     out = rosbag.Bag(outbag, 'a')
@@ -48,7 +48,8 @@ def merge(inbags, outbag='output.bag', topics=None, raw=True):
     try:
       rospy.loginfo('   Processing input bagfile: %s', inbag)
       for topic, msg, t in rosbag.Bag(inbag, 'r').read_messages(topics=topics, raw=raw):
-        out.write(topic, msg, t, raw=raw)
+        if topic not in args.exclude_topics:
+          out.write(topic, msg, t, raw=raw)
     except IOError as e:
       rospy.logerr('Failed to open input bag file %s!: %s' % (inbag, e.message))
       rospy.signal_shutdown('Failed to open input bag file %s!: %s' % (inbag, e.message))
@@ -65,10 +66,11 @@ if __name__ == "__main__":
   parser.add_argument('inbag', help='input bagfile(s)', nargs='+')
   parser.add_argument('--output', help='output bag file', default='output.bag')
   parser.add_argument('--topics', help='topics to merge from the input bag files', nargs='+', default=None)
+  parser.add_argument('--exclude_topics', help='topics not to merge from the input bag files', nargs='+', default=[])
   args = parser.parse_args()
 
   try:
-    merge(args.inbag, args.output, args.topics)
+    merge(args.inbag, args.output, args.topics, args.exclude_topics)
   except Exception, e:
     import traceback
     traceback.print_exc()
