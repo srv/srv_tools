@@ -31,25 +31,26 @@ install(TARGETS
 )
 
 install(PROGRAMS
-    scripts/stereo_sequence_publisher.py
-    scripts/replace_msg_time_with_hdr.py
-    scripts/remove_tf.py
-    scripts/transform_tf.py
-    scripts/make_video.py
-    scripts/image_sequence_publisher.py
-    scripts/gps_to_std_gt.py
-    scripts/extract_topics.py
-    scripts/cut.py
+    scripts/add_header_time_offset.py
+    scripts/bag_add_time_offset.py
+    scripts/batch_process.py
+    scripts/camera_info_parser.py
+    scripts/change_camera_info.py
+    scripts/change_frame_id.py
+    scripts/change_topics.py
     scripts/check_delay.py
     scripts/check_drop.py
-    scripts/change_topics.py
-    scripts/change_frame_id.py
-    scripts/change_camera_info.py
-    scripts/camera_info_parser.py
-    scripts/batch_process.py
-    scripts/bag_add_time_offset.py
-    scripts/add_header_time_offset.py
+    scripts/cut.py
+    scripts/extract_topics.py
+    scripts/gps_to_std_gt.py
+    scripts/image_sequence_publisher.py
+    scripts/make_video.py
+    scripts/merge.py
     scripts/plot.py
+    scripts/remove_tf.py
+    scripts/replace_msg_time_with_hdr.py
+    scripts/stereo_sequence_publisher.py
+    scripts/transform_tf.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
