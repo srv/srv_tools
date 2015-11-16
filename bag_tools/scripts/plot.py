@@ -411,13 +411,14 @@ class ROSData:
 
 
 class BagTopicPlotter:
-    def __init__(self, bags, topics, plot_arrays=True, plot_headers=True, plot_format='png', plot_style='.-', bag_time=False):
+    def __init__(self, bags, topics, plot_arrays=True, plot_headers=True, plot_format='png', plot_style='.-', bag_time=False, out_suffix = ''):
         self._bags = bags
         self._plot_arrays = plot_arrays
         self._plot_headers = plot_headers
         self._plot_format = plot_format
         self._plot_style = plot_style
         self._bag_time = bag_time
+        self._out_suffix = out_suffix
 
         self._bag_topic_helpers = {}
         for bag in self._bags:
@@ -512,7 +513,7 @@ class BagTopicPlotter:
 
             plt.legend(plottable_topics, loc=0)
 
-            plt.savefig(bag.replace('.bag', '') + '.' + self._plot_format)
+            plt.savefig(bag.replace('.bag', '') + self._out_suffix + '.' + self._plot_format)
 
             plt.close(fig)
         except OverflowError as e:
@@ -617,11 +618,12 @@ if __name__ == "__main__":
     parser.add_argument('--plot_format', help='output plot format', default='png')
     parser.add_argument('--plot_style', help='output plot style', default='.-')
     parser.add_argument('--bag_time', help='use bag time instead of msg header time', action='store_true')
+    parser.add_argument('--out_suffix', help='output suffix', default='')
 
     args = parser.parse_args()
 
     try:
-        BagTopicPlotter(args.bags, args.topics, not args.noarr, not args.nohdr, args.plot_format, args.plot_style, args.bag_time)
+        BagTopicPlotter(args.bags, args.topics, not args.noarr, not args.nohdr, args.plot_format, args.plot_style, args.bag_time, args.out_suffix)
     except Exception, e:
         import traceback
         traceback.print_exc()
