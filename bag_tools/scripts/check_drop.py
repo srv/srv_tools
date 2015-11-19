@@ -39,7 +39,7 @@ import argparse
 import matplotlib as mpl
 mpl.use('Agg')
 
-import mpl.pyplot as plt
+import matplotlib.pyplot as plt
 
 def check_drop(inbags, plot_format='png'):
   # Retrieve msg time, bag time and sequence number for all topics and messages:
