@@ -50,7 +50,7 @@ from operator import itemgetter
 import matplotlib as mpl
 mpl.use('Agg')
 
-import matplotlib.pyplot as plt
+import mpl.pyplot as plt
 
 
 def get_nested_attribute(msg, nested_attributes):

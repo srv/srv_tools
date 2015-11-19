@@ -35,7 +35,11 @@ import rosbag
 import numpy
 import argparse
 
-import matplotlib.pyplot as plt
+# Workaround to avoid issues with X11 rendering when running on background:
+import matplotlib as mpl
+mpl.use('Agg')
+
+import mpl.pyplot as plt
 
 def check_drop(inbags, plot_format='png'):
   # Retrieve msg time, bag time and sequence number for all topics and messages:
