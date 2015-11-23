@@ -33,11 +33,12 @@ import rospy
 import rosbag
 
 import argparse
+import os
 
 def merge(inbags, outbag='output.bag', topics=None, exclude_topics=[], raw=True):
   # Open output bag file:
   try:
-    out = rosbag.Bag(outbag, 'a')
+    out = rosbag.Bag(outbag, 'a' if os.path.exists(outbag) else 'w')
   except IOError as e:
     rospy.logerr('Failed to open output bag file %s!: %s' % (outbag, e.message))
     rospy.signal_shutdown('Failed to open output bag file %s!: %s' % (outbag, e.message))
