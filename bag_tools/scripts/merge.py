@@ -29,39 +29,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-import rospy
+from __future__ import print_function
+
 import rosbag
 
 import argparse
 import os
+import sys
 
 def merge(inbags, outbag='output.bag', topics=None, exclude_topics=[], raw=True):
   # Open output bag file:
   try:
     out = rosbag.Bag(outbag, 'a' if os.path.exists(outbag) else 'w')
   except IOError as e:
-    rospy.logerr('Failed to open output bag file %s!: %s' % (outbag, e.message))
-    rospy.signal_shutdown('Failed to open output bag file %s!: %s' % (outbag, e.message))
-    return
+    print('Failed to open output bag file %s!: %s' % (outbag, e.message), file=sys.stderr)
+    return 127
 
   # Write the messages from the input bag files into the output one:
   for inbag in inbags:
     try:
-      rospy.loginfo('   Processing input bagfile: %s', inbag)
+      print('   Processing input bagfile: %s' % inbag)
       for topic, msg, t in rosbag.Bag(inbag, 'r').read_messages(topics=topics, raw=raw):
         if topic not in args.exclude_topics:
           out.write(topic, msg, t, raw=raw)
     except IOError as e:
-      rospy.logerr('Failed to open input bag file %s!: %s' % (inbag, e.message))
-      rospy.signal_shutdown('Failed to open input bag file %s!: %s' % (inbag, e.message))
-      return
+      print('Failed to open input bag file %s!: %s' % (inbag, e.message), file=sys.stderr)
+      return 127
 
   out.close()
 
+  return 0
+
 
 if __name__ == "__main__":
-  rospy.init_node('merge', anonymous=True)
-
   parser = argparse.ArgumentParser(
       description='Merge multiple bag files into a single one.')
   parser.add_argument('inbag', help='input bagfile(s)', nargs='+')
@@ -71,7 +71,7 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   try:
-    merge(args.inbag, args.output, args.topics, args.exclude_topics)
+    sys.exit(merge(args.inbag, args.output, args.topics, args.exclude_topics))
   except Exception, e:
     import traceback
     traceback.print_exc()
