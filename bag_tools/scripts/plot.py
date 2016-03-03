@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # @todo split all this into libraries
 from __future__ import print_function
 
-import rospy
 import roslib
 import roslib.msgs
 import rosbag
@@ -426,10 +425,10 @@ class BagTopicPlotter:
 
         # @todo support multiple bags, for now we take the first one only
         if len(self._bags) > 1:
-            rospy.logwarn("Does NOT support multiple bags yet! Only first bag will be used.")
+            print("Does NOT support multiple bags yet! Only first bag will be used.", file=sys.stderr)
         bag = self._bags[0]
 
-        rospy.loginfo("Processing %s ..." % bag)
+        print("Processing %s ..." % bag)
 
         # Retrieve/Expand plottable topic fields:
         plottable_topics = []
@@ -437,8 +436,7 @@ class BagTopicPlotter:
             plottable_topics += self.get_plot_fields(topic)[0]
 
         if len(plottable_topics) == 0:
-            rospy.logwarn("No topic/field can be plotted!")
-            rospy.signal_shutdown("No topic/field can be plotted!")
+            print("No topic/field can be plotted!", file=sys.stderr)
             return
 
         # Create topic evaluators:
@@ -478,12 +476,10 @@ class BagTopicPlotter:
 
                     times[topic].append(time.to_sec())
         except IOError as e:
-            rospy.logerr('Failed to open bag file %s: %s!' % (bag, e.strerror))
-            rospy.signal_shutdown('Failed to open bag file %s: %s!' % (bag, e.strerror))
+            print('Failed to open bag file %s: %s!' % (bag, e.strerror), file=sys.stderr)
             return
         except rosbag.ROSBagException as e:
-            rospy.logerr('Failed to read bag file %s: %s!' % (bag, e.message))
-            rospy.signal_shutdown('Failed to read bag file %s: %s!' % (bag, e.message))
+            print('Failed to read bag file %s: %s!' % (bag, e.message), file=sys.stderr)
             return
 
         min_time = []
@@ -517,7 +513,7 @@ class BagTopicPlotter:
 
             plt.close(fig)
         except OverflowError as e:
-            rospy.logerr('Failed to save plot as %s image file (try other format, e.g. svg): %s', self._plot_format, e.message)
+            print('Failed to save plot as %s image file (try other format, e.g. svg): %s', self._plot_format, e.message, file=sys.stderr)
 
     def get_plot_fields(self, topic_name):
         """
@@ -598,8 +594,6 @@ class BagTopicPlotter:
 
 
 if __name__ == "__main__":
-    rospy.init_node('plot', anonymous=True)
-
     parser = argparse.ArgumentParser(
         description='Plots a list of topics into a single axis. '
                     'All the numeric fields are plotted in different series. '
