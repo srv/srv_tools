@@ -215,6 +215,9 @@ class BagTopicHelper:
         # Get topic types:
         topic_types = self.get_topic_types()
 
+        if topic_types is None:
+            return None, None, None, None
+
         # Exact match first, followed by prefix match:
         matches = [(t, t_type) for t, t_type in topic_types if t == topic]
         if not matches:
