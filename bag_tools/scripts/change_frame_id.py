@@ -12,9 +12,9 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright
       notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Systems, Robotics and Vision Group, University of 
-      the Balearican Islands nor the names of its contributors may be used to 
-      endorse or promote products derived from this software without specific 
+    * Neither the name of Systems, Robotics and Vision Group, University of
+      the Balearican Islands nor the names of its contributors may be used to
+      endorse or promote products derived from this software without specific
       prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
@@ -55,7 +55,7 @@ def change_frame_id(inbag,outbag,frame_id,topics):
   outbag.close();
 
 if __name__ == "__main__":
-
+  rospy.init_node('change_frame_id')
   parser = argparse.ArgumentParser(
       description='reate a new bagfile from an existing one replacing the frame id of requested topics.')
   parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
