@@ -31,19 +31,38 @@ public:
     nh_priv_.param("voxel_size", voxel_size_, 0.1);
     nh_priv_.param("filter_map", filter_map_, false);
 
-    cloud_sub_ = nh_.subscribe<PointCloud>("input", 1, &PointCloudMapper::callback, this);
-    cloud_pub_ = nh_priv_.advertise<PointCloud>("output", 1, true);
+    cloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("input", 1, &PointCloudMapper::callback, this);
+    cloud_pub_ = nh_priv_.advertise<sensor_msgs::PointCloud2>("output", 1, true);
+
+    accumulated_cloud_.header.frame_id = fixed_frame_;
+
+    ROS_INFO_STREAM("[PointCloudMapper params:\n" <<
+                    "\t* Fixed frame:   " << fixed_frame_ << "\n" <<
+                    "\t* Filter map:    " << filter_map_ << "\n" <<
+                    "\t* Filter bounds: " << "( " << x_filter_min_ << ", " << y_filter_min_ << ", " << z_filter_min_ << ") and ( " << x_filter_max_ << ", " << y_filter_max_ << ", " << z_filter_max_ << ")" << "\n" <<
+                    "\t* Voxel size:    " << voxel_size_);
+
     pub_timer_ = nh_.createWallTimer(ros::WallDuration(3.0), &PointCloudMapper::publishCallback, this);
   }
 
-  void callback(const PointCloud::ConstPtr& cloud)
+  void callback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   {
-    ROS_INFO_STREAM("Received cloud with " << cloud->points.size() << " points.");
+    PointCloud cloud;
+    pcl::fromROSMsg(*cloud_msg, cloud);
+    ROS_INFO_STREAM("Received cloud with " << cloud.points.size() << " points.");
+
     PointCloud transformed_cloud;
-    ros::Time points_time;
-    points_time.fromNSec(cloud->header.stamp);
-    tf_listener_.waitForTransform(fixed_frame_, cloud->header.frame_id, points_time, ros::Duration(5.0));
-    bool success = pcl_ros::transformPointCloud(fixed_frame_, *cloud, transformed_cloud, tf_listener_);
+    tf::StampedTransform transform;
+    try {
+      tf_listener_.waitForTransform(fixed_frame_, cloud_msg->header.frame_id, cloud_msg->header.stamp, ros::Duration(5.0));
+      tf_listener_.lookupTransform(fixed_frame_, cloud_msg->header.frame_id, cloud_msg->header.stamp, transform);
+    } catch (tf::TransformException ex){
+      ROS_ERROR("%s",ex.what());
+      ros::Duration(1.0).sleep();
+    }
+
+    pcl_ros::transformPointCloud(cloud, transformed_cloud, tf::Transform(transform));
+    bool success = true;
     if (success)
     {
       accumulated_cloud_ += transformed_cloud;
@@ -71,8 +90,12 @@ public:
   {
     // Publish the accumulated cloud if last publication was more than 5 seconds before.
     ros::WallDuration elapsed_time = ros::WallTime::now() - last_pub_time_;
-    if (cloud_pub_.getNumSubscribers() > 0 && elapsed_time.toSec() > 5.0)
-      cloud_pub_.publish(accumulated_cloud_);
+    if (cloud_pub_.getNumSubscribers() > 0 && elapsed_time.toSec() > 5.0) {
+
+      sensor_msgs::PointCloud2 cloud_msg;
+      pcl::toROSMsg(accumulated_cloud_, cloud_msg);
+      cloud_pub_.publish(cloud_msg);
+    }
   }
 
   PointCloud::Ptr filter(PointCloud::Ptr cloud)
