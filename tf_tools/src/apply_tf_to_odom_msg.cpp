@@ -25,7 +25,7 @@ public:
     nh_private_.param("qx", qx, 0.0);
     nh_private_.param("qy", qy, 0.0);
     nh_private_.param("qz", qz, 0.0);
-    nh_private_.param("qw", qw, 0.0);
+    nh_private_.param("qw", qw, 1.0);
 
     // Build tf
     tf::Vector3 t(x, y, z);
@@ -52,11 +52,11 @@ public:
 
     // Build the odometry pose
     tf::Vector3 t(x, y, z);
-    tf::Quaternion q(qx, qy, qz, qw);
+    tf::Quaternion q(qx, qy, qz, 1.0);
     tf::Transform pose(q, t);
 
     // Transform
-    tf::Transform new_pose = pose * trans_;
+    tf::Transform new_pose = trans_ * pose;
 
     // Publish
     nav_msgs::Odometry new_odom_msg = *odom_msg;

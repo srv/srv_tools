@@ -1,5 +1,5 @@
 <!-- launch file for image extraction from a bagfile
-     
+
      this launch does a playback of a bagfile,
      runs image processing to get coloured rectified images
      from raw images, and saves the images to harddrive.
@@ -15,14 +15,25 @@
 -->
 
 <launch>
-  <arg name="bagfile" />
-  <arg name="camera" default="camera_flex_wide/left" />
+  <param name="/use_sim_time" value="true"/>
+  <arg name="camera" default="/stereo_down/left" />
   <arg name="image" default="image_rect_color" />
   <arg name="format" default="frame%06i.png" />
-  <arg name="rate" default="1.0" />
+  <arg name="rate" default="50.0" />
+
+  <arg name="bagfile" default="/home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-28-51_0.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-30-18_1.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-31-46_2.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-33-14_3.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-34-41_4.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-36-09_5.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-37-36_6.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-39-04_7.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-40-31_8.bag
+                               /home/plnegre/workspace/ros/data/bagfiles/2015_Valldemossa/06/2015-06-08-20-41-59_9.bag"/>
 
   <!-- playback the data -->
-  <node pkg="rosbag" type="play" name="player" args="-d 1 -r $(arg rate) $(arg bagfile)" output="screen" required="true" />
+  <node pkg="rosbag" type="play" name="player" args="-d 1 -r $(arg rate) $(arg bagfile)" required="true" />
 
   <!-- run the image processing (de-bayering, undistortion, rectification) -->
   <node pkg="image_proc" type="image_proc" name="image_proc" ns="$(arg camera)" />

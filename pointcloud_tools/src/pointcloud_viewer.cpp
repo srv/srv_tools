@@ -48,6 +48,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/features/feature.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
 
@@ -185,7 +186,15 @@ void saveCallback(const ros::WallTimerEvent&)
 
   if (cloud_xyz_rgb_.size() > 0)
   {
-    if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_rgb_) == 0)
+    // Remove outliers
+    pcl::PointCloud<PointRGB>::Ptr cloud_filtered (new pcl::PointCloud<PointRGB>);
+    pcl::StatisticalOutlierRemoval<PointRGB> sor;
+    sor.setInputCloud (cloud_xyz_rgb_.makeShared());
+    sor.setMeanK (50);
+    sor.setStddevMulThresh (1.0);
+    sor.filter (*cloud_filtered);
+
+    if (pcl::io::savePCDFile(pcd_filename_, *cloud_filtered) == 0)
       ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
     else
       ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
@@ -194,7 +203,15 @@ void saveCallback(const ros::WallTimerEvent&)
 
   if (cloud_xyz_.size() > 0)
   {
-    if (pcl::io::savePCDFile(pcd_filename_, cloud_xyz_) == 0)
+    // Remove outliers
+    pcl::PointCloud<Point>::Ptr cloud_filtered (new pcl::PointCloud<Point>);
+    pcl::StatisticalOutlierRemoval<Point> sor;
+    sor.setInputCloud (cloud_xyz_.makeShared());
+    sor.setMeanK (50);
+    sor.setStddevMulThresh (1.0);
+    sor.filter (*cloud_filtered);
+
+    if (pcl::io::savePCDFile(pcd_filename_, *cloud_filtered) == 0)
       ROS_INFO_STREAM("[PointCloudViewer:] Pointcloud saved into: " << pcd_filename_);
     else
       ROS_ERROR_STREAM("[PointCloudViewer:] Problem saving " << pcd_filename_.c_str());
