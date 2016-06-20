@@ -12,29 +12,30 @@ class Error(Exception):
 def get_xyz(gps_point):
   lat = gps_point[3]*np.pi/180 #converting to radians.
   lon = gps_point[4]*np.pi/180 #converting to radians.
-  alt = gps_point[5]*np.pi/180 #converting to radians.  
-  a = 6378137.0 # earth semimajor axis in meters.   
-  f = 1/298.257223563 # reciprocal flattening. 
-  e2 = 2*f - np.power(f,2) # eccentricity squared. 
+  alt = gps_point[5]*np.pi/180 #converting to radians.
+  a = 6378137.0 # earth semimajor axis in meters.
+  f = 1/298.257223563 # reciprocal flattening.
+  e2 = 2*f - np.power(f,2) # eccentricity squared.
 
-  chi = np.sqrt(1-e2 * np.power(np.sin(lat),2)); 
-  x = (a/chi +alt) * np.cos(lat) * np.cos(lon);   
-  y = (a/chi +alt) * np.cos(lat) * np.sin(lon);   
-  z = (a*(1-e2)/chi + alt) * np.sin(lat); 
+  chi = np.sqrt(1-e2 * np.power(np.sin(lat),2));
+  x = (a/chi +alt) * np.cos(lat) * np.cos(lon);
+  y = (a/chi +alt) * np.cos(lat) * np.sin(lon);
+  z = (a*(1-e2)/chi + alt) * np.sin(lat);
   return x, y, z
 
 if __name__ == "__main__":
+  rospy.init_node('gps_to_std_gt')
   import argparse
   parser = argparse.ArgumentParser(
           description='Convert gps/fix topic to standard ground truth file',
           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-  parser.add_argument('gps_topic_file', 
+  parser.add_argument('gps_topic_file',
           help='file with the gps/fix topic. Saved with "rostopic echo -p /gps/fix > data/anselm_turmeda/gt_gps.txt"')
-  parser.add_argument('output_file', 
+  parser.add_argument('output_file',
           help='output file where the standard ground truth values will be saved.')
   args = parser.parse_args()
 
-  # Read the 
+  # Read the
   gps_topic = pylab.loadtxt(args.gps_topic_file, delimiter=',', skiprows=1, usecols=(0,1,2,6,7,8))
 
   # Write the x, y, z data to the output file
@@ -72,4 +73,3 @@ if __name__ == "__main__":
 
   pyplot.draw()
   pylab.show()
-    

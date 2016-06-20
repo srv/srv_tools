@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pointcloud_tools)
 
-find_package(catkin REQUIRED COMPONENTS roscpp pcl_ros std_msgs sensor_msgs nav_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp pcl_ros std_msgs sensor_msgs nav_msgs pcl_conversions)
 find_package(PCL REQUIRED)
 find_package(VTK REQUIRED)
 

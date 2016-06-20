@@ -68,6 +68,7 @@ def check_delay(inbags):
     rospy.loginfo('%s : mean = %s, min = %s, max = %s, median = %s', topic.ljust(max_len + 2), dmean, dmin, dmax, dmedian)
 
 if __name__ == "__main__":
+  rospy.init_node('check_delay')
   parser = argparse.ArgumentParser(
       description='Checks the delay in a bagfile between publishing (recording) '
                   'time and the time stamp in the header (if exists). Prints '

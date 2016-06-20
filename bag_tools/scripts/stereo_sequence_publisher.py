@@ -56,8 +56,10 @@ def collect_image_files(image_dir,file_pattern):
   return images
 
 def playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, camera_info_file_r, publish_rate):
+  frame_id = "/camera"
   if camera_info_file_l != "":
     cam_info_l = camera_info_parser.parse_yaml(camera_info_file_l)
+    frame_id = cam_info_l.header.frame_id
     publish_cam_info_l = True
   else:
     publish_cam_info_l = False
@@ -74,12 +76,12 @@ def playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, 
 
   bridge = cv_bridge.CvBridge()
   rate = rospy.Rate(publish_rate)
-  image_publisher_l = rospy.Publisher('stereo_camera/left/image_color', sensor_msgs.msg.Image, queue_size = 1)
-  image_publisher_r = rospy.Publisher('stereo_camera/right/image_color', sensor_msgs.msg.Image, queue_size = 1)
+  image_publisher_l = rospy.Publisher('stereo_camera/left/image_raw', sensor_msgs.msg.Image, queue_size = 5)
+  image_publisher_r = rospy.Publisher('stereo_camera/right/image_raw', sensor_msgs.msg.Image, queue_size = 5)
   if publish_cam_info_l:
-      cam_info_publisher_l = rospy.Publisher('stereo_camera/left/camera_info', sensor_msgs.msg.CameraInfo, queue_size = 1)
+      cam_info_publisher_l = rospy.Publisher('stereo_camera/left/camera_info', sensor_msgs.msg.CameraInfo, queue_size = 5)
   if publish_cam_info_r:
-      cam_info_publisher_r = rospy.Publisher('stereo_camera/right/camera_info', sensor_msgs.msg.CameraInfo, queue_size = 1)
+      cam_info_publisher_r = rospy.Publisher('stereo_camera/right/camera_info', sensor_msgs.msg.CameraInfo, queue_size = 5)
 
   rospy.loginfo('Starting playback.')
   for image_file_l, image_file_r in zip(image_files_l, image_files_r):
@@ -90,19 +92,18 @@ def playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, 
     image_r = cv.LoadImage(image_file_r)
     image_msg = bridge.cv2_to_imgmsg(np.asarray(image_l[:,:]), encoding='bgr8')
     image_msg.header.stamp = now
-    image_msg.header.frame_id = "/camera"
+    image_msg.header.frame_id = frame_id
     image_publisher_l.publish(image_msg)
     image_msg = bridge.cv2_to_imgmsg(np.asarray(image_r[:,:]), encoding='bgr8')
     image_msg.header.stamp = now
-    image_msg.header.frame_id = "/camera"
+    image_msg.header.frame_id = frame_id
     image_publisher_r.publish(image_msg)
     if publish_cam_info_l:
       cam_info_l.header.stamp = now
-      cam_info_l.header.frame_id = "/camera"
       cam_info_publisher_l.publish(cam_info_l)
     if publish_cam_info_r:
       cam_info_r.header.stamp = now
-      cam_info_r.header.frame_id = "/camera"
+      cam_info_r.header.frame_id = frame_id
       cam_info_publisher_r.publish(cam_info_r)
     rate.sleep()
   rospy.loginfo('No more images left. Stopping.')

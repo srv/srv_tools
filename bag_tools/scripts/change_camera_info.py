@@ -84,6 +84,7 @@ def replacement(replace_string):
   return pair[0], cam_info
 
 if __name__ == "__main__":
+  rospy.init_node('change_camera_info')
   parser = argparse.ArgumentParser(description='Change camera info messages in a bagfile.')
   parser.add_argument('inbag', help='input bagfile')
   parser.add_argument('outbag', help='output bagfile')
