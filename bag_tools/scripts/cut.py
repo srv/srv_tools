@@ -53,7 +53,7 @@ def cut(inbags, outbagfile, start, duration):
   outbag = rosbag.Bag(outbagfile, 'w')
   num_messages = 0
   for inbag in inbags:
-    rospy.loginfo('   Extracting messages from:', inbag)
+    rospy.loginfo('   Extracting messages from: %s', inbag)
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages(start_time=start_time, end_time=end_time):
       outbag.write(topic, msg, t)
       num_messages = num_messages + 1
