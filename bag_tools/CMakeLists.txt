@@ -14,7 +14,6 @@ catkin_package(
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS})
 
 add_executable(extract_images src/extract_images.cpp)
-add_executable(extract_image_positions src/extract_image_positions.cpp)
 add_executable(extract_stereo_images src/extract_stereo_images.cpp)
 add_executable(process_stereo src/process_stereo.cpp)
 
