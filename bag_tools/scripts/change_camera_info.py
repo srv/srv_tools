@@ -75,12 +75,6 @@ def replacement(replace_string):
   cam_info.R = calib_data['rectification_matrix']['data']
   cam_info.P = calib_data['projection_matrix']['data']
   cam_info.distortion_model = calib_data['distortion_model']
-  cam_info.binning_x = calib_data['binning_x']
-  cam_info.binning_y = calib_data['binning_y']
-  cam_info.roi.width = calib_data['roi_image_width']
-  cam_info.roi.height = calib_data['roi_image_height']
-  cam_info.roi.x_offset = calib_data['roi_x_offset']
-  cam_info.roi.y_offset = calib_data['roi_y_offset']
   return pair[0], cam_info
 
 if __name__ == "__main__":
