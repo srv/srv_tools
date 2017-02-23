@@ -2,8 +2,8 @@
 Changelog for package plot_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2017-02-23)
+------------------
 
 * hydro catkinization changes
 * added python setup files and wet'ed plot tools

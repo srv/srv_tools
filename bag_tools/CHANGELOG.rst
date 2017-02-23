@@ -2,8 +2,8 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2017-02-23)
+------------------
 * Add missing changes
 * Forgot to remove extract_image_positions target
 * Fix `#12 <https://github.com/srv/srv_tools/issues/12>`_: Remove old field from camera_info msg

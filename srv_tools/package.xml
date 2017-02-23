@@ -1,6 +1,6 @@
 <package>
   <name>srv_tools</name>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <description>Stack with interesting ROS tools</description>
    <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
 
