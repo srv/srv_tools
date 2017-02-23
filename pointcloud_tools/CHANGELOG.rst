@@ -4,6 +4,18 @@ Changelog for package pointcloud_tools
 
 Forthcoming
 -----------
+* Minnor changes
+* fixed pointcloud mapper
+* fixed bug with XYZ clouds
+* Addapt the pointlcoud_to_webgl script to the new format of the website
+* Fix ros timers to work when bagfile finishes
+* Fix save problem in pointlcoud viewer
+* Publish the pointcloud at the same rate
+* Add info message when save pointcloud
+* added waitForTransform to mapper
+* changed to use system VTK paths
+* Contributors: Miquel Massot, Scott K Logan, plnegre
+
 * added pointcloud_to_webgl from fuerte branch
 * New node: pointcloud_mapper_for_slam
 * Fix dependency for hydro compliance
