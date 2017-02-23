@@ -17,8 +17,6 @@ add_executable(extract_images src/extract_images.cpp)
 add_executable(extract_stereo_images src/extract_stereo_images.cpp)
 add_executable(process_stereo src/process_stereo.cpp)
 
-add_dependencies(extract_image_positions auv_msgs_generate_messages_cpp)
-
 target_link_libraries(extract_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(extract_stereo_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(process_stereo ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
