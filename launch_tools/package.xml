@@ -1,6 +1,6 @@
 <package>
   <name>launch_tools</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <description>ROS tools and scripts related to launchfiles</description>
   <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
 

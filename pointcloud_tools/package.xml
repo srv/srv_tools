@@ -1,6 +1,6 @@
 <package>
   <name>pointcloud_tools</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <description>pointcloud_tools</description>
   <maintainer email="plnegre@uib.es">Pep Lluis Negre</maintainer>
 

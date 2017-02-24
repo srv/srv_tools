@@ -2,8 +2,8 @@
 Changelog for package pointcloud_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2017-02-24)
+------------------
 * Fix release
 * Minnor changes
 * fixed pointcloud mapper
