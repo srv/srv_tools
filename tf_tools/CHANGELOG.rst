@@ -4,6 +4,13 @@ Changelog for package tf_tools
 
 Forthcoming
 -----------
+* Fix release
+* Minnor changes
+* Add new tf tool
+* Contributors: Miquel Massot, plnegre
+
+0.0.2 (2017-02-23)
+------------------
 * Minnor changes
 * Add new tf tool
 * Contributors: plnegre
