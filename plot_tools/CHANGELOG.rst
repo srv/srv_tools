@@ -4,6 +4,7 @@ Changelog for package plot_tools
 
 Forthcoming
 -----------
+
 * hydro catkinization changes
 * added python setup files and wet'ed plot tools
 * Legend now is the filename

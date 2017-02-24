@@ -4,6 +4,7 @@ Changelog for package launch_tools
 
 Forthcoming
 -----------
+
 * preparing for indigo. changed prints for ros logs
 * added gps_to_std_gt and services_timer from fuerte
 * hydro catkinization changes

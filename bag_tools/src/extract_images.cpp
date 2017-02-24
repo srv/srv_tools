@@ -73,9 +73,10 @@ private:
   void save_image(uint64_t _time_stamp, const cv::Mat& _image)
   {
       std::string filename =
-        boost::str(boost::format("%s/%s%lu.%s")
+        boost::str(boost::format("%s/%s%06lu_%lu.%s")
             % save_dir_
             % prefix_
+            % num_saved_
             % _time_stamp
             % filetype_);
       if (!cv::imwrite(filename, _image))

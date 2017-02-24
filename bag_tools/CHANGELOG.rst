@@ -4,6 +4,25 @@ Changelog for package bag_tools
 
 Forthcoming
 -----------
+* Add missing changes
+* Forgot to remove extract_image_positions target
+* Fix `#12 <https://github.com/srv/srv_tools/issues/12>`_: Remove old field from camera_info msg
+* Remove extract_image_positions and auv_msgs depencency
+* add auv_msgs deps in CMake
+* Fix `#10 <https://github.com/srv/srv_tools/issues/10>`_
+* add extract_image_positions
+* Merge branch 'indigo' of github.com:srv/srv_tools into indigo
+* Minnor changes
+* Merge branch 'indigo' of github.com:srv/srv_tools into indigo
+* add missing rospy node init
+* Merge branch 'indigo' of github.com:srv/srv_tools into indigo
+* Fix camera info tool
+* Fix bag_tools scripts install
+* Added stereo_sequence_publisher.py
+* fix seq publisher for indigo
+* Addapt the pointlcoud_to_webgl script to the new format of the website
+* Contributors: Enrique Fernandez, Miquel Massot, matlabbe, plnegre
+
 * typo on console_bridge dependency
 * added -this- to reference the same class
 * Of course, we must clear the tmp folder...
