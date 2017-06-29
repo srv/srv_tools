@@ -17,3 +17,8 @@ target_link_libraries(tf_logger ${catkin_LIBRARIES})
 target_link_libraries(tf_filter ${catkin_LIBRARIES})
 target_link_libraries(apply_tf_to_odom_msg ${catkin_LIBRARIES})
 
+install(TARGETS tf_logger tf_filter apply_tf_to_odom_msg
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
