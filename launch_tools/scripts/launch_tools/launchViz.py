@@ -12,9 +12,9 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright
       notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Systems, Robotics and Vision Group, University of 
-      the Balearican Islands nor the names of its contributors may be used to 
-      endorse or promote products derived from this software without specific 
+    * Neither the name of Systems, Robotics and Vision Group, University of
+      the Balearican Islands nor the names of its contributors may be used to
+      endorse or promote products derived from this software without specific
       prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
@@ -43,7 +43,7 @@ try:
     import roslib.packages
 except ImportError:
     # Checks the installation of the necessary python modules
-    rospy.loginfo((os.linesep * 2).join(["An error found importing one module:",
+    print((os.linesep * 2).join(["An error found importing one module:",
     str(sys.exc_info()[1]), "You need to install it", "Stopping..."]))
     sys.exit(-2)
 
@@ -71,7 +71,7 @@ def show_graph(g,package = 0):
     g.write('}')
     if len(g.getvalue())>26:
         drawable = True
-        window = xdot.xdot.DotWindow()
+        window = xdot.DotWindow()
         window.set_dotcode(g.getvalue())
         if package:
             window.set_title('Package {0}'.format(package))
@@ -144,7 +144,7 @@ def draw_folder(g,folder):
                         incl_ext = os.path.basename(node.attrib.get('file'))
                         incl = os.path.splitext(incl_ext)[0]
                         node_includes.append(incl)
-                    if node.tag == "node": 
+                    if node.tag == "node":
                         node_type = node.attrib.get('type')
                         if node_type == "nodelet":
                             node_type = node.attrib.get('args')
