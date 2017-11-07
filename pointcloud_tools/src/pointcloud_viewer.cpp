@@ -53,7 +53,9 @@
 using pcl::visualization::PointCloudColorHandlerGenericField;
 
 typedef pcl::PointXYZ             Point;
+typedef pcl::PointNormal          PointNormal;
 typedef pcl::PointCloud<Point>    PointCloud;
+typedef pcl::PointCloud<PointNormal>    PointCloudNormal;
 typedef pcl::PointXYZRGB          PointRGB;
 typedef pcl::PointCloud<PointRGB> PointCloudRGB;
 
@@ -67,6 +69,7 @@ int counter_;
 ros::WallTimer save_timer_;
 
 PointCloud cloud_xyz_;
+PointCloudNormal cloud_xyzn_;
 PointCloudRGB cloud_xyz_rgb_;
 
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& cloud)
@@ -92,6 +95,7 @@ void updateVisualization()
 
   ros::WallDuration d(0.01);
   bool rgb = false;
+  bool normal = false;
   std::vector<pcl::PCLPointField> fields;
 
   // Create the visualizer
@@ -121,9 +125,15 @@ void updateVisualization()
       rgb = true;
       pcl::fromROSMsg(*cloud_, cloud_xyz_rgb_);
     }
+    else if (pcl::getFieldIndex(*cloud_, "normal_x") != -1)
+    {
+      normal = true;
+      pcl::fromROSMsg(*cloud_, cloud_xyzn_);
+    }
     else
     {
       rgb = false;
+      normal = false;
       pcl::fromROSMsg(*cloud_, cloud_xyz_);
       pcl::getFields(cloud_xyz_, fields);
     }
@@ -143,7 +153,7 @@ void updateVisualization()
         pcl::computeMeanAndCovarianceMatrix(cloud_xyz_rgb_, covariance_matrix, xyz_centroid);
         viewer.initCameraParameters();
         viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
-        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud viewer camera initialized in: [" <<
+        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud rgb viewer camera initialized in: [" <<
           xyz_centroid(0) << ", " << xyz_centroid(1) << ", " << xyz_centroid(2)+3.0 << "]");
         viewer_initialized_ = true;
       }
@@ -151,6 +161,32 @@ void updateVisualization()
       pcl::visualization::PointCloudColorHandlerRGBField<PointRGB> color_handler(
         cloud_xyz_rgb_.makeShared());
       viewer.addPointCloud(cloud_xyz_rgb_.makeShared(), color_handler, "cloud");
+    }
+    else if (normal && pcl::getFieldIndex(cloud_xyzn_, "normal_x", fields) != -1)
+    {
+      // Initialize the camera view
+      if(!viewer_initialized_)
+      {
+        pcl::computeMeanAndCovarianceMatrix(cloud_xyzn_, covariance_matrix, xyz_centroid);
+        viewer.initCameraParameters();
+        viewer.setCameraPosition(xyz_centroid(0), xyz_centroid(1), xyz_centroid(2)+3.0, 0, -1, 0);
+        ROS_INFO_STREAM("[PointCloudViewer:] Point cloud normal viewer camera initialized in: [" <<
+          xyz_centroid(0) << ", " << xyz_centroid(1) << ", " << xyz_centroid(2)+3.0 << "]");
+        viewer_initialized_ = true;
+      }
+      // Show the point cloud
+      // Show the xyz point cloud
+      PointCloudColorHandlerGenericField<PointNormal> color_handler (cloud_xyzn_.makeShared(), "z");
+      if (!color_handler.isCapable ())
+      {
+        ROS_WARN_STREAM("[PointCloudViewer:] Cannot create curvature color handler!");
+        pcl::visualization::PointCloudColorHandlerCustom<PointNormal> color_handler(
+        cloud_xyzn_.makeShared(), 255, 0, 255);
+      }
+      viewer.addPointCloud<PointNormal>(cloud_xyzn_.makeShared(), color_handler, "cloud");
+      // Delete the previous point cloud
+      viewer.removePointCloud("normals");
+      viewer.addPointCloudNormals<PointNormal>(cloud_xyzn_.makeShared(), 100, 0.02, "normals");
     }
     else
     {
@@ -238,7 +274,7 @@ int main(int argc, char** argv)
   nh_priv.param("pcd_filename", pcd_filename_, std::string("pointcloud_file.pcd"));
 
   // Create a ROS subscriber
-  ros::Subscriber sub = nh.subscribe("input", 30, cloud_cb);
+  ros::Subscriber sub = nh.subscribe("input", 1, cloud_cb);
 
   ROS_INFO("[PointCloudViewer:] Subscribing to %s for PointCloud2 messages...", nh.resolveName ("input").c_str ());
 
