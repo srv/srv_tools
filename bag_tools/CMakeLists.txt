@@ -14,15 +14,22 @@ catkin_package(
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS})
 
 add_executable(extract_images src/extract_images.cpp)
+add_executable(extract_images_from_realsense src/extract_images_from_realsense.cpp)
+
+add_executable(extract_tum_format src/extract_tum_format.cpp)
 add_executable(extract_stereo_images src/extract_stereo_images.cpp)
 add_executable(process_stereo src/process_stereo.cpp)
 
 target_link_libraries(extract_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
+target_link_libraries(extract_images_from_realsense ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(extract_stereo_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
+target_link_libraries(extract_tum_format ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(process_stereo ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 
 install(TARGETS
     extract_images
+    extract_images_from_realsense
+    extract_tum_format
     extract_stereo_images
     process_stereo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
