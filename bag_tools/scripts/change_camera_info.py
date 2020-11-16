@@ -65,8 +65,8 @@ def replacement(replace_string):
     raise argparse.ArgumentTypeError("Replace string must have the form /topic=calib_file.yaml")
   if pair[0][0] != '/':
     pair[0] = '/'+pair[0]
-  stream = file(pair[1], 'r')
-  calib_data = yaml.load(stream)
+  stream = open(pair[1], 'r')
+  calib_data = yaml.load(stream, Loader=yaml.FullLoader)
   cam_info = sensor_msgs.msg.CameraInfo()
   cam_info.width = calib_data['image_width']
   cam_info.height = calib_data['image_height']
@@ -78,17 +78,21 @@ def replacement(replace_string):
   return pair[0], cam_info
 
 if __name__ == "__main__":
+
+  "CALL : python3 change_camera_info.py --inbag in.bag --outbag out.bag --replacement /stereo_down/left/camera_info=left.yaml"
+
   rospy.init_node('change_camera_info')
   parser = argparse.ArgumentParser(description='Change camera info messages in a bagfile.')
-  parser.add_argument('inbag', help='input bagfile')
-  parser.add_argument('outbag', help='output bagfile')
-  parser.add_argument('replacement', type=replacement, nargs='+', help='replacement in form "TOPIC=CAMERA_INFO_FILE", e.g. /stereo/left/camera_info=my_new_info.yaml')
+  parser.add_argument('--inbag', help='input bagfile')
+  parser.add_argument('--outbag', help='output bagfile')
+  parser.add_argument('--replacement', type=replacement, nargs='+', help='replacement in form "TOPIC=CAMERA_INFO_FILE", e.g. /stereo/left/camera_info=my_new_info.yaml')
   args = parser.parse_args()
   replacements = {}
+
   for topic, calib_file in args.replacement:
     replacements[topic] = calib_file
   try:
     change_camera_info(args.inbag, args.outbag, replacements)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
