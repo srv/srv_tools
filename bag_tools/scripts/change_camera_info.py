@@ -79,8 +79,15 @@ def replacement(replace_string):
 
 if __name__ == "__main__":
 
-  "CALL : python3 change_camera_info.py --inbag in.bag --outbag out.bag --replacement /stereo_down/left/camera_info=left.yaml"
+  '''
+     CALL : python3 change_camera_info.py --inbag in.bag --outbag out.bag --replacement /stereo_down/left/camera_info=left.yaml
+  
+     troubleshooting:
+	- pip3 install rospkg
+	- pip3 install pycryptodomex 
+	- pip3 install gnupg
 
+  '''
   rospy.init_node('change_camera_info')
   parser = argparse.ArgumentParser(description='Change camera info messages in a bagfile.')
   parser.add_argument('--inbag', help='input bagfile')
