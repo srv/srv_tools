@@ -39,7 +39,7 @@ import sys
 import argparse
 
 def cut(inbags, outbagfile, start, duration):
-  start_time = rospy.Time.from_sec(999999999999)
+  start_time = rospy.Time.from_sec(0)
   for inbag in inbags:
     rospy.loginfo('   Looking for smallest time in: %s', inbag)
     for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
