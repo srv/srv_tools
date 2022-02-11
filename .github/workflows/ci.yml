@@ -9,11 +9,11 @@ on:
 jobs:
   i_ci:
     name: ubuntu_bionic (${{ matrix.ros_repo }})
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        ros_distro: [ melodic ]
+        ros_distro: [ melodic, noetic ]
         ros_repo: [ main, testing ]
 
     env:
