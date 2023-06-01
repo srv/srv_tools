@@ -32,45 +32,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PKG = 'bag_tools' # this package name
 
-import roslib; roslib.load_manifest(PKG)
+import os
 import rospy
-import rosbag
 import argparse
-
-def change_frame_id(inbag_file, outbag_file, frame_id, topics):
-  rospy.loginfo('   Processing input bagfile: %s', inbag_file)
-  rospy.loginfo('  Writing to output bagfile: %s', outbag_file)
-  rospy.loginfo('            Changing topics: %s', topics)
-  rospy.loginfo('           Writing frame_id: %s', frame_id)
-
-  outbag = rosbag.Bag(outbag_file, 'w')
-
-  for topic, msg, t in rosbag.Bag(inbag_file,'r').read_messages():
-    if topic in topics:
-      if msg._has_header:
-        msg.header.frame_id = frame_id
-    outbag.write(topic, msg, t)
-  rospy.loginfo('Closing output bagfile and exit...')
-  outbag.close()
+import roslib; roslib.load_manifest(PKG)
+from change_frame_id import change_frame_id
 
 if __name__ == "__main__":
 
-  '''
-  CALL : python change_frame_id.py -i path/to/in/bagfile -o path/to/out/bagfile -f desired_frame_id -t topic_to_change1 topic_to_change2 topic_to_change3 ...
+    '''
+    CALL : python change_frame_id.py -i path/to/in/folder -o path/to/out/folder -f desired_frame_id -t topic_to_change1 topic_to_change2 topic_to_change3 ...
 
-  '''
+    '''
 
-  rospy.init_node('change_frame_id')
-  parser = argparse.ArgumentParser(
-      description='Create a new bagfile from an existing one replacing the frame id of requested topics.')
-  parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
-  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile')
-  parser.add_argument('-f', metavar='FRAME_ID', required=True, help='desired frame_id name in the topics')
-  parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
-  args = parser.parse_args()
+    rospy.init_node('change_frame_id')
+    parser = argparse.ArgumentParser(
+        description='Create a new bagfile from an existing one replacing the frame id of requested topics.')
+    parser.add_argument('-i', metavar = 'INPUT_PATH', required = True, help = 'input folder')
+    parser.add_argument('-o', metavar = 'OUTPUT_PATH', required = True, help = 'output folder')
+    parser.add_argument('-f', metavar = 'FRAME_ID', required = True, help = 'desired frame_id name in the topics')
+    parser.add_argument('-t', metavar = 'TOPIC', required = True, nargs='+', help='topic(s) to change')
+    args = parser.parse_args()
 
-  try:
-    change_frame_id(args.i,args.o,args.f,args.t)
-  except Exception:
-    import traceback
-    traceback.print_exc()
+    for item in sorted(os.listdir(args.i)):
+
+        file_path_in = os.path.join(args.i, item)
+        file_path_out = os.path.join(args.o, item)
+
+        if os.path.isfile(file_path_in):
+            if ".bag" in item:
+                print("working on file: " + str(item))
+
+                try:
+                    change_frame_id(file_path_in, file_path_out, args.f, args.t)
+                except Exception:
+                    import traceback
+                    traceback.print_exc()
