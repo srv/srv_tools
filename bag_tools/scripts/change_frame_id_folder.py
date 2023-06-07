@@ -54,17 +54,20 @@ if __name__ == "__main__":
     parser.add_argument('-t', metavar = 'TOPIC', required = True, nargs='+', help='topic(s) to change')
     args = parser.parse_args()
 
+    if not os.path.exists(args.o):
+      os.makedirs(args.o)
+
     for item in sorted(os.listdir(args.i)):
 
-        file_path_in = os.path.join(args.i, item)
-        file_path_out = os.path.join(args.o, item)
+      file_path_in = os.path.join(args.i, item)
+      file_path_out = os.path.join(args.o, item)
 
-        if os.path.isfile(file_path_in):
-            if ".bag" in item:
-                print("working on file: " + str(item))
+      if os.path.isfile(file_path_in):
+          if ".bag" in item:
+              print("working on file: " + str(item))
 
-                try:
-                    change_frame_id(file_path_in, file_path_out, args.f, args.t)
-                except Exception:
-                    import traceback
-                    traceback.print_exc()
+              try:
+                  change_frame_id(file_path_in, file_path_out, args.f, args.t)
+              except Exception:
+                  import traceback
+                  traceback.print_exc()
