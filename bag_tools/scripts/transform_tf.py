@@ -120,6 +120,6 @@ if __name__ == "__main__":
 
   try:
     transform_tf(args.i, args.o, transform, args.f, args.c)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()

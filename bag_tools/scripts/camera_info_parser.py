@@ -59,6 +59,6 @@ if __name__ == "__main__":
   try:
     info = parse_yaml(args.filename)
     rospy.loginfo('Read the following info from %s\n%s', args.filename, info)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()

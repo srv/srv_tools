@@ -65,6 +65,6 @@ if __name__ == "__main__":
 
   try:
     process(args.i,args.o,args.c)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()

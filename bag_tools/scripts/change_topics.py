@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
   try:
     change_topics(args.inbag,args.outbag,replacements)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
 

@@ -67,6 +67,6 @@ if __name__ == "__main__":
 
   try:
     remove_tf(args.i,args.o,args.f)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()

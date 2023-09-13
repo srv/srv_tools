@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
   try:
     extract_topics(args.inbag,args.outbag,args.topics)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
 
