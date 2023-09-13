@@ -78,7 +78,7 @@ if __name__ == "__main__":
   tmp_dir = tempfile.mkdtemp()
   try:
     create_video(tmp_dir, args)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
   rospy.loginfo('Cleaning up temp files...')

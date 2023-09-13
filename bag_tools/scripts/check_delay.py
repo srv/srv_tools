@@ -77,6 +77,6 @@ if __name__ == "__main__":
   args = parser.parse_args()
   try:
     check_delay(args.inbag)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
