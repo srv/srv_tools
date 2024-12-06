@@ -62,7 +62,7 @@ def fix_bagfile(inbag, outbag, topics, offset):
     rospy.loginfo('Closing output bagfile.')
     outbag.close()
     rospy.loginfo('Changed the following:')
-    for k, v in count.iteritems():
+    for k, v in count.items():
       rospy.loginfo( '%s:%s messages.',k,v)
 
 if __name__ == "__main__":
@@ -70,12 +70,12 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(
       description='Shift the publishing time of given topics in input bagfile.')
   parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
-  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile(s)', nargs='+')
+  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile(s)')
   parser.add_argument('-of', metavar='OFFSET', required=True, type=float, help='time offset to add in seconds')
   parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
   args = parser.parse_args()
   try:
-      fix_bagfile(args.i, args.o, arg.t, args.of)
-  except Exception, e:
+      fix_bagfile(args.i, args.o, args.t, args.of)
+  except Exception as e:
       import traceback
       traceback.print_exc()
