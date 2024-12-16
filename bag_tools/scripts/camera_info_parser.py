@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,16 +29,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
 import yaml
+import rospy
+import argparse
 import sensor_msgs.msg
 
+
 def parse_yaml(filename):
-  stream = file(filename, 'r')
-  calib_data = yaml.load(stream)
+  with open(filename, 'r') as stream:
+    try:
+      calib_data = yaml.safe_load(stream)
+    except yaml.YAMLError as e:
+      rospy.logerr(e)
+      return None
   cam_info = sensor_msgs.msg.CameraInfo()
   cam_info.width = calib_data['image_width']
   cam_info.height = calib_data['image_height']
@@ -50,15 +53,12 @@ def parse_yaml(filename):
   cam_info.distortion_model = calib_data['distortion_model']
   return cam_info
 
+
 if __name__ == "__main__":
   rospy.init_node('camera_info_parser')
-  import argparse
   parser = argparse.ArgumentParser(description='Parses camera info yaml files and returns them as sensor_msgs.msg.CameraInfo.')
   parser.add_argument('filename', help='input yaml file')
   args = parser.parse_args()
-  try:
-    info = parse_yaml(args.filename)
+  info = parse_yaml(args.filename)
+  if info is not None:
     rospy.loginfo('Read the following info from %s\n%s', args.filename, info)
-  except Exception as e:
-    import traceback
-    traceback.print_exc()

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Created from image_sequence_publisher.py
 Mathieu Labbe
@@ -32,28 +32,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
-import rospy
-import sensor_msgs.msg
-import cv_bridge
-import camera_info_parser
-import glob
-import cv
-import numpy as np
 import re
+import glob
+import numpy as np
+
+import cv2
+
+import rospy
+import cv_bridge
+import sensor_msgs.msg
+
+import camera_info_parser
+
 
 def natural_sort(l):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
     return sorted(l, key = alphanum_key)
 
+
 def collect_image_files(image_dir,file_pattern):
   images = glob.glob(image_dir + '/' + str(file_pattern))
   images = natural_sort(images)
   return images
+
 
 def playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, camera_info_file_r, publish_rate):
   frame_id = "/camera"
@@ -88,8 +90,8 @@ def playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, 
     if rospy.is_shutdown():
       break
     now = rospy.Time.now()
-    image_l = cv.LoadImage(image_file_l)
-    image_r = cv.LoadImage(image_file_r)
+    image_l = cv2.LoadImage(image_file_l)
+    image_r = cv2.LoadImage(image_file_r)
     image_msg = bridge.cv2_to_imgmsg(np.asarray(image_l[:,:]), encoding='bgr8')
     image_msg.header.stamp = now
     image_msg.header.frame_id = frame_id
@@ -107,6 +109,7 @@ def playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, 
       cam_info_publisher_r.publish(cam_info_r)
     rate.sleep()
   rospy.loginfo('No more images left. Stopping.')
+
 
 if __name__ == "__main__":
   rospy.init_node('image_sequence_publisher')

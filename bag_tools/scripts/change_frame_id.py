@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,13 +29,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
 import rospy
 import rosbag
 import argparse
+
 
 def change_frame_id(inbag_file, outbag_file, frame_id, topics):
   rospy.loginfo('   Processing input bagfile: %s', inbag_file)
@@ -52,6 +49,7 @@ def change_frame_id(inbag_file, outbag_file, frame_id, topics):
     outbag.write(topic, msg, t)
   rospy.loginfo('Closing output bagfile and exit...')
   outbag.close()
+
 
 if __name__ == "__main__":
 

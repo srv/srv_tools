@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,15 +29,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
 import rospy
 import rosbag
-import os
-import sys
 import argparse
+
 
 def change_topics(inbag,outbag,replacements):
   rospy.loginfo('   Processing input bagfile: %s', inbag)
@@ -50,7 +45,8 @@ def change_topics(inbag,outbag,replacements):
         topic = replacements[topic]
     outbag.write(topic, msg, t)
   rospy.loginfo('Closing output bagfile and exit...')
-  outbag.close();
+  outbag.close()
+
 
 def replacement(replace_string):
   pair = replace_string.split('=', 1)
@@ -62,6 +58,7 @@ def replacement(replace_string):
     pair[1] = '/'+pair[1]
   return pair[0], pair[1]
 
+
 if __name__ == "__main__":
   rospy.init_node('change_topics')
   parser = argparse.ArgumentParser(
@@ -71,6 +68,7 @@ if __name__ == "__main__":
   parser.add_argument('replacement', type=replacement, nargs='+', help='replacement in form "TOPIC=NEW_TOPIC", e.g. /laser1/scan=/laser2/scan')
   args = parser.parse_args()
   replacements = {}
+  
   for topic, new_topic in args.replacement:
     replacements[topic] = new_topic
 

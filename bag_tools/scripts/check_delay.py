@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,16 +29,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
 import rospy
 import rosbag
-import os
-import sys
 import argparse
 import statistics
+
 
 def check_delay(inbags):
   delays = {}
@@ -67,6 +62,7 @@ def check_delay(inbags):
     dmin, dmax, dmean = min(delay_list), max(delay_list), sum(delay_list)/len(delay_list)
     dmedian = statistics.median(delay_list)
     rospy.loginfo('%s : mean = %s, min = %s, max = %s, median = %s', topic.ljust(max_len + 2), dmean, dmin, dmax, dmedian)
+
 
 if __name__ == "__main__":
   rospy.init_node('check_delay')

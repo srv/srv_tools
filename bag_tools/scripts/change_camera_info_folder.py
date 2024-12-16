@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,17 +29,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
+import os
+import yaml
 import rospy
 import rosbag
-import os
-import sys
 import argparse
-import yaml
 import sensor_msgs.msg
+
 
 def change_camera_info(inbag,outbag,replacements):
   rospy.loginfo('      Processing input bagfile: %s', inbag)
@@ -57,7 +53,8 @@ def change_camera_info(inbag,outbag,replacements):
       msg = new_msg
     outbag.write(topic, msg, t)
   rospy.loginfo('Closing output bagfile and exit...')
-  outbag.close();
+  outbag.close()
+
 
 def replacement(replace_string):
   pair = replace_string.split('=', 1)
@@ -76,6 +73,7 @@ def replacement(replace_string):
   cam_info.P = calib_data['projection_matrix']['data']
   cam_info.distortion_model = calib_data['distortion_model']
   return pair[0], cam_info
+
 
 if __name__ == "__main__":
 
@@ -98,7 +96,6 @@ if __name__ == "__main__":
 
   path_in = args.path_in  # get in folder
   path_out = args.path_out  # get out folder
-
 
   for file in sorted(os.listdir(path_in)):
     print("working on file:" + str(file))

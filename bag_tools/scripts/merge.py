@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2015,
 Enrique Fernandez Perdomo
@@ -29,13 +29,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-from __future__ import print_function
+import os
+import sys
+import argparse
 
 import rosbag
 
-import argparse
-import os
-import sys
 
 def merge(inbags, outbag='output.bag', topics=None, exclude_topics=[], raw=True):
   # Open output bag file:

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,15 +29,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
-import roslib; roslib.load_manifest(PKG)
 import rospy
 import rosbag
-import os
-import sys
 import argparse
+
 
 def rpl_msg_time_with_hdr(inbag,outbag):
   rospy.loginfo('Processing input bagfile  : %s', inbag)
@@ -51,7 +46,8 @@ def rpl_msg_time_with_hdr(inbag,outbag):
     else:
       outbag.write(topic, msg, msg.header.stamp if msg._has_header else t)
   rospy.loginfo('Closing output bagfile and exit...')
-  outbag.close();
+  outbag.close()
+
 
 if __name__ == "__main__":
   rospy.init_node('rpl_msg_time_with_hdr')

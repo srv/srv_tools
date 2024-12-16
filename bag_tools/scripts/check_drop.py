@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2015,
 Enrique Fernandez Perdomo
@@ -29,17 +29,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import numpy
+import argparse
+import matplotlib as mpl # Workaround to avoid issues with X11 rendering when running on background:
+mpl.use('Agg')
+import matplotlib.pyplot as plt
+
 import rospy
 import rosbag
 
-import numpy
-import argparse
-
-# Workaround to avoid issues with X11 rendering when running on background:
-import matplotlib as mpl
-mpl.use('Agg')
-
-import matplotlib.pyplot as plt
 
 def check_drop(inbags, plot_format='png'):
   # Retrieve msg time, bag time and sequence number for all topics and messages:

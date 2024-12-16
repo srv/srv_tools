@@ -1,13 +1,15 @@
-#!/usr/bin/env python
-import roslib; roslib.load_manifest('stereo_slam')
-import pylab
+#!/usr/bin/python3
+
+import rospy
+import argparse
 import numpy as np
-from matplotlib import pyplot
-from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
 
 class Error(Exception):
   """ Base class for exceptions in this module. """
   pass
+
 
 def get_xyz(gps_point):
   lat = gps_point[3]*np.pi/180 #converting to radians.
@@ -17,15 +19,16 @@ def get_xyz(gps_point):
   f = 1/298.257223563 # reciprocal flattening.
   e2 = 2*f - np.power(f,2) # eccentricity squared.
 
-  chi = np.sqrt(1-e2 * np.power(np.sin(lat),2));
-  x = (a/chi +alt) * np.cos(lat) * np.cos(lon);
-  y = (a/chi +alt) * np.cos(lat) * np.sin(lon);
-  z = (a*(1-e2)/chi + alt) * np.sin(lat);
+  chi = np.sqrt(1-e2 * np.power(np.sin(lat),2))
+  x = (a/chi +alt) * np.cos(lat) * np.cos(lon)
+  y = (a/chi +alt) * np.cos(lat) * np.sin(lon)
+  z = (a*(1-e2)/chi + alt) * np.sin(lat)
   return x, y, z
+
 
 if __name__ == "__main__":
   rospy.init_node('gps_to_std_gt')
-  import argparse
+
   parser = argparse.ArgumentParser(
           description='Convert gps/fix topic to standard ground truth file',
           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -36,7 +39,7 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   # Read the
-  gps_topic = pylab.loadtxt(args.gps_topic_file, delimiter=',', skiprows=1, usecols=(0,1,2,6,7,8))
+  gps_topic = np.loadtxt(args.gps_topic_file, delimiter=',', skiprows=1, usecols=(0,1,2,6,7,8))
 
   # Write the x, y, z data to the output file
   with open(args.output_file, 'w') as outfile:
@@ -60,9 +63,9 @@ if __name__ == "__main__":
   gt = np.array(gt)
 
   # Init figure
-  fig = pylab.figure(1)
-  ax = Axes3D(fig)
-  ax.grid(True)
+  fig = plt.figure(1)
+  ax = fig.add_subplot(111, projection = '3d')
+  ax.grid()
   ax.set_title("GT Viewer")
   ax.set_xlabel("X")
   ax.set_ylabel("Y")
@@ -71,5 +74,5 @@ if __name__ == "__main__":
   ax.plot(gt[:,0], gt[:,1], gt[:,2], 'g', label='Ground Truth')
   ax.legend()
 
-  pyplot.draw()
-  pylab.show()
+  plt.draw()
+  plt.show()

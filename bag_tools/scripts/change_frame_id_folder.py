@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group
@@ -29,14 +29,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
-PKG = 'bag_tools' # this package name
-
 import os
 import rospy
 import argparse
-import roslib; roslib.load_manifest(PKG)
 from change_frame_id import change_frame_id
+
 
 if __name__ == "__main__":
 
@@ -44,7 +41,6 @@ if __name__ == "__main__":
     CALL : python change_frame_id.py -i path/to/in/folder -o path/to/out/folder -f desired_frame_id -t topic_to_change1 topic_to_change2 topic_to_change3 ...
 
     '''
-
     rospy.init_node('change_frame_id')
     parser = argparse.ArgumentParser(
         description='Create a new bagfile from an existing one replacing the frame id of requested topics.')
@@ -65,7 +61,6 @@ if __name__ == "__main__":
       if os.path.isfile(file_path_in):
           if ".bag" in item:
               print("working on file: " + str(item))
-
               try:
                   change_frame_id(file_path_in, file_path_out, args.f, args.t)
               except Exception:

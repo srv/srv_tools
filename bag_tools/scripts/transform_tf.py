@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Copyright (c) 2015,
 Clearpath Robotics, Inc.
@@ -29,14 +29,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import numpy
+import argparse
+
 
 import rospy
 import rosbag
 import tf.transformations as tft
 from geometry_msgs.msg import Transform, Vector3, Quaternion
-
-import numpy
-import argparse
 
 
 def transform_vector3_msg_to_tf(msg):
@@ -92,7 +92,7 @@ def transform_tf(inbag, outbag, transform, frame_id, child_frame_id):
       outbag.write(topic, msg, t)
 
   rospy.loginfo('Closing output bagfile and exit...')
-  outbag.close();
+  outbag.close()
 
 
 if __name__ == "__main__":
