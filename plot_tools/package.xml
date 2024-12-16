@@ -1,8 +1,10 @@
-<package>
+<?xml version="1.0"?>
+<package format="2">
+
   <name>plot_tools</name>
   <version>0.0.3</version>
   <description>plot_tools</description>
-  <maintainer email="plnegre@uib.cat">Pep Lluis Negre</maintainer>
+  <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
   <license>BSD</license>
 
@@ -12,11 +14,12 @@
   <author>Pep Lluis Negre</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>rospy</build_depend>
-  <run_depend>rospy</run_depend>
-  <!-- <test_depend>rospy</test_depend> -->
+
+  <exec_depend>rospy</exec_depend>
 
   <export>
-
   </export>
+  
 </package>

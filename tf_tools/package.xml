@@ -1,8 +1,10 @@
-<package>
+<?xml version="1.0"?>
+<package format="2">
+
   <name>tf_tools</name>
-  <version>0.0.3</version>
+  <version>0.1.0</version>
   <description>ROS tools and scripts relates to tf</description>
-  <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
+  <maintainer email="bo-miquel.nordfeldt@uib.es">Bo Miquel Nordfeldt-Fiol</maintainer>
 
   <license>BSD</license>
 
@@ -13,12 +15,14 @@
   <author email="miquel.massot@uib.es">Miquel Massot</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>tf</build_depend>
   <build_depend>nav_msgs</build_depend>
-  <run_depend>tf</run_depend>
-  <run_depend>nav_msgs</run_depend>
+  
+  <exec_depend>tf</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
 
   <export>
-
   </export>
+  
 </package>

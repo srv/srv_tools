@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(bag_tools)
 
 find_package(catkin REQUIRED COMPONENTS rospy rosbag sensor_msgs cv_bridge message_filters image_proc stereo_image_proc image_geometry camera_calibration_parsers)

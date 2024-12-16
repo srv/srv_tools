@@ -1,8 +1,10 @@
-<package>
+<?xml version="1.0"?>
+<package format="2">
+
   <name>bag_tools</name>
   <version>0.0.3</version>
   <description>ROS tools and scripts related to bagfiles</description>
-  <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
+  <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
   <license>BSD</license>
 
@@ -23,16 +25,19 @@
   <build_depend>image_geometry</build_depend>
   <build_depend>camera_calibration_parsers</build_depend>
   <build_depend>libconsole-bridge-dev</build_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>rosbag</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>cv_bridge</run_depend>
-  <run_depend>message_filters</run_depend>
-  <run_depend>image_proc</run_depend>
-  <run_depend>stereo_image_proc</run_depend>
-  <run_depend>image_geometry</run_depend>
-  <run_depend>camera_calibration_parsers</run_depend>
-  <run_depend>libconsole-bridge-dev</run_depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rosbag</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>message_filters</exec_depend>
+  <exec_depend>image_proc</exec_depend>
+  <exec_depend>stereo_image_proc</exec_depend>
+  <exec_depend>image_geometry</exec_depend>
+  <exec_depend>camera_calibration_parsers</exec_depend>
+  <exec_depend>libconsole-bridge-dev</exec_depend>
+
   <export>
   </export>
+
 </package>

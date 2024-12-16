@@ -1,8 +1,10 @@
-<package>
+<?xml version="1.0"?>
+<package format="2">
+
   <name>srv_tools</name>
-  <version>0.0.3</version>
+  <version>0.1.0</version>
   <description>Stack with interesting ROS tools</description>
-   <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
+  <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
   <license>BSD</license>
 
@@ -13,13 +15,15 @@
   <author email="miquel.massot@uib.es">Miquel Massot</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>launch_tools</run_depend>
-  <run_depend>tf_tools</run_depend>
-  <run_depend>pointcloud_tools</run_depend>
-  <run_depend>bag_tools</run_depend>
-  <run_depend>plot_tools</run_depend>
+
+  <exec_depend>launch_tools</exec_depend>
+  <exec_depend>tf_tools</exec_depend>
+  <exec_depend>pointcloud_tools</exec_depend>
+  <exec_depend>bag_tools</exec_depend>
+  <exec_depend>plot_tools</exec_depend>
 
   <export>
     <metapackage/>
   </export>
+
 </package>

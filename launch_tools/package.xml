@@ -1,8 +1,9 @@
-<package>
+<?xml version="1.0"?>
+<package format="2">
   <name>launch_tools</name>
   <version>0.0.3</version>
   <description>ROS tools and scripts related to launchfiles</description>
-  <maintainer email="miquel.massot@uib.es">Miquel Massot</maintainer>
+  <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
   <license>BSD</license>
 
@@ -12,10 +13,12 @@
   <author email="miquel.massot@uib.es">Miquel Massot</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>rospy</build_depend>
   <build_depend>roslib</build_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>python-xdot</run_depend>
-  <run_depend>roslib</run_depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>python-xdot</exec_depend>
+  <exec_depend>roslib</exec_depend>
 
 </package>

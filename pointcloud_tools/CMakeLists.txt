@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.0.2)
 project(pointcloud_tools)
 
 find_package(catkin REQUIRED COMPONENTS roscpp pcl_ros std_msgs sensor_msgs nav_msgs pcl_conversions)
