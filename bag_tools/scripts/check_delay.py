@@ -38,6 +38,7 @@ import rosbag
 import os
 import sys
 import argparse
+import statistics
 
 def check_delay(inbags):
   delays = {}
@@ -59,12 +60,12 @@ def check_delay(inbags):
         delays[key].append(delay)
   max_len = max(len(topic) for topic in delays.keys())
   topics = delays.keys()
-  topics.sort()
+  list(topics).sort()
   for topic in topics:
     delay_list = delays[topic]
     delay_list.sort()
     dmin, dmax, dmean = min(delay_list), max(delay_list), sum(delay_list)/len(delay_list)
-    dmedian = delay_list[len(delay_list)/2]
+    dmedian = statistics.median(delay_list)
     rospy.loginfo('%s : mean = %s, min = %s, max = %s, median = %s', topic.ljust(max_len + 2), dmean, dmin, dmax, dmedian)
 
 if __name__ == "__main__":
@@ -77,6 +78,6 @@ if __name__ == "__main__":
   args = parser.parse_args()
   try:
     check_delay(args.inbag)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
