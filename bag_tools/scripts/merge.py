@@ -72,6 +72,6 @@ if __name__ == "__main__":
 
   try:
     sys.exit(merge(args.inbag, args.output, args.topics, args.exclude_topics))
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()

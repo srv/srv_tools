@@ -621,6 +621,6 @@ if __name__ == "__main__":
 
     try:
         BagTopicPlotter(args.bags, args.topics, not args.noarr, not args.nohdr, args.plot_format, args.plot_style, args.bag_time, args.out_suffix)
-    except Exception, e:
+    except Exception as e:
         import traceback
         traceback.print_exc()

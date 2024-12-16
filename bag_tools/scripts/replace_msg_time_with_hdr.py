@@ -62,6 +62,6 @@ if __name__ == "__main__":
   args = parser.parse_args()
   try:
     rpl_msg_time_with_hdr(args.i, args.o)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
