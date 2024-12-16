@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>launch_tools</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>ROS tools and scripts related to launchfiles</description>
   <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 

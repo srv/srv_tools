@@ -2,7 +2,7 @@
 <package format="2">
 
   <name>pointcloud_tools</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>pointcloud_tools</description>
    <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
