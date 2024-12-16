@@ -120,6 +120,6 @@ if __name__ == "__main__":
     playback_images(image_dir_l, image_dir_r, file_pattern, camera_info_file_l, camera_info_file_r, frequency)
   except KeyError as e:
     rospy.logerr('Required parameter missing: %s', e)
-  except Exception, e:
+  except Exception as e:
     import traceback
     traceback.print_exc()
