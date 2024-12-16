@@ -70,7 +70,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(
       description='Shift the publishing time of given topics in input bagfile.')
   parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
-  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile(s)')
+  parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile(s)', nargs='+')
   parser.add_argument('-of', metavar='OFFSET', required=True, type=float, help='time offset to add in seconds')
   parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
   args = parser.parse_args()
