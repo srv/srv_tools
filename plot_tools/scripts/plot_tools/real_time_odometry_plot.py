@@ -1,25 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
-import roslib; roslib.load_manifest('plot_tools')
-import sys
-import pylab
-import math
-import numpy as np
-import string
-import random
-import time
+
 import ntpath
-from matplotlib import pyplot
-from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 # Global variables
 len_data = 0
 first_iter = True
 colors = ['g','r','b']
 
+
 class Error(Exception):
   """ Base class for exceptions in this module. """
   pass
+
 
 def real_time_plot(files):
   """
@@ -30,7 +26,7 @@ def real_time_plot(files):
   for i,F in enumerate(files):
 
     # Load data
-    data = pylab.loadtxt(F, delimiter=',', skiprows=1, usecols=(5,6,7))
+    data = np.loadtxt(F, delimiter=',', skiprows=1, usecols=(5,6,7))
 
     # Check if new data
     if (len_data!= len(data[:,0])):
@@ -40,7 +36,7 @@ def real_time_plot(files):
       label = label[0:-4]
       ax.plot(data[:,0], data[:,1], data[:,2], colors[i], label=label)
 
-      pyplot.draw()
+      plt.draw()
 
       # Update globals
       len_data = len(data[:,0])
@@ -48,6 +44,7 @@ def real_time_plot(files):
   if (first_iter == True):
     ax.legend()
     first_iter = False
+    
 
 if __name__ == "__main__":
   import argparse
@@ -63,9 +60,9 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   # Init figure
-  fig = pylab.figure(1)
-  ax = Axes3D(fig)
-  ax.grid(True)
+  fig = plt.figure(1)
+  ax = fig.add_subplot(111, projection = '3d')
+  ax.grid()
   ax.set_title("Realtime Odometry Plot")
   ax.set_xlabel("X")
   ax.set_ylabel("Y")
@@ -75,4 +72,4 @@ if __name__ == "__main__":
   timer.add_callback(real_time_plot, args.ground_truth_files)
   timer.start()
   
-  pylab.show() 
+  plt.show() 
