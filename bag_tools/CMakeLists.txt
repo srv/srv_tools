@@ -42,6 +42,7 @@ install(PROGRAMS
     scripts/bag_add_time_offset.py
     scripts/batch_process.py
     scripts/camera_info_parser.py
+    scripts/change_camera_info_folder.py
     scripts/change_camera_info.py
     scripts/change_frame_id.py
     scripts/change_topics.py
