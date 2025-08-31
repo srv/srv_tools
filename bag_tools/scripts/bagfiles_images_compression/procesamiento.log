@@ -1,0 +1,136 @@
+2025-07-21 12:56:42,947 - ERROR - Error when reading /media/uib/2FE6-5ED9/bags_sarmiento/stereo_camera_images_2025-07-14-22-47-16_0.bag: Unindexed bag
+2025-07-21 12:56:43,093 - INFO - There is at least one bag with images in the /media/uib/2FE6-5ED9/bags_sarmiento directory: we proceed to compress it
+2025-07-21 12:56:43,093 - ERROR - Error when reading /media/uib/2FE6-5ED9/bags_sarmiento/stereo_camera_images_2025-07-14-22-47-16_0.bag: Unindexed bag
+2025-07-21 12:56:43,093 - INFO - Omiting /media/uib/2FE6-5ED9/bags_sarmiento/stereo_camera_images_2025-07-14-22-47-16_0.bag as it does not contain relevant images
+2025-07-21 12:56:43,141 - INFO - Compressing the file: /media/uib/2FE6-5ED9/bags_sarmiento/11_41_12/stereo_camera_images_2025-07-15-11-41-12_0.bag
+2025-07-21 13:01:53,867 - INFO - Compressed file saved in:/media/uib/2FE6-5ED9/bags_sarmiento/11_41_12/stereo_camera_images_2025-07-15-11-41-12_0_compressed.bag
+2025-07-21 13:01:53,867 - INFO - Starting verification for: /media/uib/2FE6-5ED9/bags_sarmiento/11_41_12/stereo_camera_images_2025-07-15-11-41-12_0.bag
+2025-07-21 13:01:53,872 - INFO - Processing: stereo_camera_images_2025-07-15-11-41-12_0_compressed.bag -> stereo_camera_images_2025-07-15-11-41-12_0_raw.bag
+2025-07-21 13:03:45,862 - INFO - Same number of messages for /stereo_ch3/left/camera_info: 300 messages
+2025-07-21 13:03:45,862 - INFO - Same number of messages for /stereo_ch3/left/image_raw: 300 messages
+2025-07-21 13:03:45,863 - INFO - Same number of messages for /stereo_ch3/right/camera_info: 300 messages
+2025-07-21 13:03:45,863 - INFO - Same number of messages for /stereo_ch3/right/image_raw: 301 messages
+2025-07-21 13:03:48,741 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:03:48,757 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:03:48,772 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:03:48,788 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:03:48,803 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:03:50,534 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:03:50,546 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:03:50,558 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:03:50,570 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:03:50,582 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:03:50,583 - INFO - Successful verification. Deleting original: /media/uib/2FE6-5ED9/bags_sarmiento/11_41_12/stereo_camera_images_2025-07-15-11-41-12_0.bag
+2025-07-21 13:03:51,257 - INFO - Temporary directory deleted
+2025-07-21 13:03:52,705 - INFO - Compressing the file: /media/uib/2FE6-5ED9/bags_sarmiento/12_11_23/stereo_camera_images_2025-07-15-12-11-23_0.bag
+2025-07-21 13:08:00,231 - INFO - Compressed file saved in:/media/uib/2FE6-5ED9/bags_sarmiento/12_11_23/stereo_camera_images_2025-07-15-12-11-23_0_compressed.bag
+2025-07-21 13:08:00,242 - INFO - Starting verification for: /media/uib/2FE6-5ED9/bags_sarmiento/12_11_23/stereo_camera_images_2025-07-15-12-11-23_0.bag
+2025-07-21 13:08:00,243 - INFO - Processing: stereo_camera_images_2025-07-15-12-11-23_0_compressed.bag -> stereo_camera_images_2025-07-15-12-11-23_0_raw.bag
+2025-07-21 13:09:56,926 - INFO - Same number of messages for /stereo_ch3/left/camera_info: 300 messages
+2025-07-21 13:09:56,941 - INFO - Same number of messages for /stereo_ch3/left/image_raw: 300 messages
+2025-07-21 13:09:56,941 - INFO - Same number of messages for /stereo_ch3/right/camera_info: 300 messages
+2025-07-21 13:09:56,941 - INFO - Same number of messages for /stereo_ch3/right/image_raw: 301 messages
+2025-07-21 13:10:00,263 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:10:00,294 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:10:00,312 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:10:00,326 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:10:00,341 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:10:02,635 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:10:02,647 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:10:02,660 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:10:02,672 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:10:02,685 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:10:02,685 - INFO - Successful verification. Deleting original: /media/uib/2FE6-5ED9/bags_sarmiento/12_11_23/stereo_camera_images_2025-07-15-12-11-23_0.bag
+2025-07-21 13:10:03,427 - INFO - Temporary directory deleted
+2025-07-21 13:10:04,846 - INFO - Compressing the file: /media/uib/2FE6-5ED9/bags_sarmiento/12_41_39/stereo_camera_images_2025-07-15-12-41-39_0.bag
+2025-07-21 13:14:37,251 - INFO - Compressed file saved in:/media/uib/2FE6-5ED9/bags_sarmiento/12_41_39/stereo_camera_images_2025-07-15-12-41-39_0_compressed.bag
+2025-07-21 13:14:37,256 - INFO - Starting verification for: /media/uib/2FE6-5ED9/bags_sarmiento/12_41_39/stereo_camera_images_2025-07-15-12-41-39_0.bag
+2025-07-21 13:14:37,256 - INFO - Processing: stereo_camera_images_2025-07-15-12-41-39_0_compressed.bag -> stereo_camera_images_2025-07-15-12-41-39_0_raw.bag
+2025-07-21 13:17:15,648 - INFO - Same number of messages for /stereo_ch3/left/camera_info: 300 messages
+2025-07-21 13:17:15,649 - INFO - Same number of messages for /stereo_ch3/left/image_raw: 300 messages
+2025-07-21 13:17:15,649 - INFO - Same number of messages for /stereo_ch3/right/camera_info: 300 messages
+2025-07-21 13:17:15,649 - INFO - Same number of messages for /stereo_ch3/right/image_raw: 301 messages
+2025-07-21 13:17:16,427 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:17:16,453 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:17:16,474 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:17:16,508 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:17:16,531 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:17:18,227 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:17:18,240 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:17:18,253 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:17:18,267 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:17:18,281 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:17:18,281 - INFO - Successful verification. Deleting original: /media/uib/2FE6-5ED9/bags_sarmiento/12_41_39/stereo_camera_images_2025-07-15-12-41-39_0.bag
+2025-07-21 13:17:18,906 - INFO - Temporary directory deleted
+2025-07-21 13:17:20,323 - INFO - Compressing the file: /media/uib/2FE6-5ED9/bags_sarmiento/13_11_54/stereo_camera_images_2025-07-15-13-11-55_0.bag
+2025-07-21 13:21:24,507 - INFO - Compressed file saved in:/media/uib/2FE6-5ED9/bags_sarmiento/13_11_54/stereo_camera_images_2025-07-15-13-11-55_0_compressed.bag
+2025-07-21 13:21:24,508 - INFO - Starting verification for: /media/uib/2FE6-5ED9/bags_sarmiento/13_11_54/stereo_camera_images_2025-07-15-13-11-55_0.bag
+2025-07-21 13:21:24,509 - INFO - Processing: stereo_camera_images_2025-07-15-13-11-55_0_compressed.bag -> stereo_camera_images_2025-07-15-13-11-55_0_raw.bag
+2025-07-21 13:23:33,816 - INFO - Same number of messages for /stereo_ch3/left/camera_info: 300 messages
+2025-07-21 13:23:33,817 - INFO - Same number of messages for /stereo_ch3/left/image_raw: 301 messages
+2025-07-21 13:23:33,817 - INFO - Same number of messages for /stereo_ch3/right/camera_info: 300 messages
+2025-07-21 13:23:33,817 - INFO - Same number of messages for /stereo_ch3/right/image_raw: 301 messages
+2025-07-21 13:23:36,556 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:23:36,595 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:23:36,614 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:23:36,650 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:23:36,671 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:23:38,587 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:23:38,601 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:23:38,614 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:23:38,627 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:23:38,640 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:23:38,640 - INFO - Successful verification. Deleting original: /media/uib/2FE6-5ED9/bags_sarmiento/13_11_54/stereo_camera_images_2025-07-15-13-11-55_0.bag
+2025-07-21 13:23:39,354 - INFO - Temporary directory deleted
+2025-07-21 13:23:40,914 - INFO - Compressing the file: /media/uib/2FE6-5ED9/bags_sarmiento/13_42_13/stereo_camera_images_2025-07-15-13-42-14_0.bag
+2025-07-21 13:28:15,279 - INFO - Compressed file saved in:/media/uib/2FE6-5ED9/bags_sarmiento/13_42_13/stereo_camera_images_2025-07-15-13-42-14_0_compressed.bag
+2025-07-21 13:28:15,279 - INFO - Starting verification for: /media/uib/2FE6-5ED9/bags_sarmiento/13_42_13/stereo_camera_images_2025-07-15-13-42-14_0.bag
+2025-07-21 13:28:15,279 - INFO - Processing: stereo_camera_images_2025-07-15-13-42-14_0_compressed.bag -> stereo_camera_images_2025-07-15-13-42-14_0_raw.bag
+2025-07-21 13:30:12,295 - INFO - Same number of messages for /stereo_ch3/left/camera_info: 300 messages
+2025-07-21 13:30:12,296 - INFO - Same number of messages for /stereo_ch3/left/image_raw: 301 messages
+2025-07-21 13:30:12,297 - INFO - Same number of messages for /stereo_ch3/right/camera_info: 301 messages
+2025-07-21 13:30:12,297 - INFO - Same number of messages for /stereo_ch3/right/image_raw: 301 messages
+2025-07-21 13:30:14,840 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:30:14,877 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:30:14,913 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:30:14,932 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:30:14,949 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:30:16,709 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:30:16,721 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:30:16,735 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:30:16,749 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:30:16,762 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:30:16,762 - INFO - Successful verification. Deleting original: /media/uib/2FE6-5ED9/bags_sarmiento/13_42_13/stereo_camera_images_2025-07-15-13-42-14_0.bag
+2025-07-21 13:30:17,472 - INFO - Temporary directory deleted
+2025-07-21 13:30:18,951 - INFO - Compressing the file: /media/uib/2FE6-5ED9/bags_sarmiento/14_50_32/stereo_camera_images_2025-07-15-14-50-32_0.bag
+2025-07-21 13:34:20,519 - INFO - Compressed file saved in:/media/uib/2FE6-5ED9/bags_sarmiento/14_50_32/stereo_camera_images_2025-07-15-14-50-32_0_compressed.bag
+2025-07-21 13:34:20,520 - INFO - Starting verification for: /media/uib/2FE6-5ED9/bags_sarmiento/14_50_32/stereo_camera_images_2025-07-15-14-50-32_0.bag
+2025-07-21 13:34:20,521 - INFO - Processing: stereo_camera_images_2025-07-15-14-50-32_0_compressed.bag -> stereo_camera_images_2025-07-15-14-50-32_0_raw.bag
+2025-07-21 13:37:02,417 - INFO - Same number of messages for /stereo_ch3/left/camera_info: 300 messages
+2025-07-21 13:37:02,443 - INFO - Same number of messages for /stereo_ch3/left/image_raw: 300 messages
+2025-07-21 13:37:02,443 - INFO - Same number of messages for /stereo_ch3/right/camera_info: 300 messages
+2025-07-21 13:37:02,443 - INFO - Same number of messages for /stereo_ch3/right/image_raw: 301 messages
+2025-07-21 13:37:06,763 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:37:06,794 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:37:06,812 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:37:06,843 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:37:06,873 - INFO - Identical image in /stereo_ch3/left/image_raw
+2025-07-21 13:37:09,197 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:37:09,211 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:37:09,224 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:37:09,238 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:37:09,251 - INFO - Identical image in /stereo_ch3/right/image_raw
+2025-07-21 13:37:09,251 - INFO - Successful verification. Deleting original: /media/uib/2FE6-5ED9/bags_sarmiento/14_50_32/stereo_camera_images_2025-07-15-14-50-32_0.bag
+2025-07-21 13:37:09,878 - INFO - Temporary directory deleted
+2025-07-21 13:37:09,884 - INFO - Complete process finished for the directory /media/uib/2FE6-5ED9/bags_sarmiento
+2025-07-21 13:37:09,888 - INFO - signal_shutdown [atexit]
+2025-07-30 08:31:46,427 - INFO - There is no bag with images in the directory /catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/turbot_images
+2025-07-30 08:31:46,434 - INFO - In this directory there are no images in /catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/turbot_images to compress.
+2025-07-30 08:31:46,434 - INFO - Finished compressing images in /catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/turbot_images using format png and quality 1.
+2025-07-30 08:31:46,434 - INFO - signal_shutdown [atexit]
+2025-07-30 08:33:57,774 - INFO - There is no bag with images in the directory catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/orat_raw_and_compressed
+2025-07-30 08:33:57,774 - INFO - Nothing to compress in this directory catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/orat_raw_and_compressed
+2025-07-30 08:33:57,774 - INFO - signal_shutdown [atexit]
+2025-07-30 08:37:06,228 - INFO - There is no bag with images in the directory catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/turbot_images
+2025-07-30 08:37:06,228 - INFO - Nothing to compress in this directory catkin_ws/src/bag_compress/pruebas_compresion/pruebas_variadas/turbot_images
+2025-07-30 08:37:06,228 - INFO - signal_shutdown [atexit]
