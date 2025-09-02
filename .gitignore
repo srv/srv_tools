@@ -15,5 +15,5 @@
 */src/*/_*_.py
 */src/*/srv
 *~
-
-bag_tools/scripts/bagfiles_images_compression/procesamiento.log
+*.log
+*.log.*
