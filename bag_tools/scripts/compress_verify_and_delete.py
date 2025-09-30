@@ -9,7 +9,7 @@ from sensor_msgs.msg import CompressedImage
 import logging
 import sys
 import argparse
-from decompress import decompress_bag_in_directory
+from decompress_images import decompress_bag_in_directory
 from cv_bridge import CvBridge
 from collections import defaultdict
 import tempfile
