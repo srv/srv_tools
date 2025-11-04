@@ -346,7 +346,7 @@ def compare_random_images(path1, path2, top_n=5):
     return all_ok
 
 
-def cut_bag(bag_path, beggining_sec, max_duration=30):
+def cut_bag(bag_path, beggining_sec, tmp_dir=None, max_duration=30):
     with rosbag.Bag(bag_path, 'r') as bag:
         final = bag.get_end_time()
         # if it lasts less than the tolerance, we return the original one
@@ -354,7 +354,8 @@ def cut_bag(bag_path, beggining_sec, max_duration=30):
             logging.info(f"The piece of bag with images has a shorter duration than the tolerance.")
             return bag_path
         
-    tmpdir = tempfile.gettempdir()
+    if tmp_dir is None:
+        tmp_dir = tempfile.gettempdir()
 
     input_filename = os.path.basename(bag_path)
     if input_filename.endswith(".bag.active"):
@@ -367,7 +368,7 @@ def cut_bag(bag_path, beggining_sec, max_duration=30):
         base_name = os.path.splitext(input_filename)[0]
 
     output_filename = f"{base_name}_recorte_{max_duration}s.bag"
-    exit_path = os.path.join(tmpdir, output_filename)
+    exit_path = os.path.join(tmp_dir, output_filename)
 
     with rosbag.Bag(bag_path, 'r') as inbag, rosbag.Bag(exit_path, 'w') as outbag:
         start_time = beggining_sec
@@ -397,8 +398,8 @@ def verify_and_delete(bag_path, beggining_sec, compressed_bag_path):
         
         try:
             start3 = time.time()
-            original_cutted = cut_bag(bag_path, beggining_sec)
-            decompressed_cutted = cut_bag(decompressed_path, beggining_sec)
+            original_cutted = cut_bag(bag_path, beggining_sec, tmp_dir=tmp_dir)
+            decompressed_cutted = cut_bag(decompressed_path, beggining_sec, tmp_dir=tmp_dir)
             end3 = time.time()
             print(f"Cutting process {end3 - start3:.2f} seconds")
 
