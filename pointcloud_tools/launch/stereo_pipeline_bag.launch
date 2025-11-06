@@ -1,7 +1,8 @@
 <launch>
 
     <!-- Robots parameters -->
-    <arg name = "robot_name"         default = "sparus2"/>
+    <arg name = "robot_name"        default = "sparus2"/>
+    <arg name="enableRviz"          default="true"/>
 
     <!-- Camera parameters -->
     <arg name = "camera_name"        default = "flir_spinnaker_stereo_camera"/>
@@ -17,7 +18,7 @@
 
     <!-- Bagfiles parameters -->
     <param name = "/use_sim_time"    value = "true"/>
-    <arg name = "bagfile" default = "/home/bomiquel/datasets/bagfiles/cabrera/2025_10_27/14_23_31/sparus2_stereo_camera_2025-10-27-14-25-33_1.bag"/>
+    <arg name = "bagfile" default = "/home/uib/bagfiles/sparus2_stereo_camera_2025-10-27-14-27-34_3.bag"/>
 
     <group ns = "$(arg robot_name)">
 
@@ -37,5 +38,7 @@
 
     <!-- Play bagfile -->
     <node pkg = "rosbag" type = "play" name = "rosbag" args = "-r 1 -l --clock $(arg bagfile)"/>
+    <!-- RViz -->
+    <node if="$(arg enableRviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find pointcloud_tools)/pointcloud_viewer.rviz"/>
 
 </launch>
