@@ -1,0 +1,41 @@
+<launch>
+
+    <!-- Robots parameters -->
+    <arg name = "robot_name"         default = "sparus2"/>
+
+    <!-- Camera parameters -->
+    <arg name = "camera_name"        default = "flir_spinnaker_stereo_camera"/>
+    <arg name = "resolution"         default = "full"/>
+    <arg name = "slave_camera_name"  default = "starboard"/>
+    <arg name = "master_camera_name" default = "port"/>
+
+    <!-- Image parameters -->
+    <arg name = "enable_decimate_x1" default = "false"/>
+    <arg name = "enable_decimate_x2" default = "false"/>
+    <arg name = "enable_decimate_x4" default = "true"/>
+    <arg name = "enable_decimate_x8" default = "false"/>
+
+    <!-- Bagfiles parameters -->
+    <param name = "/use_sim_time"    value = "true"/>
+    <arg name = "bagfile" default = "/home/bomiquel/datasets/bagfiles/cabrera/2025_10_27/14_23_31/sparus2_stereo_camera_2025-10-27-14-25-33_1.bag"/>
+
+    <group ns = "$(arg robot_name)">
+
+        <!-- Processes stereo images -->
+        <include file = "$(find pointcloud_tools)/launch/stereo_processing/stereo_pipeline.launch">
+            <arg name = "stereo"             value = "$(arg camera_name)"/>
+            <arg name = "resolution"         value = "$(arg resolution)"/>
+            <arg name = "slave_camera_name"  value = "$(arg slave_camera_name)"/>
+            <arg name = "master_camera_name" value = "$(arg master_camera_name)"/>
+            <arg name = "enable_decimate_x1" value = "$(arg enable_decimate_x1)"/>
+            <arg name = "enable_decimate_x2" value = "$(arg enable_decimate_x2)"/>
+            <arg name = "enable_decimate_x4" value = "$(arg enable_decimate_x4)"/>
+            <arg name = "enable_decimate_x8" value = "$(arg enable_decimate_x8)"/>
+        </include>
+
+    </group>
+
+    <!-- Play bagfile -->
+    <node pkg = "rosbag" type = "play" name = "rosbag" args = "-r 1 -l --clock $(arg bagfile)"/>
+
+</launch>
