@@ -64,7 +64,7 @@
         <arg name = "slave_camera_name" value = "$(arg slave_camera_name)"/>
         <arg name = "master_camera_name" value = "$(arg master_camera_name)"/>
       </include>
-      <group ns="$(arg stereo)/scaled_x8" >
+      <group ns="scaled_x8" >
         <include file = "$(find pointcloud_tools)/launch/stereo_processing/stereo_image_proc.launch">
           <arg name = "master_camera_name" value = "$(arg master_camera_name)"/>
           <arg name = "slave_camera_name" value = "$(arg slave_camera_name)"/>

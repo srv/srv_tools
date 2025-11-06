@@ -3,6 +3,7 @@
     <!-- Robots parameters -->
     <arg name = "robot_name"        default = "sparus2"/>
     <arg name="enableRviz"          default="true"/>
+    <arg name="robot_xacro" default="$(find sparus2_description)/urdf/payload.urdf.xacro"/>
 
     <!-- Camera parameters -->
     <arg name = "camera_name"        default = "flir_spinnaker_stereo_camera"/>
@@ -13,8 +14,8 @@
     <!-- Image parameters -->
     <arg name = "enable_decimate_x1" default = "false"/>
     <arg name = "enable_decimate_x2" default = "false"/>
-    <arg name = "enable_decimate_x4" default = "true"/>
-    <arg name = "enable_decimate_x8" default = "false"/>
+    <arg name = "enable_decimate_x4" default = "false"/>
+    <arg name = "enable_decimate_x8" default = "true"/>
 
     <!-- Bagfiles parameters -->
     <param name = "/use_sim_time"    value = "true"/>
@@ -35,6 +36,12 @@
         </include>
 
     </group>
+
+    <!-- Load robot description -->
+    <include file="$(find sparus2_description)/launch/sparus2_description.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="robot_xacro" value="$(arg robot_xacro)"/>
+    </include>
 
     <!-- Play bagfile -->
     <node pkg = "rosbag" type = "play" name = "rosbag" args = "-r 1 -l --clock $(arg bagfile)"/>

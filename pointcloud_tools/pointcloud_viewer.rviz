@@ -3,7 +3,8 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Global Options1
       Splitter Ratio: 0.5
     Tree Height: 746
   - Class: rviz/Selection
@@ -19,11 +20,11 @@ Panels:
     Expanded:
       - /Current View1
     Name: Views
-    Splitter Ratio: 0.5
+    Splitter Ratio: 0.5947955250740051
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -52,8 +53,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
+        Max Value: 9.022957801818848
+        Min Value: 8.434221267700195
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -69,10 +70,10 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 1000
       Selectable: true
-      Size (Pixels): 5
+      Size (Pixels): 1
       Size (m): 0.5
       Style: Points
-      Topic: /sparus2/flir_spinnaker_stereo_camera/scaled_x4/points2
+      Topic: /sparus2/flir_spinnaker_stereo_camera/scaled_x8/points2
       Unreliable: true
       Use Fixed Frame: true
       Use rainbow: true
@@ -94,7 +95,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: false
-      Enabled: true
+      Enabled: false
       Keep: 100
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -111,10 +112,71 @@ Visualization Manager:
         Value: Arrow
       Topic: /sparus2/navigator/odometry
       Unreliable: false
+      Value: false
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        sparus2/base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sparus2/dvl:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/dvl_altitude:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/gps:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/imu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/imu_filter:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/modem:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/pressure:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/thruster_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/thruster_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        sparus2/thruster_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
       Value: true
+      Visual Enabled: true
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 186; 189; 182
     Default Light: true
     Fixed Frame: world_ned
     Frame Rate: 30
@@ -139,20 +201,26 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
-      Class: rviz/TopDownOrtho
+      Class: rviz/Orbit
+      Distance: 31.47685432434082
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Invert Z Axis: false
+      Field of View: 0.7853981852531433
+      Focal Point:
+        X: 16.873456954956055
+        Y: -64.5611801147461
+        Z: -3.242302417755127
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: true
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 11.2599515914917
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
-      X: 21.573776245117188
-      Y: -58.008697509765625
+      Yaw: 0
     Saved: ~
 Window Geometry:
   Displays:
