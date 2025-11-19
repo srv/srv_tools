@@ -2,9 +2,10 @@
 Changelog for package pointcloud_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.0.4 (2024-12-16)
+0.0.4 (2025-11-06)
 ------------------
 * Updated to Noetic.
+* Contributors: Antoni Martorell-Torres, Bo Miquel Nordfeldt-Fiol
 
 0.0.3 (2017-02-24)
 ------------------

@@ -2,19 +2,23 @@
 <package format="2">
 
   <name>bag_tools</name>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <description>ROS tools and scripts related to bagfiles</description>
   <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
-  <license>BSD</license>
+  <license>BSD-4-Clause</license>
 
   <url type="website">http://ros.org/wiki/bag_tools</url>
-  <!-- <url type="bugtracker"></url> -->
+  <url type="bugtracker">https://github.com/srv/srv_tools/issues</url>
+  <url type="repository">https://github.com/srv/srv_tools</url>
 
   <author email="stwirth@uib.es">Stephan Wirth</author>
   <author email="miquel.massot@uib.es">Miquel Massot</author>
 
+  <!-- Build tool -->
   <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Build dependencies -->
   <build_depend>rospy</build_depend>
   <build_depend>rosbag</build_depend>
   <build_depend>sensor_msgs</build_depend>
@@ -26,6 +30,7 @@
   <build_depend>camera_calibration_parsers</build_depend>
   <build_depend>libconsole-bridge-dev</build_depend>
 
+  <!-- Exec dependencies -->
   <exec_depend>rospy</exec_depend>
   <exec_depend>rosbag</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>

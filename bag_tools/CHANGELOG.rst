@@ -2,10 +2,16 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.5 (2025-11-19)
+------------------
+* Added compress_images.py, compress_verify_and_delete.py and decompress_images.py
+* Contributors: Alejandro Colom 
+
 0.0.4 (2024-12-16)
 ------------------
 * Cleaned scripts.
 * Updated to Noetic.
+* Contributors: Miquel Martín-Abadal, Bo Miquel Nordfeldt-Fiol
 
 0.0.3 (2017-02-24)
 ------------------

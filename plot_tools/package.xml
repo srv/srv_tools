@@ -6,17 +6,21 @@
   <description>plot_tools</description>
   <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
-  <license>BSD</license>
+  <license>BSD-4-Clause</license>
 
   <url type="website">http://ros.org/wiki/plot_tools</url>
-  <!-- <url type="bugtracker"></url> -->
+  <url type="bugtracker">https://github.com/srv/srv_tools/issues</url>
+  <url type="repository">https://github.com/srv/srv_tools</url>
 
   <author>Pep Lluis Negre</author>
 
+  <!-- Build tool -->
   <buildtool_depend>catkin</buildtool_depend>
 
+  <!-- Build dependencies -->
   <build_depend>rospy</build_depend>
 
+  <!-- Exec dependencies -->
   <exec_depend>rospy</exec_depend>
 
   <export>

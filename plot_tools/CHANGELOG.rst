@@ -6,6 +6,7 @@ Changelog for package plot_tools
 ------------------
 * Cleaned scripts.
 * Updated to Noetic.
+* Contributors: Bo Miquel Nordfeldt-Fiol
 
 0.0.3 (2017-02-24)
 ------------------
