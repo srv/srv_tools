@@ -2,6 +2,11 @@
 Changelog for package srv_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.6 (2025-12-04)
+------------------
+* Obsolete functions replaced in bag_tools & pointcloud_tools.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.0.5 (2025-11-19)
 ------------------
 * Updated license

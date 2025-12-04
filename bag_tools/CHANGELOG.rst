@@ -2,6 +2,11 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.6 (2025-12-04)
+------------------
+* Obsolete functions replaced.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.0.5 (2025-11-19)
 ------------------
 * Added compress_images.py, compress_verify_and_delete.py and decompress_images.py

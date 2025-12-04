@@ -2,6 +2,11 @@
 Changelog for package pointcloud_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.5 (2025-12-04)
+------------------
+* Obsolete functions replaced.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.0.4 (2025-11-06)
 ------------------
 * Updated to Noetic.

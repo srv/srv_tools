@@ -26,15 +26,15 @@
 /// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 /// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 #include <ros/ros.h>
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
-
-#include <boost/foreach.hpp>
-#include <boost/progress.hpp>
-
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
+
+#include "progress_bar.h"
+
 
 namespace bag_tools
 {
@@ -63,9 +63,7 @@ public:
     callback_compressed_ = callback;
   }
 
-  /**
-   * Processes given bagfile, calls registered callback function when
-   * a message is found.
+  /** \brief Processes given bagfile, calls registered callback function when a message is found.
    */
   void processBag(const std::string &filename)
   {
@@ -82,8 +80,8 @@ public:
     std::cout << num_messages << " messages to process." << std::endl;
 
     // Load all messages
-    boost::progress_display show_progress(num_messages);
-    BOOST_FOREACH(rosbag::MessageInstance const m, view)
+    ProgressBar show_progress(num_messages);
+    for (const rosbag::MessageInstance& m : view)
     {
       if (m.getTopic() == image_topic_)
       {

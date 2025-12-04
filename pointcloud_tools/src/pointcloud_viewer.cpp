@@ -96,7 +96,6 @@ void updateVisualization()
   ros::WallDuration d(0.01);
   bool rgb = false;
   bool normal = false;
-  std::vector<pcl::PCLPointField> fields;
 
   // Create the visualizer
   pcl::visualization::PCLVisualizer viewer("Point Cloud Viewer");
@@ -135,7 +134,6 @@ void updateVisualization()
       rgb = false;
       normal = false;
       pcl::fromROSMsg(*cloud_, cloud_xyz_);
-      pcl::getFields(cloud_xyz_, fields);
     }
     cloud_old_ = cloud_;
     m_.unlock();
@@ -144,8 +142,7 @@ void updateVisualization()
     viewer.removePointCloud("cloud");
 
     // If no RGB data present, use a simpler white handler
-    if(rgb && pcl::getFieldIndex(cloud_xyz_rgb_, "rgb", fields) != -1 &&
-      cloud_xyz_rgb_.points[0].rgb != 0)
+    if(rgb && cloud_xyz_rgb_.points.size() > 0)
     {
       // Initialize the camera view
       if(!viewer_initialized_)
@@ -162,7 +159,7 @@ void updateVisualization()
         cloud_xyz_rgb_.makeShared());
       viewer.addPointCloud(cloud_xyz_rgb_.makeShared(), color_handler, "cloud");
     }
-    else if (normal && pcl::getFieldIndex(cloud_xyzn_, "normal_x", fields) != -1)
+    else if (normal && cloud_xyzn_.points.size() > 0)
     {
       // Initialize the camera view
       if(!viewer_initialized_)
@@ -188,7 +185,7 @@ void updateVisualization()
       viewer.removePointCloud("normals");
       viewer.addPointCloudNormals<PointNormal>(cloud_xyzn_.makeShared(), 100, 0.02, "normals");
     }
-    else
+    else if (cloud_xyz_.size() > 0)
     {
       // Initialize the camera view
       if(!viewer_initialized_)
@@ -210,6 +207,11 @@ void updateVisualization()
         cloud_xyz_.makeShared(), 255, 0, 255);
       }
       viewer.addPointCloud(cloud_xyz_.makeShared(), color_handler, "cloud");
+    }
+    else
+    {
+      ROS_WARN_STREAM("[PointCloudViewer:] The pointcloud is empty, skipping!");
+      continue;
     }
 
     counter_++;
