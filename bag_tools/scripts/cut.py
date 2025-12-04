@@ -1,4 +1,5 @@
-#!/usr/bin/python33
+#!/usr/bin/python3
+
 """
 Copyright (c) 2012,
 Systems, Robotics and Vision Group

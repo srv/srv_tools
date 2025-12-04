@@ -1,6 +1,11 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package srv_tools
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for metapackage srv_tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+0.0.7 (2025-12-04)
+------------------
+* Fixed bug in bag_tools.
+* Contributors: Bo Miquel Nordfeldt-Fiol
 
 0.0.6 (2025-12-04)
 ------------------
