@@ -59,8 +59,12 @@ class StereoBagProcessor
 {
 
 public:
-  StereoBagProcessor(const std::string& stereo_base_topic) :
+  StereoBagProcessor(const std::string& stereo_base_topic,
+                     const std::string& l_cam_name,
+                     const std::string& r_cam_name) :
     stereo_base_topic_(stereo_base_topic),
+    l_cam_name_(l_cam_name),
+    r_cam_name_(r_cam_name),
     sync_(l_img_sub_, r_img_sub_, l_info_sub_, r_info_sub_, 25)
   {
     ros::Time::init();
@@ -77,10 +81,15 @@ public:
    */
   void processBag(const std::string &filename)
   {
+    // Sanity check
+    if (l_cam_name_[0] != '/')
+      l_cam_name_ = "/" + l_cam_name_;
+    if (r_cam_name_[0] != '/')
+      r_cam_name_ = "/" + r_cam_name_;
 
     // Image topics to load
-    std::string l_cam = stereo_base_topic_ + "/left";
-    std::string r_cam = stereo_base_topic_ + "/right";
+    std::string l_cam = stereo_base_topic_ + l_cam_name_;
+    std::string r_cam = stereo_base_topic_ + r_cam_name_;
     std::string l_cam_image = l_cam + "/image_raw";
     std::string r_cam_image = r_cam + "/image_raw";
     std::string l_cam_info = l_cam + "/camera_info";
@@ -143,7 +152,7 @@ private:
   BagSubscriber<sensor_msgs::Image> l_img_sub_, r_img_sub_;
   BagSubscriber<sensor_msgs::CameraInfo> l_info_sub_, r_info_sub_;
 
-  std::string stereo_base_topic_;
+  std::string stereo_base_topic_, l_cam_name_, r_cam_name_;
 
   message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> sync_;
 

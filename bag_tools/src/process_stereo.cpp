@@ -39,8 +39,14 @@
 class StereoImageProcessor
 {
 public:
-  StereoImageProcessor(const std::string& base_topic, const std::string& out_bag, int processing_flags) :
-    stereo_base_topic_(base_topic),
+  StereoImageProcessor(const std::string& base_topic,  
+                       const std::string& l_cam_name,
+                       const std::string& r_cam_name,
+                       const std::string& out_bag, 
+                       int processing_flags) :
+    stereo_base_topic_((!base_topic.empty() && base_topic[0] == '/') ? base_topic.substr(1) : base_topic),
+    l_cam_name_((!l_cam_name.empty() && l_cam_name[0] != '/') ? "/" + l_cam_name : l_cam_name),
+    r_cam_name_((!r_cam_name.empty() && r_cam_name[0] != '/') ? "/" + r_cam_name : r_cam_name),
     flags_(processing_flags)
   {
     std::cout << "Opening bagfile '" << out_bag << "' for writing." << std::endl;
@@ -62,9 +68,9 @@ public:
     stereo_image_proc::StereoImageSet image_set;
     processor_.process(l_img, r_img, model_, image_set, flags_);
 
-    bag_.write(stereo_base_topic_ + "/left/camera_info",
+    bag_.write(stereo_base_topic_ + l_cam_name_ + "/camera_info",
         l_info->header.stamp, l_info);
-    bag_.write(stereo_base_topic_ + "/right/camera_info",
+    bag_.write(stereo_base_topic_ + r_cam_name_ + "/camera_info",
         r_info->header.stamp, r_info);
 
     if (flags_ & stereo_image_proc::StereoProcessor::LEFT_MONO)
@@ -73,7 +79,7 @@ public:
           l_img->header, 
           image_set.left.color_encoding, 
           image_set.left.mono);
-      bag_.write(stereo_base_topic_ + "/left/image_mono", 
+      bag_.write(stereo_base_topic_ + l_cam_name_ + "/image_mono", 
           l_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::LEFT_COLOR)
@@ -82,7 +88,7 @@ public:
           l_img->header, 
           image_set.left.color_encoding, 
           image_set.left.color);
-      bag_.write(stereo_base_topic_ + "/left/image_color", 
+      bag_.write(stereo_base_topic_ + l_cam_name_ + "/image_color", 
           l_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::LEFT_RECT)
@@ -91,7 +97,7 @@ public:
           l_img->header, 
           image_set.left.color_encoding, 
           image_set.left.rect);
-      bag_.write(stereo_base_topic_ + "/left/image_rect", 
+      bag_.write(stereo_base_topic_ + l_cam_name_ + "/image_rect", 
           l_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::LEFT_RECT_COLOR)
@@ -100,7 +106,7 @@ public:
           l_img->header, 
           image_set.left.color_encoding, 
           image_set.left.rect_color);
-      bag_.write(stereo_base_topic_ + "/left/image_rect_color", 
+      bag_.write(stereo_base_topic_ + l_cam_name_ + "/image_rect_color", 
           l_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_MONO)
@@ -109,7 +115,7 @@ public:
           r_img->header, 
           image_set.right.color_encoding, 
           image_set.right.mono);
-      bag_.write(stereo_base_topic_ + "/right/image_mono", 
+      bag_.write(stereo_base_topic_ + r_cam_name_ + "/image_mono", 
           r_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_COLOR)
@@ -118,7 +124,7 @@ public:
           r_img->header, 
           image_set.right.color_encoding, 
           image_set.right.color);
-      bag_.write(stereo_base_topic_ + "/right/image_color", 
+      bag_.write(stereo_base_topic_ + r_cam_name_ + "/image_color", 
           r_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_RECT)
@@ -127,7 +133,7 @@ public:
           r_img->header, 
           image_set.right.color_encoding, 
           image_set.right.rect);
-      bag_.write(stereo_base_topic_ + "/right/image_rect", 
+      bag_.write(stereo_base_topic_ + r_cam_name_ + "/image_rect", 
           r_img->header.stamp, msg);
     }
     if (flags_ & stereo_image_proc::StereoProcessor::RIGHT_RECT_COLOR)
@@ -136,7 +142,7 @@ public:
           r_img->header, 
           image_set.right.color_encoding, 
           image_set.right.rect_color);
-      bag_.write(stereo_base_topic_ + "/right/image_rect_color", 
+      bag_.write(stereo_base_topic_ + r_cam_name_ + "/image_rect_color", 
           r_img->header.stamp, msg);
     }
 
@@ -163,7 +169,7 @@ public:
 private:
 
   rosbag::Bag bag_;
-  std::string stereo_base_topic_;
+  std::string stereo_base_topic_, l_cam_name_, r_cam_name_;
   int flags_;
   image_geometry::StereoCameraModel model_;
   stereo_image_proc::StereoProcessor processor_;
@@ -172,24 +178,26 @@ private:
  
 int main(int argc, char** argv)
 {
-  if (argc < 4)
+  if (argc < 6)
   {
     std::cout << "Takes raw images from an input bagfile, processes them and writes the output to a new bagfile." << std::endl;
-    std::cout << "Usage: " << argv[0] << " INBAG STEREO_BASE_TOPIC OUTBAG" << std::endl;
-    std::cout << "  Example: " << argv[0] << " bag.bag /stereo_forward bag_processed.bag" << std::endl;
+    std::cout << "Usage: " << argv[0] << " INBAG STEREO_BASE_TOPIC LEFT_CAMERA_NAME RIGHT_CAMERA_NAME OUTBAG" << std::endl;
+    std::cout << "  Example: " << argv[0] << " bag.bag /stereo_forward /left /right bag_processed.bag" << std::endl;
     return 0;
   }
 
   std::string in_bag(argv[1]);
   std::string base_topic(argv[2]);
-  std::string out_bag(argv[3]);
+  std::string l_cam_name(argv[3]);
+  std::string r_cam_name(argv[4]);
+  std::string out_bag(argv[5]);
   
   int flags = 0;
   flags |= stereo_image_proc::StereoProcessor::LEFT_RECT_COLOR;
   flags |= stereo_image_proc::StereoProcessor::RIGHT_RECT_COLOR;
   flags |= stereo_image_proc::StereoProcessor::POINT_CLOUD2;
-  StereoImageProcessor image_processor(base_topic, out_bag, flags);
-  bag_tools::StereoBagProcessor bag_processor(base_topic);
+  StereoImageProcessor image_processor(base_topic, l_cam_name, r_cam_name, out_bag, flags);
+  bag_tools::StereoBagProcessor bag_processor(base_topic, l_cam_name, r_cam_name);
   bag_processor.registerCallback(boost::bind(&StereoImageProcessor::process, &image_processor, _1, _2, _3, _4));
 
   bag_processor.processBag(in_bag);

@@ -97,10 +97,13 @@ private:
 class StereoImageSaver
 {
 public:
-  StereoImageSaver(const std::string& save_dir, const std::string& filetype) :
-    l_saver_(save_dir, filetype, "left_"),
-    r_saver_(save_dir, filetype, "right_")
-  {}
+  StereoImageSaver(const std::string& save_dir, 
+                   const std::string& filetype, 
+                   const std::string& l_cam_name,
+                   const std::string& r_cam_name) :
+      l_saver_(save_dir, filetype, ((!l_cam_name.empty() && l_cam_name[0] == '/') ? l_cam_name.substr(1) : l_cam_name) + "_"),
+      r_saver_(save_dir, filetype, ((!r_cam_name.empty() && r_cam_name[0] == '/') ? r_cam_name.substr(1) : r_cam_name) + "_")
+      {}
 
   void save(const sensor_msgs::Image::ConstPtr &l_img, 
             const sensor_msgs::Image::ConstPtr &r_img, 
@@ -119,24 +122,26 @@ private:
  
 int main(int argc, char** argv)
 {
-  if (argc < 4)
+  if (argc < 6)
   {
-    std::cout << "Usage: " << argv[0] << " OUT_DIR FILETYPE STEREO_BASE_TOPIC BAGFILE [BAGFILE...]" << std::endl;
-    std::cout << "  Example: " << argv[0] << " /tmp jpg /stereo_down bag1.bag bag2.bag" << std::endl;
+    std::cout << "Usage: " << argv[0] << " OUT_DIR FILETYPE STEREO_BASE_TOPIC LEFT_CAMERA_NAME RIGHT_CAMERA_NAME BAGFILE [BAGFILE...]" << std::endl;
+    std::cout << "  Example: " << argv[0] << " /tmp jpg /stereo_down /left /right bag1.bag bag2.bag" << std::endl;
     return 0;
   }
 
   std::string out_dir(argv[1]);
   std::string filetype(argv[2]);
   std::string base_topic(argv[3]);
+  std::string l_cam_name(argv[4]);
+  std::string r_cam_name(argv[5]);
   
   ros::Time::init();
 
-  StereoImageSaver saver(out_dir, filetype);
-  bag_tools::StereoBagProcessor processor(base_topic);
+  StereoImageSaver saver(out_dir, filetype, l_cam_name, r_cam_name);
+  bag_tools::StereoBagProcessor processor(base_topic, l_cam_name, r_cam_name);
   processor.registerCallback(boost::bind(&StereoImageSaver::save, saver, _1, _2, _3, _4));
 
-  for (int i = 4; i < argc; ++i)
+  for (int i = 6; i < argc; ++i)
     processor.processBag(argv[i]);
 
   return 0;
