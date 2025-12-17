@@ -2,6 +2,12 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.8 (2025-12-17)
+------------------
+* extract_stereo_images can decimate images.
+* change_camera_info_folder.py avoids files that are not .bag.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.0.8 (2025-12-04)
 ------------------
 * Parametrised camera names in extract_stereo_images and process_stereo.

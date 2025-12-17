@@ -102,6 +102,9 @@ if __name__ == "__main__":
 
     file_path_in = os.path.join(path_in, file)
     file_path_out = os.path.join(path_out, file)
+    
+    if ".bag" not in file_path_in:
+      continue
 
     for topic, calib_file in args.replacement:
       replacements[topic] = calib_file
