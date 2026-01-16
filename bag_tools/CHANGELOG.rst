@@ -2,7 +2,11 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.0.8 (2025-12-17)
+0.1.0 (2026-01-16)
+* Added sort_topics_by_timestamp.py.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
+0.0.9 (2025-12-17)
 ------------------
 * extract_stereo_images can decimate images.
 * change_camera_info_folder.py avoids files that are not .bag.

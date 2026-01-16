@@ -2,6 +2,11 @@
 Changelog for metapackage srv_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.0 (2026-01-16)
+------------------
+* [bag_tools] Added sort_topics_by_timestamp.py.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.0.9 (2025-12-17)
 ------------------
 * [bag_tools] extract_stereo_images can decimate images.

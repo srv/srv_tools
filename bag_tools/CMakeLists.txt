@@ -76,6 +76,7 @@ install(PROGRAMS
     scripts/plot.py
     scripts/remove_tf.py
     scripts/replace_msg_time_with_hdr.py
+    scripts/sort_topics_by_timestamp.py
     scripts/stereo_sequence_publisher.py
     scripts/transform_tf.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
