@@ -2,6 +2,10 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2026-01-26)
+* Added extract_enhanced_stereo_images.py.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.1.0 (2026-01-16)
 * Added sort_topics_by_timestamp.py.
 * Contributors: Bo Miquel Nordfeldt-Fiol

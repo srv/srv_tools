@@ -1,29 +1,49 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(bag_tools)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3")
 
-# Check C++20 or C++17 support
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++20" COMPILER_SUPPORTS_CXX20)
-CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-if(COMPILER_SUPPORTS_CXX20)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
-    add_definitions(-DCOMPILEDWITHC20)
-    message(" Using flag -std=c++20.")
-elseif(COMPILER_SUPPORTS_CXX17)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-    add_definitions(-DCOMPILEDWITHC17)
-    message(" Using flag -std=c++17.")
-else()
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++20 or C++17 support. bag_tools needs at least C++17 support. Please use a different C++ compiler.")
-endif()
+##############
+## Compiler ##
+##############
 
-find_package(catkin REQUIRED COMPONENTS rospy rosbag sensor_msgs cv_bridge message_filters image_proc stereo_image_proc image_geometry camera_calibration_parsers)
-find_package(Boost REQUIRED COMPONENTS thread)
+# C++17 Standard.
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Compiler flags.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
+
+
+#######################
+## Required packages ##
+#######################
+
+find_package(catkin REQUIRED COMPONENTS 
+  rospy
+  roscpp
+  rosbag
+  cv_bridge
+  image_proc
+  sensor_msgs
+  image_geometry
+  message_filters 
+  stereo_image_proc 
+  camera_calibration_parsers
+  
+  image_preprocessing # Optional
+)
+
+# Dependencies - OpenCV:
 find_package(OpenCV REQUIRED)
+
+# Dependencies - Boost:
+find_package(Boost REQUIRED COMPONENTS thread)
+
+# Dependencies - console_bridge:
 find_package(console_bridge REQUIRED)
+
+# Dependencies - image_preprocessing:
+# find_package(image_preprocessing REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -34,16 +54,28 @@ include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${conso
 
 add_executable(extract_images src/extract_images.cpp)
 add_executable(extract_images_from_realsense src/extract_images_from_realsense.cpp)
-
 add_executable(extract_tum_format src/extract_tum_format.cpp)
-add_executable(extract_stereo_images src/extract_stereo_images.cpp)
+add_executable(extract_stereo_images
+               src/image_resolution_scaler.cpp
+               src/image_saver.cpp
+               src/stereo_image_saver.cpp
+               src/extract_stereo_images.cpp)
 add_executable(process_stereo src/process_stereo.cpp)
+add_executable(extract_enhanced_stereo_images
+               src/image_resolution_scaler.cpp
+               src/enhanced_image_saver.cpp
+               src/enhanced_stereo_image_saver.cpp
+               src/extract_enhanced_stereo_images.cpp) # Optional
+               
+add_dependencies(extract_enhanced_stereo_images ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(extract_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(extract_images_from_realsense ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(extract_stereo_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(extract_tum_format ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
 target_link_libraries(process_stereo ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES})
+target_link_libraries(extract_enhanced_stereo_images ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES}) # Optional
+
 
 install(TARGETS
     extract_images

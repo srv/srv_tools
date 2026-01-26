@@ -2,7 +2,7 @@
 <package format="2">
 
   <name>bag_tools</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>ROS tools and scripts related to bagfiles</description>
   <maintainer email="bo-miquel.nordfeldt@uib.cat">Bo Miquel Nordfeldt-Fiol</maintainer>
 
@@ -18,29 +18,23 @@
   <!-- Build tool -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <!-- Build dependencies -->
-  <build_depend>rospy</build_depend>
-  <build_depend>rosbag</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>message_filters</build_depend>
-  <build_depend>image_proc</build_depend>
-  <build_depend>stereo_image_proc</build_depend>
-  <build_depend>image_geometry</build_depend>
-  <build_depend>camera_calibration_parsers</build_depend>
-  <build_depend>libconsole-bridge-dev</build_depend>
+  <!-- System Dependencies (Build + Exec) -->
+  <depend>libconsole-bridge-dev</depend>
 
-  <!-- Exec dependencies -->
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>rosbag</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>cv_bridge</exec_depend>
-  <exec_depend>message_filters</exec_depend>
-  <exec_depend>image_proc</exec_depend>
-  <exec_depend>stereo_image_proc</exec_depend>
-  <exec_depend>image_geometry</exec_depend>
-  <exec_depend>camera_calibration_parsers</exec_depend>
-  <exec_depend>libconsole-bridge-dev</exec_depend>
+  <!-- ROS Dependencies (Build + Exec) -->
+  <depend>rospy</depend>
+  <depend>roscpp</depend>
+  <depend>rosbag</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_proc</depend>
+  <depend>sensor_msgs</depend>
+  <depend>image_geometry</depend>
+  <depend>message_filters</depend>
+  <depend>stereo_image_proc</depend>
+  <depend>camera_calibration_parsers</depend>
+
+  <!-- Optional -->
+  <depend>image_preprocessing</depend>
 
   <export>
   </export>
