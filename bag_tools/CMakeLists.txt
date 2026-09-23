@@ -57,12 +57,14 @@ add_executable(extract_images_from_realsense src/extract_images_from_realsense.c
 add_executable(extract_tum_format src/extract_tum_format.cpp)
 add_executable(extract_stereo_images
                src/image_resolution_scaler.cpp
+               src/image_color_converter.cpp
                src/image_saver.cpp
                src/stereo_image_saver.cpp
                src/extract_stereo_images.cpp)
 add_executable(process_stereo src/process_stereo.cpp)
 add_executable(extract_enhanced_stereo_images
                src/image_resolution_scaler.cpp
+               src/image_color_converter.cpp
                src/enhanced_image_saver.cpp
                src/enhanced_stereo_image_saver.cpp
                src/extract_enhanced_stereo_images.cpp) # Optional

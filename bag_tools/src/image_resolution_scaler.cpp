@@ -39,12 +39,12 @@ std::pair<sensor_msgs::Image::Ptr, sensor_msgs::CameraInfo::Ptr> ImageResolution
     cv_bridge::CvImagePtr cv_img_ptr;
     try
     {
-    cv_img_ptr = cv_bridge::toCvCopy(raw_img, raw_img->encoding);
+        cv_img_ptr = cv_bridge::toCvCopy(raw_img, raw_img->encoding);
     }
     catch (const cv_bridge::Exception& e)
     {
-    ROS_ERROR_STREAM("[Caster:] cv_bridge exception: " << e.what());
-    return {nullptr, nullptr};
+        ROS_ERROR_STREAM("[Caster:] cv_bridge exception: " << e.what());
+        return {nullptr, nullptr};
     }
 
     // ---- CROP ----
@@ -59,43 +59,43 @@ std::pair<sensor_msgs::Image::Ptr, sensor_msgs::CameraInfo::Ptr> ImageResolution
     // Apply Crop to the image.
     if (final_roi != image_rect) 
     {
-    cv_img_ptr->image = cv_img_ptr->image(final_roi);
-    
-    // Update ROI metadata in CameraInfo.
-    // Note: ROS accumulates the offset if it already had a previous offset.
-    info_out->roi.x_offset += final_roi.x;
-    info_out->roi.y_offset += final_roi.y;
-    info_out->roi.width = final_roi.width;
-    info_out->roi.height = final_roi.height;
-    info_out->roi.do_rectify = true; // Important for image_geometry to take into account.
+        cv_img_ptr->image = cv_img_ptr->image(final_roi);
+        
+        // Update ROI metadata in CameraInfo.
+        // Note: ROS accumulates the offset if it already had a previous offset.
+        info_out->roi.x_offset += final_roi.x;
+        info_out->roi.y_offset += final_roi.y;
+        info_out->roi.width = final_roi.width;
+        info_out->roi.height = final_roi.height;
+        info_out->roi.do_rectify = true; // Important for image_geometry to take into account.
     }
 
     // ---- DECIMATION (BINNING) ----
     if (decimation_x_ > 1 || decimation_y_ > 1) 
     {
-    double scale_x = 1.0 / decimation_x_;
-    double scale_y = 1.0 / decimation_y_;
+        double scale_x = 1.0 / decimation_x_;
+        double scale_y = 1.0 / decimation_y_;
 
-    // Resize with Nearest Neighbour to avoid corrupting the Bayer pattern.
-    cv::resize(cv_img_ptr->image, cv_img_ptr->image, cv::Size(), scale_x, scale_y, cv::INTER_NEAREST);
+        // Resize with Nearest Neighbour to avoid corrupting the Bayer pattern.
+        cv::resize(cv_img_ptr->image, cv_img_ptr->image, cv::Size(), scale_x, scale_y, cv::INTER_NEAREST);
 
-    // Update intrinisic parameters.
-    info_out->K[0] *= scale_x;                                  // fx
-    info_out->K[2] = (info_out->K[2] - final_roi.x) * scale_x;  // cx
-    info_out->K[4] *= scale_y;                                  // fy
-    info_out->K[5] = (info_out->K[5] - final_roi.y) * scale_y;  // cy
+        // Update intrinisic parameters.
+        info_out->K[0] *= scale_x;                                  // fx
+        info_out->K[2] = (info_out->K[2] - final_roi.x) * scale_x;  // cx
+        info_out->K[4] *= scale_y;                                  // fy
+        info_out->K[5] = (info_out->K[5] - final_roi.y) * scale_y;  // cy
 
-    // Update extrinsic parameters.
-    info_out->P[0] *= scale_x;                                  // fx'
-    info_out->P[2] = (info_out->P[2] - final_roi.x) * scale_x;  // cx'
-    info_out->P[3] *= scale_x;                                  // Tx
-    info_out->P[5] *= scale_y;                                  // fy'
-    info_out->P[6] = (info_out->P[6] - final_roi.y) * scale_y;  // cy'
-    info_out->P[7] *= scale_y;                                  // Ty
-    
-    // Update final size in the message.
-    info_out->width = cv_img_ptr->image.cols;
-    info_out->height = cv_img_ptr->image.rows;
+        // Update extrinsic parameters.
+        info_out->P[0] *= scale_x;                                  // fx'
+        info_out->P[2] = (info_out->P[2] - final_roi.x) * scale_x;  // cx'
+        info_out->P[3] *= scale_x;                                  // Tx
+        info_out->P[5] *= scale_y;                                  // fy'
+        info_out->P[6] = (info_out->P[6] - final_roi.y) * scale_y;  // cy'
+        info_out->P[7] *= scale_y;                                  // Ty
+        
+        // Update final size in the message.
+        info_out->width = cv_img_ptr->image.cols;
+        info_out->height = cv_img_ptr->image.rows;
     }
 
     return {cv_img_ptr->toImageMsg(), info_out};

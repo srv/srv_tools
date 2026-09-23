@@ -23,10 +23,13 @@ EnhancedImageSaver::EnhancedImageSaver(const std::string& save_dir,
 void EnhancedImageSaver::save(const sensor_msgs::Image::ConstPtr& raw_img, 
                               const sensor_msgs::CameraInfo::ConstPtr& raw_info)
 {
-    // Pre-process (Crop & Decimate).
-    auto [img_preproc, info_preproc] = scaler_.process(raw_img, raw_info);
+    // Correct color.
+    sensor_msgs::Image::Ptr img_color = bag_tools::toColor(raw_img);
+    if (!img_color)
+        return;
 
-    // Sanity check.
+    // Crop & decimate.
+    auto [img_preproc, info_preproc] = scaler_.process(img_color, raw_info);
     if (!img_preproc || !info_preproc)
         return;
 

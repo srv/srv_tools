@@ -2,11 +2,23 @@
 Changelog for package bag_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.2 (2026-09-23)
+------------------
+* Added debayering and color conversion.
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
+0.2.1 (2026-09-23)
+------------------
+* Replace exact TimeSynchronizer with message_filters::ApproximateTime policy in StereoBagProcessor. Exact time synchronization caused frames to be dropped when processing bagfiles where stereo cameras or camera_info topics have minor timestamp jitters (e.g. lack of hardware synchronization between channels).
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
 0.2.0 (2026-01-26)
+------------------
 * Added extract_enhanced_stereo_images.py.
 * Contributors: Bo Miquel Nordfeldt-Fiol
 
 0.1.0 (2026-01-16)
+------------------
 * Added sort_topics_by_timestamp.py.
 * Contributors: Bo Miquel Nordfeldt-Fiol
 

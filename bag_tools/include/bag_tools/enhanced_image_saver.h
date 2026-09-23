@@ -14,6 +14,7 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 
+#include "bag_tools/image_color_converter.h"
 #include "bag_tools/image_resolution_scaler.h"
 #include "image_preprocessing/dehazer.h"
 #include "image_preprocessing/clahe.h"
