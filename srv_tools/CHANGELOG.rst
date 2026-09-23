@@ -2,6 +2,16 @@
 Changelog for metapackage srv_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.1 (2026-09-23)
+------------------
+* [bag_tools] Replace exact TimeSynchronizer with message_filters::ApproximateTime policy in StereoBagProcessor. Exact time synchronization caused frames to be dropped when processing bagfiles where stereo cameras or camera_info topics have minor timestamp jitters (e.g. lack of hardware synchronization between channels).
+* Contributors: Bo Miquel Nordfeldt-Fiol
+
+0.2.0 (2026-01-26)
+------------------
+* [bag_tools] Added extract_enhanced_stereo_images.py.
+* Contributors: Bo Miquel
+
 0.1.0 (2026-01-16)
 ------------------
 * [bag_tools] Added sort_topics_by_timestamp.py.

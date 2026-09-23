@@ -31,7 +31,8 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 #include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 
@@ -65,7 +66,7 @@ public:
     stereo_base_topic_(stereo_base_topic),
     l_cam_name_(l_cam_name),
     r_cam_name_(r_cam_name),
-    sync_(l_img_sub_, r_img_sub_, l_info_sub_, r_info_sub_, 25)
+    sync_(SyncPolicy_(50), l_img_sub_, r_img_sub_, l_info_sub_, r_info_sub_)
   {
     ros::Time::init();
   }
@@ -154,7 +155,14 @@ private:
 
   std::string stereo_base_topic_, l_cam_name_, r_cam_name_;
 
-  message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> sync_;
+  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image,
+                                                          sensor_msgs::Image,
+                                                          sensor_msgs::CameraInfo,
+                                                          sensor_msgs::CameraInfo> SyncPolicy_;
+
+  typedef message_filters::Synchronizer<SyncPolicy_> Sync_;
+
+  Sync_ sync_;
 
 };
 
